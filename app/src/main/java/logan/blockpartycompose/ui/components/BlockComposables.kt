@@ -31,17 +31,26 @@ fun Block(modifier: Modifier) {
 }
 
 @Composable
-fun RedBox(onClick: () -> Unit) {
-    Block(modifier = Modifier
+fun RedBox(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Block(modifier = modifier
         .border(1.dp, Color.Black)
         .background(Color.Red)
-        .clickable { onClick() }
+        .clickable {
+
+            onClick()
+        }
     )
 }
 
 @Composable
-fun BlueBox(onClick: () -> Unit) {
-    Block(modifier = Modifier
+fun BlueBox(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Block(modifier = modifier
         .border(1.dp, Color.Black)
         .background(Color.Blue)
         .clickable { onClick() }
@@ -49,8 +58,11 @@ fun BlueBox(onClick: () -> Unit) {
 }
 
 @Composable
-fun YellowBox(onClick: () -> Unit) {
-    Block(modifier = Modifier
+fun YellowBox(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Block(modifier = modifier
         .border(1.dp, Color.Black)
         .background(Color.Yellow)
         .clickable { onClick() }
@@ -58,8 +70,11 @@ fun YellowBox(onClick: () -> Unit) {
 }
 
 @Composable
-fun GrayBox(onClick: () -> Unit) {
-    Block(modifier = Modifier
+fun GrayBox(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Block(modifier = modifier
         .border(1.dp, Color.DarkGray)
         .background(Color.Gray)
         .clickable { onClick() }
@@ -67,8 +82,11 @@ fun GrayBox(onClick: () -> Unit) {
 }
 
 @Composable
-fun BlackBox(onClick: () -> Unit) {
-    Block(modifier = Modifier
+fun BlackBox(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Block(modifier = modifier
         .border(1.dp, Color.DarkGray)
         .background(Color.Black)
         .clickable { onClick() }
@@ -76,8 +94,11 @@ fun BlackBox(onClick: () -> Unit) {
 }
 
 @Composable
-fun GreenBox(onClick: () -> Unit) {
-    Block(modifier = Modifier
+fun GreenBox(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Block(modifier = modifier
         .border(1.dp, Color.Black)
         .background(Color.Green)
         .clickable { onClick() }

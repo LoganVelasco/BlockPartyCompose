@@ -8,14 +8,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.data.models.Level
-import logan.blockpartycompose.utils.GameUtils
+import logan.blockpartycompose.utils.GeneratorService
 import javax.inject.Inject
-import kotlin.math.absoluteValue
 
 
 @HiltViewModel
 class LevelBuilderViewModel @Inject constructor(
-    private val repo: DataRepository
+    private val repo: DataRepository,
+    private val levelGenerator: GeneratorService
 ) : ViewModel() {
 
     private var _state = MutableLiveData<LevelBuilderState>()
@@ -29,8 +29,8 @@ class LevelBuilderViewModel @Inject constructor(
             LevelBuilderState(level.blocks)
         )
     }
-    
-    fun colorSelected(selectedBlockColor: BlockColor){
+
+    fun colorSelected(selectedBlockColor: BlockColor) {
         _state.postValue(
             LevelBuilderState(_state.value!!.blocks, selectedBlockColor)
         )
@@ -38,13 +38,38 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun blockClicked(block: Char, index: Int) {
         val color = _state.value!!.selectedBlockColor
-        if(color != null){
+        if (color != null) {
             val blocks = _state.value!!.blocks.toMutableList()
             blocks[index] = color.color
             _state.postValue(
                 LevelBuilderState(blocks, color)
             )
         }
+    }
+
+    fun clearAllClicked(){
+        setupNewLevel()
+    }
+
+    fun menuClicked() {
+        val generatedLevel = levelGenerator.generateLevel()
+
+        _state.postValue(
+            LevelBuilderState(generatedLevel)
+        )
+    }
+
+    fun playClicked() {
+        level = Level(
+            name = "",
+            x = 6,
+            y = 8,
+            initialBlocks = _state.value!!.blocks,
+        )
+    }
+
+    fun saveClicked() {
+        level.blocks = _state.value!!.blocks.toMutableList()
     }
 
     @Immutable

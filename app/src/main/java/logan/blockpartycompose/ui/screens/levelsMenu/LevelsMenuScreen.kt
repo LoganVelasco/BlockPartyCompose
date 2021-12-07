@@ -25,7 +25,8 @@ fun LevelsMenu(
 ){
     val viewModel:LevelsViewModel = hiltViewModel()
     val levels = viewModel.getLevels(levelSet)
-    Column() {
+
+    Column {
         BackIcon(backClicked = { navController.navigateUp() }, modifier = Modifier.padding(10.dp))
         LazyColumn(
             verticalArrangement = Arrangement.SpaceEvenly,

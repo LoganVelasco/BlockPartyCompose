@@ -15,7 +15,7 @@ import logan.blockpartycompose.ui.theme.BlockPartyComposeTheme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val myViewModel: LevelsViewModel by viewModels()
+//    private val myViewModel: LevelsViewModel by viewModels()
 
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {

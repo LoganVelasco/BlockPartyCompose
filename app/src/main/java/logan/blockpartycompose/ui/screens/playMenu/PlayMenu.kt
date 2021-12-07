@@ -58,12 +58,14 @@ fun PlayMenu(navController: NavController) {
             ) {
                 Text(text = "Easy")
             }
-            Button(onClick = { navController.navigate("levels/medium") },
+            Button(onClick = { navController.navigate("medium") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Medium")
             }
-            Button(onClick = { navController.navigate("levels/hard") },
+//            Button(onClick = { navController.navigate("hard") },
+            Button(onClick = {  },
+                enabled = false,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Hard")

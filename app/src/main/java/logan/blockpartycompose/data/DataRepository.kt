@@ -43,12 +43,19 @@ class DataRepository @Inject constructor() {
                 )
             }
             LevelSet.MEDIUM -> {
-                val text =
-                    File("../Json.decodeFromString<List<Level>>(levels/medium.txt").readText()
-                Json.decodeFromString(text)
+//                val text =
+//                    File("../Json.decodeFromString<List<Level>>(levels/medium.txt").readText()
+//                Json.decodeFromString(text)
+//                Json.decodeFromString(javaClass.getResource("/html/file.html").readText())
+
+                listOf(
+                    Level(name = "11",  x = 6, y = 8, initialBlocks = level11),
+                    Level(name = "12",  x = 6, y = 8, initialBlocks = level12),
+                    Level(name = "13",  x = 6, y = 8, initialBlocks = level13),
+                )
             }
             LevelSet.HARD -> {
-                val text = File("../levels/hard.txt").readText()
+                val text = File("src/main/res/hard.txt").readText()
                 Json.decodeFromString(text)
             }
             LevelSet.CUSTOM -> {
@@ -172,6 +179,38 @@ class DataRepository @Inject constructor() {
         'b', 'x', '.', '.', 'g', 'g',
         '.', 'x', 'x', 'x', 'g', '.',
         'g', '.', '.', 'g', '.', '.',
+    )
+
+    var level11 = listOf(
+        '.', '.', '.', '.', '.', '.',
+        '.', '.', '.', 'b', '.', '.',
+        '.', '.', 'x', '.', '.', '.',
+        '.', '.', 'g', '.', '.', '.',
+        '.', 'g', 'x', '.', '.', '.',
+        '.', '.', '.', '.', '.', '.',
+        '.', '.', '.', '.', '.', '.',
+        '.', 'r', 'y', '.', '.', '.',
+    )
+
+    var level12 = listOf(
+        'g', 'g', '.', '.', 'g', '.',
+        'g', 'b', '.', '.', 'g', '.',
+        '.', '.', '.', '.', 'g', '.',
+        'g', '.', '.', '.', '.', '.',
+        '.', 'g', '.', '.', '.', '.',
+        '.', '.', '.', '.', '.', '.',
+        '.', '.', '.', 'x', 'x', '.',
+        '.', '.', '.', 'x', 'r', 'y',
+    )
+    var level13 = listOf(
+        'b', '.', '.', '.', '.', '.',
+        '.', '.', '.', 'g', '.', '.',
+        '.', 'g', '.', '.', 'x', '.',
+        '.', '.', 'g', '.', '.', '.',
+        '.', 'g', '.', '.', '.', '.',
+        'g', '.', '.', '.', 'g', '.',
+        '.', '.', '.', '.', 'g', '.',
+        '.', '.', '.', 'r', 'x', 'y',
     )
 
 }

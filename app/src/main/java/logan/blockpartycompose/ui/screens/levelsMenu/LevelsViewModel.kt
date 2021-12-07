@@ -4,21 +4,31 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.utils.GameUtils
+import logan.blockpartycompose.utils.LevelSolver
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
 
 @HiltViewModel
 class LevelsViewModel @Inject constructor(
-    private val repo: DataRepository
+    private val repo: DataRepository,
+
 ) : ViewModel() {
+
+    var compositions = 0
 
     private var _state = MutableLiveData<LevelState>()
     val state: LiveData<LevelState> = _state
+
+    private var _moves = MutableLiveData<LevelState>()
+    val moves: LiveData<LevelState> = _moves
 
     private lateinit var level: Level
 
@@ -28,10 +38,24 @@ class LevelsViewModel @Inject constructor(
 
         _state.postValue(
             LevelState(
-                level = level,
+                name = level.name,
+                x = level.x,
                 blocks = level.blocks,
                 movesUsed = 0,
                 gameState = GameState.IN_PROGRESS
+            )
+        )
+    }
+
+    fun setupLevel(newLevel: Level) {
+        level = newLevel
+        _state.postValue(
+            LevelState(
+                blocks = newLevel.blocks,
+                x = newLevel.x,
+                movesUsed = 0,
+                gameState = GameState.IN_PROGRESS,
+                name = newLevel.name
             )
         )
     }
@@ -44,43 +68,82 @@ class LevelsViewModel @Inject constructor(
         return getLevels(levelSet).first { it.name == name }
     }
 
-    fun blockClicked(block: Char, index: Int) {
-        if (!GameUtils.isTouchingBlue(index, level.blueIndex, level.x)) return
+    fun blockClicked(block: Char, newIndex: Int) {
+        if (!GameUtils.isTouchingBlue(
+                newIndex,
+                level.blueIndex,
+                level.x
+            )
+        ) {
+            val i = 0
+            return
+        }
+        val i = 0
         when (block) {
             'r' -> {
                 level.state = GameState.FAILED
             }
             'g' -> {
-                if (!handleGreenMove(index)) return
-                else moveBlue(index)
+                if (!handleGreenMove(newIndex)) {
+                    return
+                } else {
+                    moveBlue(newIndex)
+                }
             }
             'y' -> {
                 level.state = GameState.SUCCESS
             }
             '.' -> {
-                moveBlue(index)
+                moveBlue(newIndex)
             }
             else -> {
                 return
             }
         }
 
-        handleRedTurn()
-
         _state.postValue(
             LevelState(
-                level = _state.value!!.level,
                 blocks = level.blocks,
+                x = state.value!!.x,
                 movesUsed = _state.value!!.movesUsed + 1,
-                gameState = level.state
+                gameState = level.state,
+                name = level.name,
             )
         )
+
+        if (shouldRedAttemptMove()) {
+            handleRedTurn()
+        }
     }
 
     private fun handleRedTurn() {
-        if (level.redIndex != -1 && level.state == GameState.IN_PROGRESS) {
-            if (moveRed() && level.state == GameState.IN_PROGRESS) {
-                moveRed()
+        if (moveRed() && level.state == GameState.IN_PROGRESS) {
+
+            viewModelScope.launch {
+
+                delay(100)
+                _state.postValue(
+                    LevelState(
+                        blocks = level.blocks.toMutableList(),
+                        x = level.x,
+                        movesUsed = _state.value!!.movesUsed,
+                        gameState = level.state,
+                        level.name,
+                    )
+                )
+
+                if (level.state == GameState.IN_PROGRESS && moveRed()) {
+                    delay(250)
+                    _state.postValue(
+                        LevelState(
+                            blocks = level.blocks.toMutableList(),
+                            x = level.x,
+                            movesUsed = _state.value!!.movesUsed,
+                            gameState = level.state,
+                            level.name,
+                        )
+                    )
+                }
             }
         }
     }
@@ -110,6 +173,10 @@ class LevelsViewModel @Inject constructor(
             }
             'g' -> {
                 level.blocks[newIndex] = '.'
+                true
+            }
+            'y' -> {
+                level.blocks[newIndex] = 'y'
                 true
             }
             else -> {
@@ -166,12 +233,16 @@ class LevelsViewModel @Inject constructor(
 
         if (newIndex == level.blueIndex) {
             level.state = GameState.FAILED
+
             return true
         }
 
         if (isValidRedMove(newIndex)) {
-
-            level.blocks[level.redIndex] = '.'
+            if(level.blocks.contains('y')) {
+                level.blocks[level.redIndex] = '.'
+            }else{
+                level.blocks[level.redIndex] = 'y'
+            }
             level.blocks[newIndex] = 'r'
             level.redIndex = newIndex
 
@@ -183,39 +254,64 @@ class LevelsViewModel @Inject constructor(
     private fun isValidRedMove(newIndex: Int): Boolean {
         return when (_state.value!!.blocks[newIndex]) {
             '.' -> true
+            'b' -> true
+            'y' -> true
             else -> false
         }
+    }
+
+    private fun shouldRedAttemptMove(): Boolean {
+        return level.redIndex != -1 && level.state == GameState.IN_PROGRESS
     }
 
     fun tryAgain() {
         level.resetLevel()
         _state.postValue(
             LevelState(
-                level = level,
                 blocks = level.blocks,
+                x = level.x,
                 movesUsed = 0,
-                gameState = GameState.IN_PROGRESS
+                gameState = GameState.IN_PROGRESS,
+                name = level.name,
             )
         )
     }
+
+    fun solveLevel(){
+        viewModelScope.launch {
+            val levelSolver = LevelSolver()
+            tryAgain()
+            val solution = levelSolver.findShortestSolution(level.blocks as ArrayList<Char>)
+            solution?.forEach {
+                blockClicked(block = level.blocks[it], it)
+                delay(750)
+            }
+            blockClicked(block = 'y', 0)
+        }
+
+    }
+
+
+
 }
 
 
 @Immutable
 data class LevelState(
-    val level: Level,
     val blocks: List<Char>,
+    val x: Int,
     var movesUsed: Int,
-    var gameState: GameState
+    var gameState: GameState,
+    val name: String,
 )
 
-enum class GameState() {
+enum class GameState {
     FAILED,
     SUCCESS,
     IN_PROGRESS
 }
 
-enum class Direction() {
+enum class Direction {
     UP,
     DOWN,
     LEFT,

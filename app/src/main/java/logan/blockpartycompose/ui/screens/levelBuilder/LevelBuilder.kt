@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.data.models.BlockColor
-import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.level.BackIcon
 import logan.blockpartycompose.ui.screens.level.LevelGrid
@@ -29,18 +28,29 @@ import logan.blockpartycompose.ui.screens.level.LevelGrid
 @Composable
 fun LevelBuilderScreen(
     navigation: NavController,
-    viewModel: LevelBuilderViewModel = hiltViewModel()
+    viewModel: LevelBuilderViewModel = hiltViewModel(navigation.getViewModelStoreOwner(navigation.graph.id))
 ) {
+
     val state by viewModel.state.observeAsState()
     if (state == null) viewModel.setupNewLevel()
     else
         LevelBuilder(
-            navController = navigation,
-            viewModel.level.x,
-            state!!.blocks,
-            state!!.selectedBlockColor,
-            viewModel::blockClicked,
-            viewModel::colorSelected
+            x = viewModel.level.x,
+            blocks = state!!.blocks,
+            selectedBlockColor = state!!.selectedBlockColor,
+            backClicked = {
+                viewModel.clearAllClicked()
+                navigation.navigateUp()
+            },
+            blockClicked = viewModel::blockClicked,
+            colorClicked = viewModel::colorSelected,
+            menuClicked = viewModel::menuClicked,
+            playClicked = {
+                viewModel.playClicked()
+                navigation.navigate("customLevel")
+            },
+            saveClicked = viewModel::saveClicked,
+            clearAllClicked = viewModel::clearAllClicked
         )
 }
 
@@ -48,12 +58,16 @@ fun LevelBuilderScreen(
 @ExperimentalFoundationApi
 @Composable
 fun LevelBuilder(
-    navController: NavController,
     x: Int,
     blocks: List<Char>,
     selectedBlockColor: BlockColor?,
     blockClicked: (Char, Int) -> Unit,
-    colorClicked: (BlockColor) -> Unit
+    colorClicked: (BlockColor) -> Unit,
+    backClicked: () -> Unit,
+    menuClicked: () -> Unit,
+    playClicked: () -> Unit,
+    saveClicked: () -> Unit,
+    clearAllClicked: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -65,14 +79,14 @@ fun LevelBuilder(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            BackIcon(backClicked = { navController.navigateUp() })
-            Button(onClick = { /*TODO*/ }, Modifier.padding(15.dp)) {
+            BackIcon(backClicked = { backClicked() })
+            Button(onClick = { clearAllClicked() }, Modifier.padding(15.dp)) {
                 Text(text = "Clear All")
             }
         }
         LevelGrid(blockClicked = blockClicked, x = x, blocks = blocks)
         BlockPalette(selectedBlockColor, colorClicked)
-        LevelBuilderFooter()
+        LevelBuilderFooter(menuClicked, playClicked, saveClicked)
     }
 }
 
@@ -106,23 +120,23 @@ fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> 
 }
 
 @Composable
-fun LevelBuilderFooter() {
+fun LevelBuilderFooter(menuClicked: () -> Unit, playClicked: () -> Unit, saveClicked: () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { menuClicked() },
         ) {
             Icon(Icons.Filled.Menu, contentDescription = "Menu")
         }
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { playClicked() },
         ) {
             Icon(Icons.Filled.PlayArrow, contentDescription = "Play")
         }
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { saveClicked() },
         ) {
             Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Save")
         }

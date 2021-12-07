@@ -7,7 +7,9 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -17,16 +19,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.levelsMenu.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
-import logan.blockpartycompose.ui.screens.levelsMenu.LevelState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelsViewModel
 
 @ExperimentalFoundationApi
 @Composable
-fun LevelScreen(
+fun LevelController(
     navigation: NavController,
     levelSet: LevelSet,
     name: String,
@@ -34,16 +34,18 @@ fun LevelScreen(
 ) {
     val state by viewModel.state.observeAsState()
 
-    if(state != null) {
-        when(state!!.gameState){
+    if (state != null) {
+        when (state!!.gameState) {
             GameState.SUCCESS -> {
-                val nextLevel = state!!.level.name.toInt()+1
+                val nextLevel = state!!.name.toInt() + 1
+                val newLevelSet: LevelSet = if(nextLevel >= 11) LevelSet.MEDIUM
+                    else LevelSet.EASY
                 SuccessScreen(
                     // not great logic tbh the name/levelSet of the parent composable don't change
-                    nextLevelOnClick = { viewModel.setupLevel(levelSet, nextLevel.toString()) },
+                    nextLevelOnClick = { viewModel.setupLevel(newLevelSet, nextLevel.toString()) },
                     backClicked = { navigation.navigateUp() },
                     movesUsed = state!!.movesUsed,
-                    levelName = state!!.level.name
+                    levelName = state!!.name
                 )
             }
             GameState.FAILED -> {
@@ -54,13 +56,17 @@ fun LevelScreen(
             }
             GameState.IN_PROGRESS -> {
                 Level(
-                    state = state!!,
+                    movesUsed = state!!.movesUsed,
+                    x = state!!.x,
+                    blocks = state!!.blocks,
                     blockClicked = viewModel::blockClicked,
-                    backClicked = { navigation.navigateUp() }
+                    backClicked = { navigation.navigateUp() },
+                    solveClicked = viewModel::solveLevel,
+                    resetClicked = viewModel::tryAgain
                 )
             }
         }
-    }else{
+    } else {
         viewModel.setupLevel(levelSet, name)
     }
 }
@@ -68,20 +74,23 @@ fun LevelScreen(
 @ExperimentalFoundationApi
 @Composable
 fun Level(
-    state: LevelState,
+    movesUsed: Int,
+    x: Int,
+    blocks: List<Char>,
     blockClicked: (Char, Int) -> Unit,
     backClicked: () -> Unit,
+    solveClicked:() -> Unit,
+    resetClicked: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxHeight()
     ) {
-        LevelHeader(state.movesUsed, backClicked)
-        LevelGrid(blockClicked, state.level.x, state.blocks)
-        LevelFooter()
+        LevelHeader(movesUsed, backClicked)
+        LevelGrid(blockClicked, x, blocks)
+        LevelFooter(solveClicked, resetClicked)
     }
 }
-
 
 @Composable
 fun LevelHeader(movesUsed: Int, backClicked: () -> Unit) {
@@ -101,7 +110,7 @@ fun LevelHeader(movesUsed: Int, backClicked: () -> Unit) {
 }
 
 @Composable
-fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier){
+fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
     IconButton(
         onClick = backClicked,
         modifier = modifier
@@ -119,24 +128,26 @@ fun LevelGrid(blockClicked: (Char, Int) -> Unit, x: Int, blocks: List<Char>) {
         modifier = Modifier.fillMaxWidth()
     ) {
         items(blocks.size) { index ->
+            val onClick = { blockClicked(blocks[index], index) }
+
             when (blocks[index]) {
                 'r' -> {
-                    RedBox{ blockClicked('r', index) }
+                    RedBox(onClick)
                 }
                 'b' -> {
-                    BlueBox { blockClicked('b', index) }
+                    BlueBox(onClick)
                 }
                 'g' -> {
-                    GreenBox{ blockClicked('g', index) }
+                    GreenBox(onClick)
                 }
                 'y' -> {
-                    YellowBox{ blockClicked('y', index) }
+                    YellowBox(onClick)
                 }
                 '.' -> {
-                    GrayBox{ blockClicked('.', index) }
+                    GrayBox(onClick)
                 }
                 'x' -> {
-                    BlackBox { blockClicked('x', index) }
+                    BlackBox(onClick)
                 }
             }
         }
@@ -144,20 +155,20 @@ fun LevelGrid(blockClicked: (Char, Int) -> Unit, x: Int, blocks: List<Char>) {
 }
 
 @Composable
-fun LevelFooter() {
+fun LevelFooter(solveClicked: () -> Unit, resetClicked: () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = resetClicked,
         ) {
-            Icon(Icons.Filled.Info, contentDescription = "Help")
+            Icon(Icons.Filled.Clear, contentDescription = "Clear")
         }
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = solveClicked,
         ) {
-            Icon(Icons.Filled.Info, contentDescription = "Hint")
+            Icon(Icons.Filled.PlayArrow, contentDescription = "Hint")
         }
         IconButton(
             onClick = { /*TODO*/ },
@@ -168,16 +179,25 @@ fun LevelFooter() {
 }
 
 @Composable
-fun SuccessScreen(nextLevelOnClick: () -> Unit, backClicked: () -> Unit, movesUsed: Int, levelName: String) {
-    Card(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()) {
+fun SuccessScreen(
+    nextLevelOnClick: () -> Unit,
+    backClicked: () -> Unit,
+    movesUsed: Int,
+    levelName: String
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+    ) {
         Column() {
-            BackIcon (backClicked, Modifier.padding(10.dp))
+            BackIcon(backClicked, Modifier.padding(10.dp))
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
             ) {
                 Text(text = "You Did it!")
                 Text(text = "Level $levelName Completed in $movesUsed moves!")
@@ -190,16 +210,20 @@ fun SuccessScreen(nextLevelOnClick: () -> Unit, backClicked: () -> Unit, movesUs
 }
 
 @Composable
-fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit){
-    Card(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()) {
+fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+    ) {
         Column() {
-            BackIcon (backClicked, Modifier.padding(10.dp))
+            BackIcon(backClicked, Modifier.padding(10.dp))
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
             ) {
                 Text(text = "You Died!")
                 Button(onClick = { tryAgainOnClick() }) {
