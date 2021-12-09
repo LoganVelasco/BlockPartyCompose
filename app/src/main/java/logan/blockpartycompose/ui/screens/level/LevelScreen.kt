@@ -1,24 +1,24 @@
 package logan.blockpartycompose.ui.screens.level
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.levelsMenu.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
@@ -40,12 +40,14 @@ fun LevelController(
                 val nextLevel = state!!.name.toInt() + 1
                 val newLevelSet: LevelSet = if(nextLevel >= 11) LevelSet.MEDIUM
                     else LevelSet.EASY
+                val isNewHighScore = viewModel.isHighScoreUpdated()
                 SuccessScreen(
                     // not great logic tbh the name/levelSet of the parent composable don't change
                     nextLevelOnClick = { viewModel.setupLevel(newLevelSet, nextLevel.toString()) },
                     backClicked = { navigation.navigateUp() },
                     movesUsed = state!!.movesUsed,
-                    levelName = state!!.name
+                    levelName = state!!.name,
+                    isNewHighScore = isNewHighScore
                 )
             }
             GameState.FAILED -> {
@@ -183,7 +185,8 @@ fun SuccessScreen(
     nextLevelOnClick: () -> Unit,
     backClicked: () -> Unit,
     movesUsed: Int,
-    levelName: String
+    levelName: String,
+    isNewHighScore: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -199,8 +202,21 @@ fun SuccessScreen(
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                Text(text = "You Did it!")
-                Text(text = "Level $levelName Completed in $movesUsed moves!")
+                if(isNewHighScore){
+                    Text(text = "New High Score!")
+                    Text(text = "Level $levelName Completed in $movesUsed moves!")
+                }else{
+                    Text(text = "You Did it!")
+                    Text(text = "Level $levelName Completed in $movesUsed moves!")
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ){
+                    Image(painter = painterResource(R.drawable.ic_undo), contentDescription = "Star")
+                    Image(painter = painterResource(R.drawable.ic_undo), contentDescription = "Star")
+                    Image(painter = painterResource(R.drawable.ic_undo), contentDescription = "Star")
+                }
                 Button(onClick = { nextLevelOnClick() }) {
                     Text(text = "Next Level")
                 }

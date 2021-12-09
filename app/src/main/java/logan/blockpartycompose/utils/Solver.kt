@@ -163,7 +163,9 @@ class LevelSolver @Inject constructor() {
             newLayout[48] = moveCount.toChar()
             visitedStates.add(newLayout)
             println("Count: ${visitedStates.size} Move Count: $moveCount")
-
+            if(moveCount > 10){
+//                println()
+            }
             if(moveCount > 50)return false
             return getNextMove(newPosition)
         }
@@ -331,6 +333,9 @@ class LevelSolver @Inject constructor() {
                 return true
             }
         }
+        println("No Red Move Possible")
+        printLayout(currentState)
+        println("No Red Move Possible")
 
         return false
     }
@@ -458,8 +463,8 @@ class LevelSolver @Inject constructor() {
     }
 
     fun isAlreadyVisitedState(state: ArrayList<Char>): Boolean {
-        var oldCount = 0;
-        var newCount = 0;
+        var oldCount = 0
+        var newCount = 0
         for (oldState in visitedStates) {
             oldCount = oldState[48].toInt()
             newCount = state[48].toInt()

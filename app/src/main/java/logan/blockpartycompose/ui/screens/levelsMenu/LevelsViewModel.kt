@@ -1,6 +1,9 @@
 package logan.blockpartycompose.ui.screens.levelsMenu
 
+import android.content.SharedPreferences
+import android.provider.Settings.Global.putInt
 import androidx.compose.runtime.Immutable
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +15,7 @@ import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.utils.GameUtils
 import logan.blockpartycompose.utils.LevelSolver
+import logan.blockpartycompose.utils.UserProgressService
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
@@ -19,7 +23,7 @@ import kotlin.math.absoluteValue
 @HiltViewModel
 class LevelsViewModel @Inject constructor(
     private val repo: DataRepository,
-
+    private val userProgressService: UserProgressService,
 ) : ViewModel() {
 
     var compositions = 0
@@ -64,7 +68,7 @@ class LevelsViewModel @Inject constructor(
         return repo.getLevels(levelSet)
     }
 
-    private fun getLevel(levelSet: LevelSet, name: String): Level {
+    fun getLevel(levelSet: LevelSet, name: String): Level {
         return getLevels(levelSet).first { it.name == name }
     }
 
@@ -88,6 +92,7 @@ class LevelsViewModel @Inject constructor(
                     return
                 } else {
                     moveBlue(newIndex)
+                    Thread.sleep(100)
                 }
             }
             'y' -> {
@@ -291,6 +296,10 @@ class LevelsViewModel @Inject constructor(
 
     }
 
+    fun isHighScoreUpdated(): Boolean {
+        println("TESTLOG: ${level.name} ${_state.value?.movesUsed?: 0}")
+        return userProgressService.isHighScoreUpdated(level.name, _state.value?.movesUsed?: 0)
+    }
 
 
 }

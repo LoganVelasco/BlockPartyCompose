@@ -1,5 +1,6 @@
 package logan.blockpartycompose.ui.screens.levelsMenu
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,13 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.ui.screens.level.BackIcon
+import logan.blockpartycompose.ui.screens.level.LevelGrid
 
+@ExperimentalFoundationApi
 @Composable
 fun LevelsMenu(
     navController: NavController,
@@ -37,16 +39,21 @@ fun LevelsMenu(
                 Text(text = levelSet.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
             items(levels.size) { index ->
-                val level = levels[index]
+                val levelName = levels[index]
+                val levelRoute = "level/${levelSet.name}/${levelName.name}"
+//                val level = viewModel.getLevel(levelSet, "${index+1}")
+//                LevelGrid(blockClicked = { _, _ ->
+//                    navController.navigate(levelRoute)
+//                }, x = level.x , blocks = level.blocks)
                 Button(
                     onClick = {
-                                navController.navigate("level/${levelSet.name}/${level.name}")
+                                navController.navigate(levelRoute)
                               },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(25.dp)
                 ) {
-                    Text(text = level.name)
+                    Text(text = levelName.name)
                 }
             }
         }
