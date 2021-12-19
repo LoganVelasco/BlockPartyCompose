@@ -22,14 +22,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.*
-import logan.blockpartycompose.ui.screens.levelsMenu.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
-import logan.blockpartycompose.ui.screens.levelsMenu.LevelsViewModel
 
 
 @ExperimentalFoundationApi
 @Composable
-fun LevelController(
+fun Level(
     navigateUp: () -> Unit,
     levelSet: LevelSet,
     name: String,
@@ -40,36 +38,33 @@ fun LevelController(
     if (state == null) {
         viewModel.setupLevel(levelSet, name)
     } else {
-        when (state!!.gameState) {
-            GameState.SUCCESS -> {
-                val nextLevel = state!!.name.toInt() + 1
-                val newLevelSet: LevelSet = if (nextLevel >= 11) LevelSet.MEDIUM
-                else LevelSet.EASY
-                val isNewHighScore = viewModel.isHighScoreUpdated()
-                SuccessScreen(
-                    // not great logic tbh the name/levelSet of the parent composable don't change
-                    nextLevelOnClick = { viewModel.setupLevel(newLevelSet, nextLevel.toString()) },
-                    backClicked = navigateUp,
-                    movesUsed = state!!.movesUsed,
-                    levelName = state!!.name,
-                    isNewHighScore = isNewHighScore
-                )
+        when (state!!) {
+            is InProgress -> {
+                (state as InProgress).apply {
+                    LevelScreen(
+                        movesUsed = movesUsed,
+                        x = x,
+                        blocks = blocks,
+                        navigateUp = navigateUp,
+                        onClicks = viewModel.onClicks
+                    )
+                }
             }
-            GameState.FAILED -> {
+            is Success -> {
+                (state as Success).apply {
+                    SuccessScreen(
+                        nextLevelOnClick = { viewModel.setupLevel(newLevelSet, nextLevel) },
+                        backClicked = navigateUp,
+                        movesUsed = movesUsed,
+                        levelName = name,
+                        isNewHighScore = viewModel.isHighScoreUpdated()
+                    )
+                }
+            }
+            is Failure -> {
                 FailureScreen(
                     tryAgainOnClick = viewModel::tryAgain,
                     backClicked = navigateUp
-                )
-            }
-            GameState.IN_PROGRESS -> {
-                Level(
-                    movesUsed = state!!.movesUsed,
-                    x = state!!.x,
-                    blocks = state!!.blocks,
-                    blockClicked = viewModel::blockClicked,
-                    backClicked = navigateUp,
-                    solveClicked = viewModel::solveLevel,
-                    resetClicked = viewModel::tryAgain
                 )
             }
         }
@@ -78,27 +73,27 @@ fun LevelController(
 
 @ExperimentalFoundationApi
 @Composable
-fun Level(
+fun LevelScreen(
     movesUsed: Int,
     x: Int,
     blocks: List<Char>,
-    blockClicked: (Char, Int) -> Unit,
-    backClicked: () -> Unit,
-    solveClicked: () -> Unit,
-    resetClicked: () -> Unit
+    navigateUp: () -> Unit,
+    onClicks: LevelOnClicks
 ) {
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxHeight()
-    ) {
-        LevelHeader(movesUsed, backClicked)
-        LevelGrid(blockClicked, x, blocks)
-        LevelFooter(solveClicked, resetClicked)
+    onClicks.apply {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            LevelHeader(movesUsed, navigateUp)
+            LevelGrid(blockClicked, x, blocks)
+            LevelFooter(solveClicked, resetClicked)
+        }
     }
 }
 
 @Composable
-fun LevelHeader(movesUsed: Int, backClicked: () -> Unit) {
+fun LevelHeader(movesUsed: Int, navigateUp: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -106,7 +101,7 @@ fun LevelHeader(movesUsed: Int, backClicked: () -> Unit) {
             .fillMaxWidth()
             .padding(end = 10.dp)
     ) {
-        BackIcon(backClicked)
+        BackIcon(navigateUp)
         Text(
             text = "Moves Used:  $movesUsed",
             textAlign = TextAlign.Center,
@@ -115,9 +110,9 @@ fun LevelHeader(movesUsed: Int, backClicked: () -> Unit) {
 }
 
 @Composable
-fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
+fun BackIcon(onClick: () -> Unit, modifier: Modifier = Modifier) {
     IconButton(
-        onClick = backClicked,
+        onClick = onClick,
         modifier = modifier
     ) {
         Icon(Icons.Filled.ArrowBack, contentDescription = "Back to Menu")

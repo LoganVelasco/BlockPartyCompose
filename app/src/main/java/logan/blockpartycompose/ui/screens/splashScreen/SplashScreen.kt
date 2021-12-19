@@ -1,10 +1,9 @@
-package logan.blockpartycompose.ui.screens.welcomeScreen
+package logan.blockpartycompose.ui.screens.splashScreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,7 +15,7 @@ import logan.blockpartycompose.ui.components.PlayButton
 
 
 @Composable
-fun WelcomeScreen(onNavigate: (String) -> Unit) {
+fun SplashScreen(onNavigate: (String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -29,7 +28,7 @@ fun WelcomeScreen(onNavigate: (String) -> Unit) {
 }
 
 @Composable
-fun WelcomeTitle(text: String, modifier: Modifier = Modifier){
+fun WelcomeTitle(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         textAlign = TextAlign.Center,

@@ -1,7 +1,8 @@
 package logan.blockpartycompose.data.models
 
 import kotlinx.serialization.Serializable
-import logan.blockpartycompose.ui.screens.levelsMenu.GameState
+import logan.blockpartycompose.ui.screens.level.GameState
+import logan.blockpartycompose.ui.screens.level.GameStates
 
 
 @Serializable
@@ -13,14 +14,14 @@ data class Level(
 ) {
     var blueIndex: Int = initialBlocks.indexOf('b')
     var redIndex: Int = initialBlocks.indexOf('r')
-    var state: GameState = GameState.IN_PROGRESS
+    var state: GameStates = GameStates.IN_PROGRESS
     var blocks = initialBlocks.toMutableList()
 
     fun resetLevel(){
         blueIndex = initialBlocks.indexOf('b')
         redIndex = initialBlocks.indexOf('r')
         blocks = initialBlocks.toMutableList()
-        state = GameState.IN_PROGRESS
+        state = GameStates.IN_PROGRESS
     }
 
 }

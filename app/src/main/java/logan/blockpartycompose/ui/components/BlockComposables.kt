@@ -14,12 +14,15 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun Block(modifier: Modifier) {
+fun Block(isSelected: Boolean = false, modifier: Modifier) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.Center)
     ) {
+//        if(isSelected){
+//            modifier.border(BorderStroke(5.dp, brush = Brush.verticalGradient()), shape = RectangleShape)
+//        }
         Box(
             modifier = modifier
                 .height(50.dp)
@@ -33,21 +36,20 @@ fun Block(modifier: Modifier) {
 @Composable
 fun RedBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Block(modifier = modifier
         .border(1.dp, Color.Black)
         .background(Color.Red)
-        .clickable {
-
-            onClick()
-        }
+        .clickable { onClick() }
     )
 }
 
 @Composable
 fun BlueBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Block(modifier = modifier
@@ -60,6 +62,7 @@ fun BlueBox(
 @Composable
 fun YellowBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Block(modifier = modifier
@@ -72,6 +75,7 @@ fun YellowBox(
 @Composable
 fun GrayBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Block(modifier = modifier
@@ -84,6 +88,7 @@ fun GrayBox(
 @Composable
 fun BlackBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Block(modifier = modifier
@@ -96,6 +101,7 @@ fun BlackBox(
 @Composable
 fun GreenBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Block(modifier = modifier

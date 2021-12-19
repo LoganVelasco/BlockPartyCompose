@@ -1,33 +1,28 @@
-package logan.blockpartycompose.ui.screens.playMenu
+package logan.blockpartycompose.ui.screens.mainMenu
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import logan.blockpartycompose.ui.components.DifficultyButton
 import logan.blockpartycompose.ui.components.HeaderButton
 
 @Composable
-fun PlayMenu(onNavigate: (String) -> Unit) {
+fun MainMenu(onNavigate: (String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        PlayMenuHeader(onNavigate)
-        PlayMenuDifficulties(onNavigate)
+        MainMenuHeader(onNavigate)
+        MainMenuDifficulties(onNavigate)
     }
 }
 
-
-
 @Composable
-fun PlayMenuHeader(onNavigate: (String) -> Unit){
+fun MainMenuHeader(onNavigate: (String) -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -49,7 +44,7 @@ fun PlayMenuHeader(onNavigate: (String) -> Unit){
 }
 
 @Composable
-fun PlayMenuDifficulties(onNavigate: (String) -> Unit){
+fun MainMenuDifficulties(onNavigate: (String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -58,8 +53,8 @@ fun PlayMenuDifficulties(onNavigate: (String) -> Unit){
             .fillMaxHeight()
             .padding(start = 20.dp, end = 20.dp)
     ) {
-        DifficultyButton(onNavigate = {onNavigate("easy")}, label = "Easy")
-        DifficultyButton(onNavigate = {onNavigate("medium")}, label = "Medium")
-        DifficultyButton(onNavigate = {onNavigate("hard")}, label = "Hard", enabled = false)
+        DifficultyButton(onNavigate = { onNavigate("easy") }, label = "Easy")
+        DifficultyButton(onNavigate = { onNavigate("medium") }, label = "Medium")
+        DifficultyButton(onNavigate = { onNavigate("hard") }, label = "Hard", enabled = false)
     }
 }

@@ -10,6 +10,8 @@ import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.utils.GeneratorService
 import javax.inject.Inject
+import kotlin.reflect.KFunction1
+import kotlin.reflect.KFunction2
 
 
 @HiltViewModel
@@ -21,41 +23,33 @@ class LevelBuilderViewModel @Inject constructor(
     private var _state = MutableLiveData<LevelBuilderState>()
     val state: LiveData<LevelBuilderState> = _state
 
+    val levelBuilderOnClicks = LevelBuilderOnClicks(
+        backOnClicked = {
+            clearAllClicked()
+        },
+        blockOnClicked = this::blockClicked,
+        colorOnClicked = this::colorSelected,
+        playOnClicked = this::playClicked,
+        menuOnClicked = this::menuClicked,
+        saveOnClicked = this::saveClicked,
+        clearAllOnClicked = this::clearAllClicked
+    )
+
     lateinit var level: Level
 
     fun setupNewLevel(x: Int = 6, y: Int = 8) {
         level = repo.getNewLevel(x, y)
         _state.postValue(
-            LevelBuilderState(level.blocks)
+            LevelBuilderState(
+                x = level.x,
+                blocks = level.blocks
+            )
         )
     }
 
     fun colorSelected(selectedBlockColor: BlockColor) {
         _state.postValue(
-            LevelBuilderState(_state.value!!.blocks, selectedBlockColor)
-        )
-    }
-
-    fun blockClicked(block: Char, index: Int) {
-        val color = _state.value!!.selectedBlockColor
-        if (color != null) {
-            val blocks = _state.value!!.blocks.toMutableList()
-            blocks[index] = color.color
-            _state.postValue(
-                LevelBuilderState(blocks, color)
-            )
-        }
-    }
-
-    fun clearAllClicked(){
-        setupNewLevel()
-    }
-
-    fun menuClicked() {
-        val generatedLevel = levelGenerator.generateLevel()
-
-        _state.postValue(
-            LevelBuilderState(generatedLevel)
+            LevelBuilderState(_state.value!!.blocks, selectedBlockColor, x = level.x)
         )
     }
 
@@ -68,6 +62,29 @@ class LevelBuilderViewModel @Inject constructor(
         )
     }
 
+    fun blockClicked(block: Char, index: Int) {
+        val color = _state.value!!.selectedBlockColor
+        if (color != null) {
+            val blocks = _state.value!!.blocks.toMutableList()
+            blocks[index] = color.color
+            _state.postValue(
+                LevelBuilderState(blocks, color, level.x)
+            )
+        }
+    }
+
+    fun clearAllClicked() {
+        setupNewLevel()
+    }
+
+    fun menuClicked() {
+        val generatedLevel = levelGenerator.generateLevel()
+        level.blocks = generatedLevel
+        _state.postValue(
+            LevelBuilderState(blocks = generatedLevel, x = level.x)
+        )
+    }
+
     fun saveClicked() {
         level.blocks = _state.value!!.blocks.toMutableList()
     }
@@ -75,6 +92,18 @@ class LevelBuilderViewModel @Inject constructor(
     @Immutable
     data class LevelBuilderState(
         val blocks: List<Char>,
-        var selectedBlockColor: BlockColor? = null
+        var selectedBlockColor: BlockColor? = null,
+        val x: Int
+    )
+
+    @Immutable
+    class LevelBuilderOnClicks(
+        val backOnClicked: () -> Unit,
+        val blockOnClicked: KFunction2<Char, Int, Unit>,
+        val colorOnClicked: KFunction1<BlockColor, Unit>,
+        val menuOnClicked: () -> Unit,
+        val playOnClicked: () -> Unit,
+        val saveOnClicked: () -> Unit,
+        val clearAllOnClicked: () -> Unit,
     )
 }
