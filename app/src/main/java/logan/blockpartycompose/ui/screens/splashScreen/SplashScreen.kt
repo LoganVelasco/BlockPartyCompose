@@ -12,31 +12,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import logan.blockpartycompose.ui.components.PlayButton
 
 
 @Composable
-fun WelcomeScreen(navController: NavController) {
+fun WelcomeScreen(onNavigate: (String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
-//        Image(bitmap = , contentDescription = "Welcome to Block Party")
-        Text(
-            text = "Welcome to\nBlock Party",
-            textAlign = TextAlign.Center,
-            fontSize = 36.sp,
-            modifier = Modifier
-                .padding(50.dp)
-        )
-        Button(
-            onClick = { navController.navigate("playMenu") },
-            modifier = Modifier
-                .padding(start = 75.dp, end = 75.dp, top = 100.dp)
-        ) {
-            Text(text = "Play")
-        }
+        WelcomeTitle(text = "Welcome to\nBlock Party")
+        PlayButton({ onNavigate("playMenu") })
     }
+}
+
+@Composable
+fun WelcomeTitle(text: String, modifier: Modifier = Modifier){
+    Text(
+        text = text,
+        textAlign = TextAlign.Center,
+        fontSize = 36.sp,
+        modifier = modifier
+            .padding(50.dp)
+    )
 }

@@ -19,17 +19,17 @@ import androidx.navigation.NavController
 import logan.blockpartycompose.ui.screens.level.BackIcon
 import logan.blockpartycompose.ui.screens.level.LevelGrid
 
-@ExperimentalFoundationApi
 @Composable
 fun LevelsMenu(
-    navController: NavController,
+    onNavigate: (String) -> Unit,
+    navigateUp: () -> Unit,
     levelSet: LevelSet,
 ){
     val viewModel:LevelsViewModel = hiltViewModel()
     val levels = viewModel.getLevels(levelSet)
 
     Column {
-        BackIcon(backClicked = { navController.navigateUp() }, modifier = Modifier.padding(10.dp))
+        BackIcon(backClicked = navigateUp, modifier = Modifier.padding(10.dp))
         LazyColumn(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -41,13 +41,9 @@ fun LevelsMenu(
             items(levels.size) { index ->
                 val levelName = levels[index]
                 val levelRoute = "level/${levelSet.name}/${levelName.name}"
-//                val level = viewModel.getLevel(levelSet, "${index+1}")
-//                LevelGrid(blockClicked = { _, _ ->
-//                    navController.navigate(levelRoute)
-//                }, x = level.x , blocks = level.blocks)
                 Button(
                     onClick = {
-                                navController.navigate(levelRoute)
+                                onNavigate(levelRoute)
                               },
                     modifier = Modifier
                         .fillMaxWidth()

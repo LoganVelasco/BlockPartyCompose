@@ -7,7 +7,10 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -17,34 +20,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.levelsMenu.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelsViewModel
 
+
 @ExperimentalFoundationApi
 @Composable
 fun LevelController(
-    navigation: NavController,
+    navigateUp: () -> Unit,
     levelSet: LevelSet,
     name: String,
     viewModel: LevelsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.observeAsState()
 
-    if (state != null) {
+    if (state == null) {
+        viewModel.setupLevel(levelSet, name)
+    } else {
         when (state!!.gameState) {
             GameState.SUCCESS -> {
                 val nextLevel = state!!.name.toInt() + 1
-                val newLevelSet: LevelSet = if(nextLevel >= 11) LevelSet.MEDIUM
-                    else LevelSet.EASY
+                val newLevelSet: LevelSet = if (nextLevel >= 11) LevelSet.MEDIUM
+                else LevelSet.EASY
                 val isNewHighScore = viewModel.isHighScoreUpdated()
                 SuccessScreen(
                     // not great logic tbh the name/levelSet of the parent composable don't change
                     nextLevelOnClick = { viewModel.setupLevel(newLevelSet, nextLevel.toString()) },
-                    backClicked = { navigation.navigateUp() },
+                    backClicked = navigateUp,
                     movesUsed = state!!.movesUsed,
                     levelName = state!!.name,
                     isNewHighScore = isNewHighScore
@@ -53,7 +58,7 @@ fun LevelController(
             GameState.FAILED -> {
                 FailureScreen(
                     tryAgainOnClick = viewModel::tryAgain,
-                    backClicked = { navigation.navigateUp() }
+                    backClicked = navigateUp
                 )
             }
             GameState.IN_PROGRESS -> {
@@ -62,14 +67,12 @@ fun LevelController(
                     x = state!!.x,
                     blocks = state!!.blocks,
                     blockClicked = viewModel::blockClicked,
-                    backClicked = { navigation.navigateUp() },
+                    backClicked = navigateUp,
                     solveClicked = viewModel::solveLevel,
                     resetClicked = viewModel::tryAgain
                 )
             }
         }
-    } else {
-        viewModel.setupLevel(levelSet, name)
     }
 }
 
@@ -81,7 +84,7 @@ fun Level(
     blocks: List<Char>,
     blockClicked: (Char, Int) -> Unit,
     backClicked: () -> Unit,
-    solveClicked:() -> Unit,
+    solveClicked: () -> Unit,
     resetClicked: () -> Unit
 ) {
     Column(
@@ -120,6 +123,7 @@ fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
         Icon(Icons.Filled.ArrowBack, contentDescription = "Back to Menu")
     }
 }
+
 
 @ExperimentalFoundationApi
 @Composable
@@ -202,20 +206,29 @@ fun SuccessScreen(
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                if(isNewHighScore){
+                if (isNewHighScore) {
                     Text(text = "New High Score!")
                     Text(text = "Level $levelName Completed in $movesUsed moves!")
-                }else{
+                } else {
                     Text(text = "You Did it!")
                     Text(text = "Level $levelName Completed in $movesUsed moves!")
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly
-                ){
-                    Image(painter = painterResource(R.drawable.ic_undo), contentDescription = "Star")
-                    Image(painter = painterResource(R.drawable.ic_undo), contentDescription = "Star")
-                    Image(painter = painterResource(R.drawable.ic_undo), contentDescription = "Star")
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_undo),
+                        contentDescription = "Star"
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.ic_undo),
+                        contentDescription = "Star"
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.ic_undo),
+                        contentDescription = "Star"
+                    )
                 }
                 Button(onClick = { nextLevelOnClick() }) {
                     Text(text = "Next Level")
