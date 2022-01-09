@@ -13,13 +13,11 @@ import logan.blockpartycompose.ui.theme.BlockPartyComposeTheme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             BlockPartyComposeTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     Navigation()
                 }

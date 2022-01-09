@@ -53,7 +53,7 @@ fun Level(
             is Success -> {
                 (state as Success).apply {
                     SuccessScreen(
-                        nextLevelOnClick = { viewModel.setupLevel(newLevelSet, nextLevel) },
+                        nextLevelOnClick = { viewModel.nextLevel() },
                         backClicked = navigateUp,
                         movesUsed = movesUsed,
                         levelName = name,

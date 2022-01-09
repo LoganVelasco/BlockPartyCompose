@@ -154,19 +154,13 @@ class LevelSolver @Inject constructor() {
         }
         val newLayout = getUpdatedLayout(currentState, position, newPosition)
         if (newLayout != null) {
-//        println()
-//      printLayout(newLayout)
-//    println("Count: $moveCount")
-//    println("-----------------------")
-//    println()
-
             newLayout[48] = moveCount.toChar()
             visitedStates.add(newLayout)
             println("Count: ${visitedStates.size} Move Count: $moveCount")
-            if(moveCount > 10){
-//                println()
+            if(moveCount > 50){
+                handleDeadEnd(currentState)
+                return false
             }
-            if(moveCount > 50)return false
             return getNextMove(newPosition)
         }
         return false
@@ -637,8 +631,10 @@ class LevelSolver @Inject constructor() {
 
     fun handleWin() {
         var copy = visitedStates.clone() as ArrayList<ArrayList<Char>>
-        copy.removeAll(badStates)
-        if (copy.size != moveCount) return
+        copy.removeAll(badStates.toSet())
+        if (copy.size != moveCount){
+            println("Win State does not match move count")
+        }
         winsStates.add(copy)
 
         println("-----------")
