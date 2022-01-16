@@ -4,7 +4,9 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.data.models.Level
@@ -78,11 +80,14 @@ class LevelBuilderViewModel @Inject constructor(
     }
 
     fun menuClicked() {
-        val generatedLevel = levelGenerator.generateLevel()
-        level.blocks = generatedLevel
-        _state.postValue(
-            LevelBuilderState(blocks = generatedLevel, x = level.x)
-        )
+        viewModelScope.launch {
+            val generatedLevel = levelGenerator.generateLevel()
+            level.blocks = generatedLevel
+            _state.postValue(
+                LevelBuilderState(blocks = generatedLevel, x = level.x)
+            )
+        }
+
     }
 
     fun saveClicked() {

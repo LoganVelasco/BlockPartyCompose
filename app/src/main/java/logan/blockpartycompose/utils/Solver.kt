@@ -1,26 +1,39 @@
 package logan.blockpartycompose.utils
 
+import android.content.Context
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LevelSolver @Inject constructor() {
-    var initialState = ArrayList<Char>()
+    lateinit var initialState:List<Char>
 
-    var visitedStates = ArrayList<ArrayList<Char>>()
+//    var visitedStates = List<ArrayList<Char>>()
+//
+//    var badStates = ArrayList<ArrayList<Char>>()
+//
+//    var winsStates = ArrayList<ArrayList<ArrayList<Char>>>()
+//
+//    var moveCount = 0
 
-    var badStates = ArrayList<ArrayList<Char>>()
-
-    var winsStates = ArrayList<ArrayList<ArrayList<Char>>>()
-
-    var moveCount = 0
+    //TODO: inject me
+    private val dispatcher = Dispatchers.Default
 
 //    val solverService = SolverService()
 
-    fun isSolvable(state: ArrayList<Char>): Boolean {
-        moveCount = 0
+    suspend fun isSolvable(state: ArrayList<Char>): Boolean {
+        var moveCount = 0
         initialState = state
-        visitedStates = arrayListOf(initialState)
-        winsStates = ArrayList()
-        badStates = ArrayList()
+        var visitedStates = listOf(initialState)
+        var winsStates: List<List<List<Char>>> = emptyList()
+        var badStates: List<List<Char>> = emptyList()
 
         if (!isLevelValid(initialState)) return false
 
@@ -30,8 +43,7 @@ class LevelSolver @Inject constructor() {
         println("Level")
 
 
-
-        getNextMove(staringPoint)
+        getNextMove(staringPoint, moveCount, visitedStates, winsStates, badStates)
 
         return if (winsStates.isNullOrEmpty()) {
             printFailedToFindSolution()
@@ -41,18 +53,17 @@ class LevelSolver @Inject constructor() {
                 println("Too easy trying again")
                 return false
             }
-            printShortestPath()
+            printShortestPath(winsStates)
             true
         }
     }
 
-    fun findShortestSolution(state: ArrayList<Char>): List<Int>? {
-        state.add('c')
-        moveCount = 0
+    suspend fun findShortestSolution(state: List<Char>): List<Int>? {
+        var moveCount = 0
         initialState = state
-        visitedStates = arrayListOf(initialState)
-        winsStates = ArrayList()
-        badStates = ArrayList()
+        var visitedStates = arrayListOf(initialState)
+        var winsStates: List<List<List<Char>>> = emptyList()
+        var badStates: List<List<Char>> = emptyList()
 
         if (!isLevelValid(initialState)) return null
 
@@ -61,22 +72,25 @@ class LevelSolver @Inject constructor() {
         printLayout(initialState)
         println("Level")
 
-
-
-        getNextMove(staringPoint)
+        winsStates = getNextMove(
+            staringPoint,
+            moveCount,
+            visitedStates,
+            winsStates,
+            badStates
+        )
 
         return if (winsStates.isNullOrEmpty()) {
             printFailedToFindSolution()
             null
         } else {
-            printShortestPath()
+            printShortestPath(winsStates)
             return createSolutionList(winsStates[winsStates.size - 1])
         }
     }
 
-    private fun createSolutionList(moveList: ArrayList<ArrayList<Char>>): List<Int> {
-        moveList.removeAt(0)
-        return moveList.map {
+    private fun createSolutionList(moveList: List<List<Char>>): List<Int> {
+        return moveList.subList(1, moveList.size).map {
             findBlueBlock(it)
         }
     }
@@ -100,90 +114,183 @@ class LevelSolver @Inject constructor() {
 
     }
 
-
-    fun getNextMove(position: Int): Boolean {
-
+    suspend fun getNextMove(
+        position: Int,
+        moveCount: Int,
+        visitedStates: List<List<Char>>,
+        winsStates: List<List<List<Char>>>,
+        badStates: List<List<Char>>
+    ): List<List<List<Char>>> {
+        var winsState = listOf<List<Char>>()
         var currentState = visitedStates.last()
-        var possibleMoves = getPossibleMoves(position)
-        if (isCountHigherThenSolution()) {
-            handleDeadEnd(currentState)
-            return false
-        }
-        for (moves in possibleMoves) {
-            when (moves) {
-                'u' -> {
-                    moveCount++
-                    if (makeMove(currentState, position, position - 6)) return true
-                    moveCount--
+        var possibleMoves = getPossibleMoves(position, visitedStates)
+//        if (isCountHigherThenSolution(winsStates, moveCount)) {
+//            handleDeadEnd(currentState, badStates, visitedStates)
+//            return winsStates
+//        }
+
+        withContext(dispatcher) {
+            val movesJobs = mutableListOf<Deferred<Unit>>()
+            val newBadStates = if(badStates.isEmpty()) arrayListOf()
+                else badStates as ArrayList<List<Char>>
+            val upBadState = newBadStates.clone() as ArrayList<List<Char>>
+            val downBadState = newBadStates.clone() as ArrayList<List<Char>>
+            val rightBadState = newBadStates.clone() as ArrayList<List<Char>>
+            val leftBadState = newBadStates.clone() as ArrayList<List<Char>>
+            for (moves in possibleMoves) {
+                when (moves) {
+                    'u' -> {
+                        movesJobs.add(async {
+                            val newWinsState = makeMove(
+                                currentState,
+                                position,
+                                position - 6,
+                                moveCount + 1,
+                                visitedStates,
+                                winsStates,
+                                upBadState
+                            )
+                            if (newWinsState.isNotEmpty()) {
+                                winsState = newWinsState.last()
+                                this.cancel()
+                            }
+                        })
+
+                    }
+                    'd' -> {
+                        if(position + 6 > 48)throw NullPointerException()
+                        movesJobs.add(async {
+                            val newWinsState = makeMove(
+                                currentState,
+                                position,
+                                position + 6,
+                                moveCount + 1,
+                                visitedStates,
+                                winsStates,
+                                downBadState
+                            )
+                            if (newWinsState.isNotEmpty()) {
+                                winsState = newWinsState.last()
+                                this.cancel()
+                            }
+                        })
+                    }
+                    'l' -> {
+                        movesJobs.add(async {
+                            val newWinsState = makeMove(
+                                currentState,
+                                position,
+                                position - 1,
+                                moveCount + 1,
+                                visitedStates,
+                                winsStates,
+                                leftBadState
+                            )
+                            if (newWinsState.isNotEmpty()) {
+                                winsState = newWinsState.last()
+                                this.cancel()
+                            }
+                        })
+                    }
+                    'r' -> {
+                        movesJobs.add(async {
+                            val newWinsState = makeMove(
+                                currentState,
+                                position,
+                                position + 1,
+                                moveCount + 1,
+                                visitedStates,
+                                winsStates,
+                                rightBadState
+                            )
+                            if (newWinsState.isNotEmpty()) {
+                                winsState = newWinsState.last()
+                                this.cancel()
+                            }
+
+                        })
+                    }
+                    else -> throw Exception()
                 }
-                'd' -> {
-                    moveCount++
-                    if (makeMove(currentState, position, position + 6)) return true
-                    moveCount--
-                }
-                'l' -> {
-                    moveCount++
-                    if (makeMove(currentState, position, position - 1)) return true
-                    moveCount--
-                }
-                'r' -> {
-                    moveCount++
-                    if (makeMove(currentState, position, position + 1)) return true
-                    moveCount--
-                }
-                else -> throw Exception()
             }
+            movesJobs.awaitAll()
+            if(winsState.isNotEmpty()) return@withContext winsStates
+            else this.cancel()
+            handleDeadEnd(currentState, newBadStates, visitedStates)
         }
-        handleDeadEnd(currentState)
-        return false
+
+        return listOf(winsState)
     }
 
-    fun isCountHigherThenSolution(): Boolean {
+    fun isCountHigherThenSolution(
+        winsStates: List<List<List<Char>>>,
+        moveCount: Int
+    ): Boolean {
         if (winsStates.isNullOrEmpty()) return false
         return moveCount >= winsStates.last().size
     }
 
-    private fun makeMove(
-        currentState: java.util.ArrayList<Char>,
+    private suspend fun makeMove(
+        currentState: List<Char>,
         position: Int,
-        newPosition: Int
-    ): Boolean {
+        newPosition: Int,
+        moveCount: Int,
+        visitedStates: List<List<Char>>,
+        winsStates: List<List<List<Char>>>,
+        badStates: ArrayList<List<Char>>
+    ): List<List<List<Char>>> {
         if (newPosition == findEndingPoint()) {
-            handleWin()
-            return false
+            return handleWin(visitedStates, winsStates, badStates, moveCount)
         }
-        val newLayout = getUpdatedLayout(currentState, position, newPosition)
+        val newLayout =
+            getUpdatedLayout(currentState, position, newPosition, visitedStates, winsStates, moveCount)
         if (newLayout != null) {
-            newLayout[48] = moveCount.toChar()
+            val updatedVisitedStates = visitedStates as ArrayList<List<Char>>
             visitedStates.add(newLayout)
-            println("Count: ${visitedStates.size} Move Count: $moveCount")
-            if(moveCount > 50){
-                handleDeadEnd(currentState)
-                return false
+            println("Count: ${updatedVisitedStates.size} Move Count: $moveCount")
+            if (moveCount > 50) {
+                handleDeadEnd(currentState, badStates, updatedVisitedStates)
+                return winsStates
             }
-            return getNextMove(newPosition)
+            return getNextMove(
+                newPosition,
+                moveCount,
+                updatedVisitedStates,
+                winsStates,
+                badStates
+            )
         }
-        return false
+        return winsStates
     }
 
     private fun getUpdatedLayout(
-        currentState: ArrayList<Char>,
+        currentState: List<Char>,
         position: Int,
-        newPosition: Int
-    ): ArrayList<Char>? {
+        newPosition: Int,
+        visitedStates: List<List<Char>>,
+        winsStates: List<List<List<Char>>>,
+        moveCount: Int
+    ): List<Char>? {
         val newLayout = ArrayList<Char>()
         newLayout.addAll(currentState)
-
+        if(newLayout.size == 48)newLayout.add(moveCount.toChar())
+        else newLayout[48] = moveCount.toChar()
         if (!isGreenBlockMoved(newLayout, position, newPosition)) {
+            if(newLayout[position] != 'b'){
+                return null
+            }
             newLayout[position] = '.'
             newLayout[newPosition] = 'b'
         }
 
         return if (moveRed(newLayout) || moveRed(newLayout)) {
             null
-        } else if (isAlreadyVisitedState(newLayout)) {
+        }
+        else if (isAlreadyVisitedState(newLayout,
+                visitedStates, winsStates)) {
             null
-        } else newLayout
+        }
+        else newLayout
     }
 
 
@@ -367,11 +474,11 @@ class LevelSolver @Inject constructor() {
         }
     }
 
-    fun findBlueBlock(layout: ArrayList<Char>): Int {
+    fun findBlueBlock(layout: List<Char>): Int {
         return layout.indexOf('b')
     }
 
-    fun findRedBlock(layout: ArrayList<Char>): Int {
+    fun findRedBlock(layout: List<Char>): Int {
         return layout.indexOf('r')
     }
 
@@ -379,8 +486,8 @@ class LevelSolver @Inject constructor() {
         return initialState.indexOf('y')
     }
 
-    fun getPossibleMoves(position: Int): List<Char> {
-        var possibleMoves = arrayListOf<Char>()
+    fun getPossibleMoves(position: Int, visitedStates: List<List<Char>>): List<Char> {
+        val possibleMoves = arrayListOf<Char>()
         val goldPosition = findEndingPoint()
         val orderedDirections = sortByClosestToGold(position, goldPosition)
 
@@ -388,16 +495,18 @@ class LevelSolver @Inject constructor() {
             filterOffGrid(position, possibleMoves, direction)
         }
         filterBlackBlocks(position, possibleMoves, visitedStates.last())
-        filterGreenBlocks(position, possibleMoves)
+        filterGreenBlocks(position, possibleMoves, visitedStates.last())
 
         return possibleMoves
     }
 
     //Past method to when(Move) method
-    fun filterGreenBlocks(position: Int, possibleMoves: ArrayList<Char>) {
-        val currentState = visitedStates.last()
-        var newPossibleMoves = possibleMoves.clone() as ArrayList<Char>
-        for (move in newPossibleMoves) {
+    fun filterGreenBlocks(
+        position: Int,
+        possibleMoves: ArrayList<Char>,
+        currentState: List<Char>
+    ) {
+        for (move in possibleMoves) {
             when (move) {
                 'u' -> {
                     handleGreenBlocks(currentState, position, position - 6, possibleMoves, 'u')
@@ -417,7 +526,7 @@ class LevelSolver @Inject constructor() {
     }
 
     private fun handleGreenBlocks(
-        currentState: ArrayList<Char>,
+        currentState: List<Char>,
         position: Int,
         newPosition: Int,
         possibleMoves: ArrayList<Char>,
@@ -456,31 +565,34 @@ class LevelSolver @Inject constructor() {
         return position - ((position - newPosition) + (position - newPosition))
     }
 
-    fun isAlreadyVisitedState(state: ArrayList<Char>): Boolean {
+    fun isAlreadyVisitedState(
+        state: List<Char>,
+        visitedStates: List<List<Char>>,
+        winsStates: List<List<List<Char>>>
+    ): Boolean {
         var oldCount = 0
         var newCount = 0
-        for (oldState in visitedStates) {
-            oldCount = oldState[48].toInt()
-            newCount = state[48].toInt()
-            oldState[48] = 0.toChar()
-            state[48] = 0.toChar()
-            val isStateSame = oldState == state
+        val newVisitedStates = (visitedStates as ArrayList).clone() as List<List<Char>>
+            newVisitedStates.forEach { oldState ->
+            val isStateSame = oldState.subList(0, 47) == state.subList(0, 47)
 
             if (isStateSame) {  // TODO Make more efficient for lots of winsStates
+                oldCount = oldState[48].toInt()
+                newCount = state[48].toInt()
                 if (!winsStates.isNullOrEmpty() && winsStates.last().contains(state)) {
                     if (oldCount <= newCount) {
-                        oldState[48] = oldCount.toChar()
-                        state[48] = newCount.toChar()
+//                        oldState[48] = oldCount.toChar()
+//                        state[48] = newCount.toChar()
                         return true
                     }
                 } else {
-                    oldState[48] = oldCount.toChar()
-                    state[48] = newCount.toChar()
+//                    oldState[48] = oldCount.toChar()
+//                    state[48] = newCount.toChar()
                     return true
                 }
             }
-            oldState[48] = oldCount.toChar()
-            state[48] = newCount.toChar()
+//            oldState[48] = oldCount.toChar()
+//            state[48] = newCount.toChar()
         }
         return false
     }
@@ -489,10 +601,8 @@ class LevelSolver @Inject constructor() {
     fun filterBlackBlocks(
         position: Int,
         possibleMoves: ArrayList<Char>,
-        currentState: ArrayList<Char>
+        currentState: List<Char>
     ) {
-
-
         if (position - 6 >= 0 && (currentState[position - 6] == 'x' || currentState[position - 6] == 'r')) {
             possibleMoves.remove('u')
         }
@@ -513,7 +623,7 @@ class LevelSolver @Inject constructor() {
     fun filterGreenBlocksForRed(
         position: Int,
         possibleMoves: ArrayList<Char>,
-        currentState: ArrayList<Char>
+        currentState: List<Char>
     ) {
 
         if (position - 6 >= 0 && (currentState[position - 6] == 'g')) {
@@ -534,7 +644,7 @@ class LevelSolver @Inject constructor() {
     }
 
     //Refactor to closest to point
-    fun sortByClosestToGold(position: Int, goldPosition: Int): ArrayList<Char> {
+    fun sortByClosestToGold(position: Int, goldPosition: Int): List<Char> {
         val orderedDirections = ArrayList<Char>()
 
         if (getColoum(position) == getColoum(goldPosition)) {
@@ -584,7 +694,7 @@ class LevelSolver @Inject constructor() {
     fun filterOffGrid(position: Int, possibleMoves: ArrayList<Char>, direction: Char) {
         when (direction) {
             'u' -> {
-                if (position - 6 > 0) {
+                if (position - 6 >= 0) {
                     possibleMoves.add('u')
                 }
             }
@@ -605,19 +715,23 @@ class LevelSolver @Inject constructor() {
             }
             else -> throw Exception()
         }
+
     }
 
-    fun printLayout(layout: ArrayList<Char>) {
+    fun printLayout(layout: List<Char>) {
+        var layoutString = ""
         for (x in 0..47) {
-            if (x % 6 == 0) println()
-            print(layout[x] + "  ")
+            if (x % 6 == 0) layoutString += "\n"
+            layoutString += layout[x] + ""
         }
-        println()
-        println()
+        println("layout = $layoutString\n")
+
     }
 
     fun handleDeadEnd(
-        currentState: java.util.ArrayList<Char>
+        currentState: List<Char>,
+        badStates: ArrayList<List<Char>>,
+        visitedStates: List<List<Char>>,
     ) {
         println("-----------")
         println("Hit Dead End")
@@ -629,26 +743,33 @@ class LevelSolver @Inject constructor() {
 //        println("-----------")
     }
 
-    fun handleWin() {
-        var copy = visitedStates.clone() as ArrayList<ArrayList<Char>>
+    fun handleWin(
+        visitedStates: List<List<Char>>,
+        winsStates: List<List<List<Char>>>,
+        badStates: List<List<Char>>,
+        moveCount: Int
+    ):List<List<List<Char>>> {
+        var copy = visitedStates as ArrayList<List<Char>>
         copy.removeAll(badStates.toSet())
-        if (copy.size != moveCount){
-            println("Win State does not match move count")
-        }
-        winsStates.add(copy)
-
+//        if (copy.size != moveCount) {
+//            println("Win State does not match move count")
+//        }
+//        winsStates.add(copy)
         println("-----------")
         println("SOLVED in $moveCount moves!")
         println("Looking for shorter solutions")
         println()
 
-        println("PRINTING SOLUTION")
+
+        return listOf(copy)
+
+//        println("PRINTING SOLUTION")
 //        Thread.sleep(3000)
 
-        for (layout in copy) {
-//            Thread.sleep(500)
-            printLayout(layout)
-        }
+//        for (layout in copy) {
+////            Thread.sleep(500)
+//            printLayout(layout)
+//        }
 
         //exitProcess(0)
     }
@@ -659,7 +780,7 @@ class LevelSolver @Inject constructor() {
         println("--------------------")
     }
 
-    fun printShortestPath() {
+    fun printShortestPath(winsStates: List<List<List<Char>>>) {
         println()
         println("SHORTEST PATH IS ${winsStates[winsStates.size - 1].size} MOVES")
 //        Thread.sleep(1500)
@@ -673,7 +794,7 @@ class LevelSolver @Inject constructor() {
         println("-----------")
     }
 
-    fun isLevelValid(initialState: ArrayList<Char>): Boolean {
+    fun isLevelValid(initialState: List<Char>): Boolean {
         return initialState.count { it == 'b' } == 1 &&
                 initialState.count { it == 'r' } == 1 &&
                 initialState.count { it == 'y' } == 1

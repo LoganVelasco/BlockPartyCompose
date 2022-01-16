@@ -9,7 +9,7 @@ class GeneratorService @Inject constructor(
 
     private lateinit var newLevel:MutableList<Char>
 
-    fun generateLevel(): MutableList<Char> {
+    suspend fun generateLevel(): MutableList<Char> {
         val levelSolver: LevelSolver = LevelSolver()
         newLevel = mutableListOf(
             '.', '.','.', '.','.', '.',
