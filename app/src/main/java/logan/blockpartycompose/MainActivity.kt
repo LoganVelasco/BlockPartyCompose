@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
 
     private val myViewModel: LevelsViewModel by viewModels()
 
-    @ExperimentalFoundationApi
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
