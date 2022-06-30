@@ -59,6 +59,7 @@ private fun MenuHeader(navController: NavController) {
         }
         Spacer(Modifier.width(10.dp))
         Button(
+            enabled = false,
             onClick = { navController.navigate("levels/custom") },
             modifier = Modifier.weight(1f)
         ) {

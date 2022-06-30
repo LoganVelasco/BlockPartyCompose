@@ -20,6 +20,7 @@ data class Level(
 ) {
     var blueIndex: Int = initialBlocks.indexOf('b')
     var redIndex: Int = initialBlocks.indexOf('r')
+    var goalIndex: Int = initialBlocks.indexOf('y')
     var state: GameState = GameState.IN_PROGRESS
     var blocks = initialBlocks.toMutableList()
 

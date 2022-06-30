@@ -76,11 +76,8 @@ class LevelsViewModel @Inject constructor(
                 level.blueIndex,
                 level.x
             )
-        ) {
-            val i = 0
-            return
-        }
-        val i = 0
+        ) { return }
+
         when (block) {
             'r' -> {
                 level.state = GameState.FAILED
@@ -182,34 +179,58 @@ class LevelsViewModel @Inject constructor(
     }
 
     private fun moveRed(): Boolean {
-        if (level.redIndex % level.x == level.blueIndex % level.x) {
-            if (level.redIndex > level.blueIndex) {
-                if (!moveRed(Direction.UP)) return false
+        if (isInSameColumn()) {
+            if (isRedAboveBlue()) {
+                if (!moveRed(Direction.UP)){
+                    return false
+                }
             } else {
-                if (!moveRed(Direction.DOWN)) return false
+                if (!moveRed(Direction.DOWN)) {
+                    return false
+                }
             }
-        } else if (level.redIndex % level.x > level.blueIndex % level.x) {
+        } else if (isRedRightOfBlue()) {
             if (!moveRed(Direction.LEFT)) {
-                if ((level.redIndex / level.x) == (level.blueIndex / level.x)) return false
-                if (level.redIndex > level.blueIndex) {
-                    if (!moveRed(Direction.UP)) return false
+                if (isInSameRow()) {
+                    return false
+                }
+                if (isRedAboveBlue()) {
+                    if (!moveRed(Direction.UP)) {
+                        return false
+                    }
                 } else {
-                    if (!moveRed(Direction.DOWN)) return false
+                    if (!moveRed(Direction.DOWN)) {
+                        return false
+                    }
                 }
             }
         } else {
             if (!moveRed(Direction.RIGHT)) {
-                if ((level.redIndex / level.x) == (level.blueIndex / level.x)) return false
-                if (level.redIndex > level.blueIndex) {
-                    if (!moveRed(Direction.UP)) return false
+                if (isInSameRow()) {
+                    return false
+                }
+                if (isRedAboveBlue()) {
+                    if (!moveRed(Direction.UP)) {
+                        return false
+                    }
                 } else {
-                    if (!moveRed(Direction.DOWN)) return false
+                    if (!moveRed(Direction.DOWN)) {
+                        return false
+                    }
                 }
             }
         }
 
         return true
     }
+
+    private fun isInSameRow() = (level.redIndex / level.x) == (level.blueIndex / level.x)
+
+    private fun isRedRightOfBlue() = level.redIndex % level.x > level.blueIndex % level.x
+
+    private fun isRedAboveBlue() = level.redIndex > level.blueIndex
+
+    private fun isInSameColumn() = level.redIndex % level.x == level.blueIndex % level.x
 
     private fun moveRed(direction: Direction): Boolean {
         val newIndex = when (direction) {
@@ -227,33 +248,74 @@ class LevelsViewModel @Inject constructor(
             }
         }
 
-        if (newIndex == level.blueIndex) {
-            level.state = GameState.FAILED
 
+        if (newIndex == level.blueIndex) { // Red reached Blue
+            viewModelScope.launch {
+                moveRedToNewIndex(newIndex)
+                delay(250)
+                _state.postValue(
+                    LevelState(
+                        blocks = level.blocks.toMutableList(),
+                        x = level.x,
+                        movesUsed = _state.value!!.movesUsed,
+                        gameState = level.state,
+                        level.name,
+                    )
+                )
+                delay(250)
+                level.state = GameState.FAILED
+                _state.postValue(
+                    LevelState(
+                        blocks = level.blocks.toMutableList(),
+                        x = level.x,
+                        movesUsed = _state.value!!.movesUsed,
+                        gameState = level.state,
+                        level.name,
+                    )
+                )
+            }
+            return false
+        }
+
+
+        if (level.redIndex == level.goalIndex) { // Red moves off of Yellow
+            moveRedOffYellow(newIndex)
             return true
         }
 
         if (isValidRedMove(newIndex)) {
-            level.blocks[level.redIndex] = '.'
-            level.blocks[newIndex] = 'r'
-            level.redIndex = newIndex
-
+            moveRedToNewIndex(newIndex)
             return true
         }
         return false
     }
 
-    private fun isValidRedMove(newIndex: Int): Boolean {
+    private fun moveRedOffYellow(newIndex: Int) {
+        level.blocks[level.redIndex] = 'y'
+        level.blocks[newIndex] = 'r'
+        level.redIndex = newIndex
+    }
+
+    private fun moveRedToNewIndex(newIndex: Int) {
+        level.blocks[level.redIndex] = '.'
+        level.blocks[newIndex] = 'r'
+        level.redIndex = newIndex
+    }
+
+        private fun isValidRedMove(newIndex: Int): Boolean {
         return when (_state.value!!.blocks[newIndex]) {
             '.' -> true
             'b' -> true
+            'y' -> true
             else -> false
         }
     }
 
     private fun shouldRedAttemptMove(): Boolean {
-        return level.redIndex != -1 && level.state == GameState.IN_PROGRESS
+        return isRedBlockPresent() && level.state == GameState.IN_PROGRESS
     }
+
+    private fun isRedBlockPresent() = level.redIndex != -1
 
     fun tryAgain() {
         level.resetLevel()

@@ -38,10 +38,7 @@ fun RedBox(
     Block(modifier = modifier
         .border(1.dp, Color.Black)
         .background(Color.Red)
-        .clickable {
-
-            onClick()
-        }
+        .clickable { onClick() }
     )
 }
 
