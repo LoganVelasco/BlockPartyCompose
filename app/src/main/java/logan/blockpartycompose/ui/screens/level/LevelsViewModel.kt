@@ -33,12 +33,12 @@ class LevelsViewModel @Inject constructor(
 
     fun setupLevel(levelSet: LevelSet, name: Int) {
         level = getLevel(levelSet, name)
-
+        level.resetLevel()
         _state.postValue(
             LevelState(
                 name = level.name,
                 x = level.x,
-                blocks = level.blocks,
+                blocks = level.initialBlocks,
                 movesUsed = 0,
                 gameState = GameState.IN_PROGRESS
             )

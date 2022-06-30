@@ -86,11 +86,16 @@ private fun LevelCard(
         modifier = Modifier
             .padding(15.dp)
             .background(shape = RectangleShape, color = Color.White)
-            .border(width = 2.dp, color = Color.DarkGray, RoundedCornerShape(2.dp))// TODO Fix white on rounded corners
+            .border(
+                width = 2.dp,
+                color = Color.DarkGray,
+                RoundedCornerShape(2.dp)
+            )// TODO Fix white on rounded corners
             .fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.height(10.dp))
-        Text(text = "Moves Used: 10")
+        Text(text = "Level ${level.name}")
+//        Text(text = "Moves Used: 10")
         LevelStars(result = stars, modifier = Modifier.padding(15.dp))
         Button(
             onClick = {
@@ -100,7 +105,7 @@ private fun LevelCard(
                 .fillMaxWidth()
                 .padding(start = 25.dp, end = 25.dp, bottom = 25.dp)
         ) {
-            Text(text = level.name.toString())
+            Text(text = "Play")
         }
     }
 }

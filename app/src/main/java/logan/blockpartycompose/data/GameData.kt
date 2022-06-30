@@ -25,18 +25,20 @@ class GameData @Inject constructor(@ApplicationContext context : Context){
         prefs.getString(LevelSet.EASY.name,"").also { easyProgress ->
             if (!easyProgress.isNullOrEmpty()){
                 easyLevelProgress = easyProgress.map { it.code-48 } as MutableList<Int>
-                while (easyLevelProgress.size <= 10)easyLevelProgress.add(0)
             }
+            while (easyLevelProgress.size <= 10)easyLevelProgress.add(0)
         }
         prefs.getString(LevelSet.MEDIUM.name,"").also { mediumProgress ->
             if (!mediumProgress.isNullOrEmpty()){
                 mediumLevelProgress = mediumProgress.map { it.code-48 } as MutableList<Int>
             }
+            while (mediumLevelProgress.size <= 10)mediumLevelProgress.add(0)
         }
         prefs.getString(LevelSet.HARD.name,"").also { hardProgress ->
             if (!hardProgress.isNullOrEmpty()){
                 hardLevelProgress = hardProgress.map { it.code-48 } as MutableList<Int>
             }
+            while (hardLevelProgress.size <= 10)hardLevelProgress.add(0)
         }
         if (easyLevelProgress.isNotEmpty()){
             easyProgress = easyLevelProgress.sum()
@@ -51,14 +53,14 @@ class GameData @Inject constructor(@ApplicationContext context : Context){
 
     fun updateLevel(difficulty: LevelSet, level: Int, stars: Int){
         val currentProgress = prefs.getString(difficulty.name, "")
-        if(currentProgress!!.length < level){
+        if(currentProgress!!.length < level){ // TODO Remove unused path
             prefs.edit().putString(difficulty.name, currentProgress.plus(stars))
                 .apply()
             updateProgress(difficulty, level, stars)
         }else{
             if(currentProgress[level-1].code-48 < stars) {
                 val newProgress =
-                    StringBuilder(currentProgress).also { it.setCharAt(level, stars.toChar()) }.toString()
+                    StringBuilder(currentProgress).also { it.setCharAt(level-1, Character.forDigit(stars, 10) ) }.toString()
                 prefs.edit().putString(difficulty.name, newProgress)
                     .apply()
                 updateProgress(difficulty, level, stars)
@@ -86,11 +88,4 @@ class GameData @Inject constructor(@ApplicationContext context : Context){
             LevelSet.CUSTOM -> TODO()
         }
     }
-
-//    fun getStoredTag(): String {
-//        return prefs.getString(PREF_TAG, "")!!
-//    }
-//    fun setStoredTag(query: String) {
-//        prefs.edit().putString(PREF_TAG, query).apply()
-//    }
 }

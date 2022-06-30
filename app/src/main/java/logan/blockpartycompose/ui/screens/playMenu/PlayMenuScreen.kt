@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
 
 @Composable
@@ -79,28 +80,72 @@ private fun MenuDifficulties(navController: NavController, progress: List<Int>) 
             .fillMaxHeight()
             .padding(start = 20.dp, end = 20.dp)
     ) {
-        DifficultyButton("Easy", progress[0]) { navController.navigate("easy") }
-        DifficultyButton("Medium", progress[1]) { navController.navigate("medium") }
-        DifficultyButton("Hard", progress[2]) { navController.navigate("hard") }
+        DifficultyButton(LevelSet.EASY, progress[0], progress.sum()) { navController.navigate("easy") }
+        DifficultyButton(LevelSet.MEDIUM, progress[1], progress.sum()) { navController.navigate("medium") }
+        DifficultyButton(LevelSet.HARD, progress[2], progress.sum()) { navController.navigate("hard") }
     }
 }
 
 @Composable
-private fun DifficultyButton(text: String, progress: Int, onClick: () -> Unit ) {
+private fun DifficultyButton(difficulty: LevelSet, progress: Int, totalStars: Int, onClick: () -> Unit ) {
     Column(
-        horizontalAlignment = Alignment.End,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = "$progress/30 Stars Collected", modifier = Modifier.align(Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.height(5.dp))
-        MenuStars(progress)
-        Spacer(modifier = Modifier.height(5.dp))
-        Button(
-            onClick = onClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = text)
+        when(difficulty){
+            LevelSet.EASY -> {
+                EnabledDifficulty(progress, onClick, difficulty.name)
+            }
+            LevelSet.MEDIUM -> {
+                if(totalStars >= 15)EnabledDifficulty(progress, onClick, difficulty.name)
+                else DisabledDifficulty(requirement = 15, difficulty.name)
+            }
+            LevelSet.HARD -> {
+                if(totalStars >= 30)EnabledDifficulty(progress, onClick, difficulty.name)
+                else DisabledDifficulty(requirement = 30, difficulty.name)
+            }
+            LevelSet.CUSTOM -> {
+
+            }
         }
+    }
+}
+
+@Composable
+private fun EnabledDifficulty(
+    progress: Int,
+    onClick: () -> Unit,
+    text: String
+) {
+    Text(
+        text = "$progress/30 Stars Collected"
+    )
+    Spacer(modifier = Modifier.height(5.dp))
+    Spacer(modifier = Modifier.height(5.dp))
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(text = text)
+    }
+}
+
+@Composable
+private fun DisabledDifficulty(
+    requirement: Int,
+    text: String
+) {
+    Text(
+        text = "Collect $requirement stars to unlock"
+    )
+    Spacer(modifier = Modifier.height(5.dp))
+    Spacer(modifier = Modifier.height(5.dp))
+    Button(
+        enabled = false,
+        onClick = {},
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(text = text)
     }
 }
 
