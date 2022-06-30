@@ -37,6 +37,21 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         return listOf(gameData.easyProgress, gameData.mediumProgress, gameData.hardProgress)
     }
 
+    fun getLevelsProgress(difficulty: LevelSet):List<Int>{
+        return when(difficulty){
+            LevelSet.EASY -> {
+                gameData.easyLevelProgress
+            }
+            LevelSet.MEDIUM -> {
+                gameData.mediumLevelProgress
+            }
+            LevelSet.HARD -> {
+                gameData.hardLevelProgress
+            }
+            LevelSet.CUSTOM -> TODO()
+        }
+    }
+
     fun updateLevelProgress(difficulty: LevelSet, level: Int, stars: Int){
         gameData.updateLevel(difficulty, level, stars)
     }

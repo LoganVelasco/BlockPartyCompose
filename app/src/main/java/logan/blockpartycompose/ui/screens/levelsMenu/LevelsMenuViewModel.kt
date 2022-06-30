@@ -23,5 +23,9 @@ class LevelsMenuViewModel @Inject constructor(
     fun getLevels(levelSet: LevelSet): List<Level> {
         return repo.getLevels(levelSet)
     }
+
+    fun getProgress(levelSet: LevelSet): List<Int> {
+        return repo.getLevelsProgress(levelSet)
+    }
 }
 

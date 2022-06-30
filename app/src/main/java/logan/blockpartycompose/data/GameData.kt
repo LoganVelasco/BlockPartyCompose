@@ -25,6 +25,7 @@ class GameData @Inject constructor(@ApplicationContext context : Context){
         prefs.getString(LevelSet.EASY.name,"").also { easyProgress ->
             if (!easyProgress.isNullOrEmpty()){
                 easyLevelProgress = easyProgress.map { it.code-48 } as MutableList<Int>
+                while (easyLevelProgress.size <= 10)easyLevelProgress.add(0)
             }
         }
         prefs.getString(LevelSet.MEDIUM.name,"").also { mediumProgress ->
