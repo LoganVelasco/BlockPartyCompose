@@ -18,16 +18,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.ui.components.*
-import logan.blockpartycompose.ui.screens.levelsMenu.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
-import logan.blockpartycompose.ui.screens.levelsMenu.LevelsViewModel
+import logan.blockpartycompose.ui.screens.playMenu.EmptyStar
+import logan.blockpartycompose.ui.screens.playMenu.FilledStar
 
 @ExperimentalFoundationApi
 @Composable
-fun LevelController(
+fun LevelScreen(
     navigation: NavController,
     levelSet: LevelSet,
-    name: String,
+    name: Int,
     viewModel: LevelsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.observeAsState()
@@ -35,12 +35,15 @@ fun LevelController(
     if (state != null) {
         when (state!!.gameState) {
             GameState.SUCCESS -> {
-                val nextLevel = state!!.name.toInt() + 1
+                val nextLevel = state!!.name + 1
+                val stars = if (state!!.movesUsed <= viewModel.getMinMoves()) 3 else if(state!!.movesUsed-2 <= viewModel.getMinMoves()) 2 else 1
+                viewModel.updateLevel(levelSet, name, stars)
                 SuccessScreen(
                     // not great logic tbh the name/levelSet of the parent composable don't change
-                    nextLevelOnClick = { viewModel.setupLevel(levelSet, nextLevel.toString()) },
+                    nextLevelOnClick = { viewModel.setupLevel(levelSet, nextLevel) },
                     backClicked = { navigation.navigateUp() },
                     movesUsed = state!!.movesUsed,
+                    stars = stars,
                     levelName = state!!.name
                 )
             }
@@ -175,7 +178,8 @@ fun SuccessScreen(
     nextLevelOnClick: () -> Unit,
     backClicked: () -> Unit,
     movesUsed: Int,
-    levelName: String
+    levelName: Int,
+    stars: Int
 ) {
     Card(
         modifier = Modifier
@@ -193,11 +197,33 @@ fun SuccessScreen(
             ) {
                 Text(text = "You Did it!")
                 Text(text = "Level $levelName Completed in $movesUsed moves!")
+                SuccessStars(stars)
                 Button(onClick = { nextLevelOnClick() }) {
                     Text(text = "Next Level")
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SuccessStars(result: Int) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    ) {
+        if(result >= 1){
+            FilledStar()
+        }else EmptyStar()
+        if(result >= 2) {
+            FilledStar()
+        }else EmptyStar()
+        if(result >= 3){
+            FilledStar()
+        }else EmptyStar()
     }
 }
 

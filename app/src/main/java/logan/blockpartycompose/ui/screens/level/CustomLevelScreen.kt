@@ -1,4 +1,4 @@
-package logan.blockpartycompose.ui.screens.levelBuilder
+package logan.blockpartycompose.ui.screens.level
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -13,19 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import logan.blockpartycompose.ui.screens.level.BackIcon
-import logan.blockpartycompose.ui.screens.level.FailureScreen
-import logan.blockpartycompose.ui.screens.level.Level
-import logan.blockpartycompose.ui.screens.levelsMenu.GameState
-import logan.blockpartycompose.ui.screens.levelsMenu.LevelsViewModel
+import logan.blockpartycompose.ui.screens.levelBuilder.LevelBuilderViewModel
 
 @ExperimentalFoundationApi
 @Composable
-fun CustomLevelPlayer(
+fun CustomLevelScreen(
     navigation: NavController,
     levelBuilderViewModel: LevelBuilderViewModel = hiltViewModel(navigation.getViewModelStoreOwner(navigation.graph.id)),
     levelsViewModel: LevelsViewModel = hiltViewModel()
-
 ) {
     val state by levelsViewModel.state.observeAsState()
 

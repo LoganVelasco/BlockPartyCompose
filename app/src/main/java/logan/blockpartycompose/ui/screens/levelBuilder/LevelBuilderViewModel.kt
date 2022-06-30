@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.data.models.Level
+import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import javax.inject.Inject
 
 
@@ -55,10 +56,12 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun playClicked() {
         level = Level(
-            name = "",
+            name = 0,
+            levelSet = LevelSet.CUSTOM,
             x = 6,
             y = 8,
             initialBlocks = _state.value!!.blocks,
+            minMoves = 0
         )
     }
 

@@ -1,4 +1,4 @@
-package logan.blockpartycompose.ui.screens.levelsMenu
+package logan.blockpartycompose.ui.screens.level
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LiveData
@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.Level
+import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.GameUtils
 import javax.inject.Inject
 import kotlin.math.absoluteValue
@@ -30,8 +31,7 @@ class LevelsViewModel @Inject constructor(
 
     private lateinit var level: Level
 
-
-    fun setupLevel(levelSet: LevelSet, name: String) {
+    fun setupLevel(levelSet: LevelSet, name: Int) {
         level = getLevel(levelSet, name)
 
         _state.postValue(
@@ -62,8 +62,12 @@ class LevelsViewModel @Inject constructor(
         return repo.getLevels(levelSet)
     }
 
-    private fun getLevel(levelSet: LevelSet, name: String): Level {
+    private fun getLevel(levelSet: LevelSet, name: Int): Level {
         return getLevels(levelSet).first { it.name == name }
+    }
+
+    fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
+        repo.updateLevelProgress(difficulty, name, stars)
     }
 
     fun blockClicked(block: Char, index: Int) {
@@ -263,6 +267,10 @@ class LevelsViewModel @Inject constructor(
             )
         )
     }
+
+    fun getMinMoves(): Int {
+        return  level.minMoves
+    }
 }
 
 
@@ -272,7 +280,7 @@ data class LevelState(
     val x: Int,
     var movesUsed: Int,
     var gameState: GameState,
-    val name: String,
+    val name: Int,
 )
 
 enum class GameState {

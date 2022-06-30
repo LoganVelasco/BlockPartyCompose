@@ -1,15 +1,22 @@
 package logan.blockpartycompose.data.models
 
 import kotlinx.serialization.Serializable
-import logan.blockpartycompose.ui.screens.levelsMenu.GameState
+import logan.blockpartycompose.ui.screens.level.GameState
+import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
+
+data class LevelInfo(
+    val name: String
+)
 
 @Serializable
 data class Level(
-    val name: String,
+    val name: Int,
+    val levelSet: LevelSet,
     val x: Int,
     val y: Int,
     val initialBlocks: List<Char>,
+    val minMoves: Int
 ) {
     var blueIndex: Int = initialBlocks.indexOf('b')
     var redIndex: Int = initialBlocks.indexOf('r')

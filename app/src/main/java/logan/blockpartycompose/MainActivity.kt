@@ -9,13 +9,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import dagger.hilt.android.AndroidEntryPoint
 import logan.blockpartycompose.navigation.Navigation
-import logan.blockpartycompose.ui.screens.levelsMenu.LevelsViewModel
+import logan.blockpartycompose.ui.screens.level.LevelsViewModel
 import logan.blockpartycompose.ui.theme.BlockPartyComposeTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val myViewModel: LevelsViewModel by viewModels()
 
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

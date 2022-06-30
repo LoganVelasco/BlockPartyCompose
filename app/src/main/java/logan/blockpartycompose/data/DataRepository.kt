@@ -1,20 +1,21 @@
 package logan.blockpartycompose.data
 
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
-import java.io.File
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class DataRepository @Inject constructor() {
+@Singleton
+class DataRepository @Inject constructor(private val gameData: GameData) {
 
     fun getNewLevel(x: Int, y: Int): Level{
         return Level(
-            name = "",
+            name = 0,
+            levelSet = LevelSet.CUSTOM,
             x = x,
             y = y,
-            initialBlocks = getBlankLayout(x, y)
+            initialBlocks = getBlankLayout(x, y),
+            minMoves = 0
         )
     }
 
@@ -24,43 +25,20 @@ class DataRepository @Inject constructor() {
         }
     }
 
+    fun getLevel(name: Int): Level {
+        return levels.first{ it.name == name }
+    }
+
     fun getLevels(levelSet: LevelSet): List<Level> {
-        return when (levelSet) {
-            LevelSet.EASY -> {
-//                val file = File(context.filesDir, "easy.txt")
-//                Json.decodeFromString(file.readText())
-                listOf(
-                    Level(name = "1",  x = 4, y = 6, initialBlocks = level1),
-                    Level(name = "2",  x = 4, y = 6, initialBlocks = level2),
-                    Level(name = "3",  x = 4, y = 6, initialBlocks = level3),
-                    Level(name = "4",  x = 6, y = 8, initialBlocks = level4),
-                    Level(name = "5",  x = 6, y = 8, initialBlocks = level5),
-                    Level(name = "6",  x = 6, y = 8, initialBlocks = level6),
-                    Level(name = "7",  x = 6, y = 8, initialBlocks = level7),
-                    Level(name = "8",  x = 6, y = 8, initialBlocks = level8),
-                    Level(name = "9",  x = 6, y = 8, initialBlocks = level9),
-                    Level(name = "10", x = 6, y = 8, initialBlocks = level10),
-                )
-            }
-            LevelSet.MEDIUM -> {
-//                val text =
-//                    File("../Json.decodeFromString<List<Level>>(levels/medium.txt").readText()
-//                Json.decodeFromString(text)
-                listOf(
-                    Level(name = "11",  x = 6, y = 8, initialBlocks = level11),
-                    Level(name = "12",  x = 6, y = 8, initialBlocks = level12),
-                    Level(name = "13",  x = 6, y = 8, initialBlocks = level13),
-                )
-            }
-            LevelSet.HARD -> {
-                val text = File("src/main/res/hard.txt").readText()
-                Json.decodeFromString(text)
-            }
-            LevelSet.CUSTOM -> {
-                val text = File("../levels/custom.txt").readText()
-                Json.decodeFromString(javaClass.getResource("/html/file.html").readText())
-            }
-        }
+        return levels.filter { it.levelSet == levelSet }
+    }
+
+    fun getDifficultyProgress(): List<Int>{
+        return listOf(gameData.easyProgress, gameData.mediumProgress, gameData.hardProgress)
+    }
+
+    fun updateLevelProgress(difficulty: LevelSet, level: Int, stars: Int){
+        gameData.updateLevel(difficulty, level, stars)
     }
 
     private fun createLevelList(count: Int): List<Char> {
@@ -79,6 +57,8 @@ class DataRepository @Inject constructor() {
 //        return list
         return level3
     }
+
+
 
     var level1 = listOf(
         '.', '.', '.', '.',
@@ -179,6 +159,8 @@ class DataRepository @Inject constructor() {
         'g', '.', '.', 'g', '.', '.',
     )
 
+
+
     var level11 = listOf(
         '.', '.', '.', '.', '.', '.',
         '.', '.', '.', 'b', '.', '.',
@@ -211,4 +193,19 @@ class DataRepository @Inject constructor() {
         '.', '.', '.', 'r', 'x', 'y',
     )
 
+    val levels = listOf(
+        Level(name = 1,  levelSet = LevelSet.EASY, x = 4, y = 6, initialBlocks = level1, minMoves = 3),
+        Level(name = 2,  levelSet = LevelSet.EASY, x = 4, y = 6, initialBlocks = level2, minMoves = 2),
+        Level(name = 3,  levelSet = LevelSet.EASY, x = 4, y = 6, initialBlocks = level3, minMoves = 4),
+        Level(name = 4,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level4, minMoves = 17),
+        Level(name = 5,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level5, minMoves = 14),
+        Level(name = 6,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level6, minMoves = 8),
+        Level(name = 7,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level7, minMoves = 15),
+        Level(name = 8,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level8, minMoves = 21),
+        Level(name = 9,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level9, minMoves = 14),
+        Level(name = 10, levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level10, minMoves = 28),
+        Level(name = 11, levelSet = LevelSet.MEDIUM, x = 6, y = 8, initialBlocks = level11, minMoves = 23),
+        Level(name = 12, levelSet = LevelSet.MEDIUM, x = 6, y = 8, initialBlocks = level12, minMoves = 3),
+        Level(name = 13, levelSet = LevelSet.MEDIUM, x = 6, y = 8, initialBlocks = level13, minMoves = 3),
+    )
 }
