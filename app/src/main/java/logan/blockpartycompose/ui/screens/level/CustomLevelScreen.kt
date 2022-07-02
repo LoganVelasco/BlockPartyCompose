@@ -22,15 +22,24 @@ fun CustomLevelScreen(
     levelBuilderViewModel: LevelBuilderViewModel = hiltViewModel(navigation.getViewModelStoreOwner(navigation.graph.id)),
     levelsViewModel: LevelsViewModel = hiltViewModel()
 ) {
+
+
     val state by levelsViewModel.state.observeAsState()
 
     if(state != null) {
         when(state!!.gameState){
             GameState.SUCCESS -> {
                 CustomLevelEnd(
-                    restartClicked = { levelsViewModel.tryAgain() },
-                    editClicked = { navigation.navigate("levelBuilder") },
-                    backClicked = { navigation.navigateUp() },
+                    restartClicked = {
+                                        navigation.popBackStack()
+                                        levelsViewModel.tryAgain()
+                                     },
+                    editClicked = {
+                                    navigation.popBackStack("levelBuilder", inclusive = false)
+                                  },
+                    backClicked = {
+                                    navigation.popBackStack("levelBuilder", inclusive = false)
+                                  },
                     message = "You Did It!"
                 )
             }

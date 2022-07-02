@@ -1,13 +1,11 @@
 package logan.blockpartycompose.ui.screens.levelBuilder
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Menu
@@ -30,17 +28,28 @@ fun LevelBuilderScreen(
     navigation: NavController,
     viewModel: LevelBuilderViewModel = hiltViewModel(navigation.getViewModelStoreOwner(navigation.graph.id))
 ) {
-
+    BackHandler {
+        if (viewModel.isInProgress()) {
+            viewModel.showPopUpDialog()
+        } else {
+            viewModel.clearAllClicked()
+            navigation.navigateUp()
+        }
+    }
     val state by viewModel.state.observeAsState()
     if (state == null) viewModel.setupNewLevel()
-    else
+    else if(state?.showDialog == null) {
         LevelBuilder(
             x = viewModel.level.x,
             blocks = state!!.blocks,
             selectedBlockColor = state!!.selectedBlockColor,
             backClicked = {
-                viewModel.clearAllClicked()
-                navigation.navigateUp()
+                if (viewModel.isInProgress()) {
+                    viewModel.showPopUpDialog()
+                } else {
+                    viewModel.clearAllClicked()
+                    navigation.navigateUp()
+                }
             },
             blockClicked = viewModel::blockClicked,
             colorClicked = viewModel::colorSelected,
@@ -52,8 +61,49 @@ fun LevelBuilderScreen(
             saveClicked = viewModel::saveClicked,
             clearAllClicked = viewModel::clearAllClicked
         )
+    }else{
+        SaveLevelDialog (dismissLevel = {
+            viewModel.clearAllClicked()
+            navigation.popBackStack(route = "playMenu", inclusive = false)
+        },
+            saveLevel = {
+                viewModel.hidePopUpDialog()
+            }
+        )
+    }
 }
 
+
+@Composable
+fun SaveLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = dismissLevel,
+        title = {
+            Text(text = "Save Level?")
+        },
+        text = {
+            Text(
+                "You haven't saved this level"
+            )
+        },
+        confirmButton =
+        {
+            Button(
+                onClick = saveLevel
+            ) {
+                Text("Continue")
+            }
+        },
+        dismissButton =
+        {
+            Button(
+                onClick = dismissLevel
+            ) {
+                Text("Discard")
+            }
+        }
+    )
+}
 
 @ExperimentalFoundationApi
 @Composable

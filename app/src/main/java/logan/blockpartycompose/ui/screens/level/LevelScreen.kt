@@ -37,10 +37,12 @@ fun LevelScreen(
             GameState.SUCCESS -> {
                 val nextLevel = state!!.name + 1
                 val stars = if (state!!.movesUsed <= viewModel.getMinMoves()) 3 else if(state!!.movesUsed-2 <= viewModel.getMinMoves()) 2 else 1
-                viewModel.updateLevel(levelSet, name, stars)
+                viewModel.updateLevel(levelSet, state!!.name, stars)
                 SuccessScreen(
                     // not great logic tbh the name/levelSet of the parent composable don't change
-                    nextLevelOnClick = { viewModel.setupLevel(levelSet, nextLevel) },
+                    nextLevelOnClick = {
+                                            viewModel.setupLevel(levelSet, nextLevel)
+                                       },
                     backClicked = { navigation.navigateUp() },
                     movesUsed = state!!.movesUsed,
                     stars = stars,

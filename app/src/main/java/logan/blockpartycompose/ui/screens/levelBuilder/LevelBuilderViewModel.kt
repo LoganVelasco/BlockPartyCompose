@@ -22,6 +22,14 @@ class LevelBuilderViewModel @Inject constructor(
 
     lateinit var level: Level
 
+
+    fun isInProgress():Boolean {
+        _state.value!!.blocks.toMutableList().forEach {
+            if(it != '.') return true
+        }
+        return false
+    }
+
     fun setupNewLevel(x: Int = 6, y: Int = 8) {
         level = repo.getNewLevel(x, y)
         _state.postValue(
@@ -69,9 +77,24 @@ class LevelBuilderViewModel @Inject constructor(
         level.blocks = _state.value!!.blocks.toMutableList()
     }
 
+    fun showPopUpDialog() { // bad logic shouldn't need to pass this
+        val blocks = _state.value!!.blocks.toMutableList()
+        _state.postValue(
+            LevelBuilderState(blocks,null, true)
+        )
+    }
+
+    fun hidePopUpDialog() {
+        val blocks = _state.value!!.blocks.toMutableList()
+        _state.postValue(
+            LevelBuilderState(blocks)
+        )
+    }
+
     @Immutable
     data class LevelBuilderState(
         val blocks: List<Char>,
-        var selectedBlockColor: BlockColor? = null
+        var selectedBlockColor: BlockColor? = null,
+        val showDialog: Boolean?= null
     )
 }

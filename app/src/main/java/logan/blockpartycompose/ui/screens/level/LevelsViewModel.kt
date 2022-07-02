@@ -21,7 +21,6 @@ class LevelsViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
-    var compositions = 0
 
     private var _state = MutableLiveData<LevelState>()
     val state: LiveData<LevelState> = _state
@@ -58,7 +57,7 @@ class LevelsViewModel @Inject constructor(
         )
     }
 
-    fun getLevels(levelSet: LevelSet): List<Level> {
+    private fun getLevels(levelSet: LevelSet): List<Level> {
         return repo.getLevels(levelSet)
     }
 
