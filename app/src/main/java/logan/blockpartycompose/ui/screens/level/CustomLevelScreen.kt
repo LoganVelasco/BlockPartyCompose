@@ -52,7 +52,7 @@ fun CustomLevelScreen(
                 )
             }
             GameState.IN_PROGRESS -> {
-                Level(
+                LevelScreen(
                     movesUsed = state!!.movesUsed,
                     x = state!!.x,
                     blocks = state!!.blocks,

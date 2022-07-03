@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.ui.components.EmptyStar
+import logan.blockpartycompose.ui.components.FilledStar
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
 
@@ -150,44 +152,6 @@ private fun DisabledDifficulty(
     }
 }
 
-@Composable
-private fun MenuStars(progress: Int) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        if(progress >= 10){
-            FilledStar()
-        }else EmptyStar()
-        if(progress >= 20) {
-            FilledStar()
-        }else EmptyStar()
-        if(progress >= 30){
-            FilledStar()
-        }else EmptyStar()
-    }
-}
 
-@Composable
-fun EmptyStar() {
-    Icon(
-        Icons.Outlined.Star, contentDescription = "Star", tint = Color.Gray,
-        modifier = Modifier
-            .padding(5.dp)
-            .scale(2.5f)
-    )
-}
 
-@Composable
-fun FilledStar() {
-    Icon(
-        Icons.Filled.Star, contentDescription = "Star",
-        modifier = Modifier
-            .padding(5.dp)
-            .scale(2.5f)
-    )
-}
 

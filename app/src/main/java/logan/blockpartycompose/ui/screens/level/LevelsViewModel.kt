@@ -85,7 +85,22 @@ class LevelsViewModel @Inject constructor(
                 }
             }
             'y' -> {
-                level.state = GameState.SUCCESS
+                viewModelScope.launch {
+                    delay(450)
+                    if (level.state != GameState.FAILED)
+                        level.state = GameState.SUCCESS
+
+                    _state.postValue(
+                        LevelState(
+                            blocks = level.blocks,
+                            x = state.value!!.x,
+                            movesUsed = _state.value!!.movesUsed + 1,
+                            gameState = level.state,
+                            name = level.name,
+                        )
+                    )
+                }
+                return
             }
             '.' -> {
                 moveBlue(index)
@@ -113,7 +128,7 @@ class LevelsViewModel @Inject constructor(
     private fun handleRedTurn() {
         if (moveRed() && level.state == GameState.IN_PROGRESS) {
             viewModelScope.launch {
-                delay(250)
+                delay(100)
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
@@ -125,7 +140,7 @@ class LevelsViewModel @Inject constructor(
                 )
 
                 if (level.state == GameState.IN_PROGRESS && moveRed()) {
-                    delay(250)
+                    delay(175)
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks.toMutableList(),

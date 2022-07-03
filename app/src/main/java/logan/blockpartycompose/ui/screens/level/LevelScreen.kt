@@ -19,12 +19,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
-import logan.blockpartycompose.ui.screens.playMenu.EmptyStar
-import logan.blockpartycompose.ui.screens.playMenu.FilledStar
 
 @ExperimentalFoundationApi
 @Composable
-fun LevelScreen(
+fun LevelController(
     navigation: NavController,
     levelSet: LevelSet,
     name: Int,
@@ -56,7 +54,7 @@ fun LevelScreen(
                 )
             }
             GameState.IN_PROGRESS -> {
-                Level(
+                LevelScreen(
                     movesUsed = state!!.movesUsed,
                     x = state!!.x,
                     blocks = state!!.blocks,
@@ -72,7 +70,7 @@ fun LevelScreen(
 
 @ExperimentalFoundationApi
 @Composable
-fun Level(
+fun LevelScreen(
     movesUsed: Int,
     x: Int,
     blocks: List<Char>,

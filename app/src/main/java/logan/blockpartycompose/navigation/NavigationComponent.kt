@@ -9,6 +9,7 @@ import logan.blockpartycompose.ui.screens.playMenu.PlayMenuScreen
 import logan.blockpartycompose.ui.screens.welcomeScreen.WelcomeScreen
 import logan.blockpartycompose.ui.screens.level.LevelScreen
 import logan.blockpartycompose.ui.screens.level.CustomLevelScreen
+import logan.blockpartycompose.ui.screens.level.LevelController
 import logan.blockpartycompose.ui.screens.levelBuilder.LevelBuilderScreen
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet.*
@@ -33,7 +34,7 @@ fun Navigation() {
             )
         }
         composable("level/{levelSet}/{name}") {
-            LevelScreen(
+            LevelController(
                 navController,
                 LevelSet.valueOf(it.arguments?.getString("levelSet")!!),
                 it.arguments?.getString("name")!!.toInt()

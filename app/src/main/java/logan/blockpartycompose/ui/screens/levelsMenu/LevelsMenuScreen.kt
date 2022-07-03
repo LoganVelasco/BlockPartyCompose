@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.data.models.Level
+import logan.blockpartycompose.ui.components.EmptyStar
+import logan.blockpartycompose.ui.components.FilledStar
 import logan.blockpartycompose.ui.screens.level.BackIcon
-import logan.blockpartycompose.ui.screens.playMenu.EmptyStar
-import logan.blockpartycompose.ui.screens.playMenu.FilledStar
 
 @Composable
 fun LevelsMenuScreen(
