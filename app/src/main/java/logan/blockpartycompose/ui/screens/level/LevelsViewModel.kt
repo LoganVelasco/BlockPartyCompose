@@ -21,12 +21,8 @@ class LevelsViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
-
     private var _state = MutableLiveData<LevelState>()
     val state: LiveData<LevelState> = _state
-
-    private var _moves = MutableLiveData<LevelState>()
-    val moves: LiveData<LevelState> = _moves
 
     private lateinit var level: Level
 
@@ -35,7 +31,7 @@ class LevelsViewModel @Inject constructor(
         level.resetLevel()
         _state.postValue(
             LevelState(
-                name = level.name,
+                name = name,
                 x = level.x,
                 blocks = level.initialBlocks,
                 movesUsed = 0,
@@ -82,10 +78,10 @@ class LevelsViewModel @Inject constructor(
                 level.state = GameState.FAILED
             }
             'g' -> {
-                if (!handleGreenMove(index)) {
-                    return
-                } else {
+                if (handleGreenMove(index)) {
                     moveBlue(index)
+                } else {
+                    return
                 }
             }
             'y' -> {
@@ -329,8 +325,12 @@ class LevelsViewModel @Inject constructor(
         )
     }
 
-    fun getMinMoves(): Int {
+    private fun getMinMoves(): Int {
         return  level.minMoves
+    }
+
+    fun getStars(movesUsed: Int): Int {
+        return if (movesUsed <= getMinMoves()) 3 else if(movesUsed-2 <= getMinMoves()) 2 else 1
     }
 }
 

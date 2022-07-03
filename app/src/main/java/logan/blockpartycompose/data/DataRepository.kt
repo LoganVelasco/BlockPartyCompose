@@ -53,7 +53,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     }
 
     fun updateLevelProgress(difficulty: LevelSet, level: Int, stars: Int){
-        gameData.updateLevel(difficulty, level, stars)
+        gameData.updateProgress(difficulty, level, stars)
     }
 
     private fun createLevelList(count: Int): List<Char> {

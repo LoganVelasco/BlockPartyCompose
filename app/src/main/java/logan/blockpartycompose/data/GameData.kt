@@ -15,7 +15,6 @@ class GameData @Inject constructor(@ApplicationContext context : Context){
     var easyProgress = 0
     var mediumProgress = 0
     var hardProgress = 0
-    private val levelStars = 30
 
     var easyLevelProgress = mutableListOf<Int>()
     var mediumLevelProgress = mutableListOf<Int>()
@@ -51,38 +50,38 @@ class GameData @Inject constructor(@ApplicationContext context : Context){
         }
     }
 
-    fun updateLevel(difficulty: LevelSet, level: Int, stars: Int){
-        val currentProgress = prefs.getString(difficulty.name, "")
-        if(currentProgress!!.length < level){ // TODO Remove unused path
-            prefs.edit().putString(difficulty.name, currentProgress.plus(stars))
-                .apply()
-            updateProgress(difficulty, level, stars)
-        }else{
-            if(currentProgress[level-1].code-48 < stars) {
+    private fun updateLevel(difficulty: LevelSet, currentProgress: String, level: Int, stars: Int){
+        if(currentProgress[level-1].code-48 < stars) {
                 val newProgress =
                     StringBuilder(currentProgress).also { it.setCharAt(level-1, Character.forDigit(stars, 10) ) }.toString()
                 prefs.edit().putString(difficulty.name, newProgress)
                     .apply()
-                updateProgress(difficulty, level, stars)
             }
-        }
+
     }
 
-    private fun updateProgress(difficulty: LevelSet, level: Int, progress: Int) {
+    fun updateProgress(difficulty: LevelSet, level: Int, stars: Int) {
+        var currentProgress = prefs.getString(difficulty.name, "")
+        if(currentProgress.isNullOrEmpty()){ // TODO update to scale
+            currentProgress = "0000000000"
+        }
         when(difficulty) {
             LevelSet.EASY -> {
-                if(easyLevelProgress.size <= level)easyLevelProgress.add(progress)
-                else easyLevelProgress[level-1] = progress
+                updateLevel(difficulty, currentProgress, level, stars)
+                if(easyLevelProgress.size <= level)easyLevelProgress.add(stars)
+                else easyLevelProgress[level-1] = stars
                 easyProgress = easyLevelProgress.sum()
             }
             LevelSet.MEDIUM -> {
-                if(mediumLevelProgress.size <= level -10)mediumLevelProgress.add(progress)
-                mediumLevelProgress[level-11] = progress
+                updateLevel(difficulty, currentProgress, level-10, stars)
+                if(mediumLevelProgress.size <= level -10)mediumLevelProgress.add(stars)
+                mediumLevelProgress[level-11] = stars
                 mediumProgress = mediumLevelProgress.sum()
             }
             LevelSet.HARD -> {
-                if(hardLevelProgress.size <= level -20)hardLevelProgress.add(progress)
-                hardLevelProgress[level-21] = progress
+                updateLevel(difficulty, currentProgress, level-20, stars)
+                if(hardLevelProgress.size <= level -20)hardLevelProgress.add(stars)
+                hardLevelProgress[level-21] = stars
                 hardProgress = hardLevelProgress.sum()
             }
             LevelSet.CUSTOM -> TODO()
