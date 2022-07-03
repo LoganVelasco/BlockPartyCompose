@@ -31,8 +31,8 @@ fun CustomLevelScreen(
             GameState.SUCCESS -> {
                 CustomLevelEnd(
                     restartClicked = {
-                                        navigation.popBackStack()
-                                        levelsViewModel.tryAgain()
+                        levelsViewModel.tryAgain()
+                        navigation.popBackStack("level/{levelSet}/{name}", inclusive = false)
                                      },
                     editClicked = {
                                     navigation.popBackStack("levelBuilder", inclusive = false)
