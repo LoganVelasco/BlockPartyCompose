@@ -83,28 +83,45 @@ private fun MenuDifficulties(navController: NavController, progress: List<Int>) 
             .fillMaxHeight()
             .padding(start = 20.dp, end = 20.dp)
     ) {
-        DifficultyButton(LevelSet.EASY, progress[0], progress.sum()) { navController.navigate("easy") }
-        DifficultyButton(LevelSet.MEDIUM, progress[1], progress.sum()) { navController.navigate("medium") }
-        DifficultyButton(LevelSet.HARD, progress[2], progress.sum()) { navController.navigate("hard") }
+        DifficultyButton(
+            LevelSet.EASY,
+            progress[0],
+            progress.sum()
+        ) { navController.navigate("easy") }
+        DifficultyButton(
+            LevelSet.MEDIUM,
+            progress[1],
+            progress.sum()
+        ) { navController.navigate("medium") }
+        DifficultyButton(
+            LevelSet.HARD,
+            progress[2],
+            progress.sum()
+        ) { navController.navigate("hard") }
     }
 }
 
 @Composable
-private fun DifficultyButton(difficulty: LevelSet, progress: Int, totalStars: Int, onClick: () -> Unit ) {
+private fun DifficultyButton(
+    difficulty: LevelSet,
+    progress: Int,
+    totalStars: Int,
+    onClick: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        when(difficulty){
+        when (difficulty) {
             LevelSet.EASY -> {
                 EnabledDifficulty(progress, onClick, difficulty.name)
             }
             LevelSet.MEDIUM -> {
-                if(totalStars >= 15)EnabledDifficulty(progress, onClick, difficulty.name)
+                if (totalStars >= 15) EnabledDifficulty(progress, onClick, difficulty.name)
                 else DisabledDifficulty(requirement = 15, difficulty.name)
             }
             LevelSet.HARD -> {
-                if(totalStars >= 30)EnabledDifficulty(progress, onClick, difficulty.name)
+                if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name)
                 else DisabledDifficulty(requirement = 30, difficulty.name)
             }
             LevelSet.CUSTOM -> {

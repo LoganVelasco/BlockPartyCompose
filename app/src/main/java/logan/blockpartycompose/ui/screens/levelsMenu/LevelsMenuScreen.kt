@@ -26,8 +26,8 @@ import logan.blockpartycompose.ui.screens.level.BackIcon
 fun LevelsMenuScreen(
     navController: NavController,
     levelSet: LevelSet,
-){
-    val viewModel:LevelsMenuViewModel = hiltViewModel()
+) {
+    val viewModel: LevelsMenuViewModel = hiltViewModel()
     val levels = viewModel.getLevels(levelSet)
     val progress = viewModel.getProgress(levelSet)
 
@@ -119,19 +119,19 @@ private fun LevelStars(result: Int, modifier: Modifier) {
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        if(result >= 1){
+        if (result >= 1) {
             FilledStar()
-        }else EmptyStar()
-        if(result >= 2) {
+        } else EmptyStar()
+        if (result >= 2) {
             FilledStar()
-        }else EmptyStar()
-        if(result >= 3){
+        } else EmptyStar()
+        if (result >= 3) {
             FilledStar()
-        }else EmptyStar()
+        } else EmptyStar()
     }
 }
 
-enum class LevelSet(string: String){
+enum class LevelSet(string: String) {
     EASY("Easy"),
     MEDIUM("Medium"),
     HARD("Hard"),

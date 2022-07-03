@@ -8,7 +8,7 @@ import javax.inject.Singleton
 @Singleton
 class DataRepository @Inject constructor(private val gameData: GameData) {
 
-    fun getNewLevel(x: Int, y: Int): Level{
+    fun getNewLevel(x: Int, y: Int): Level {
         return Level(
             name = 0,
             levelSet = LevelSet.CUSTOM,
@@ -20,25 +20,29 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     }
 
     private fun getBlankLayout(x: Int, y: Int): List<Char> {
-        return MutableList(x*y){
+        return MutableList(x * y) {
             '.'
         }
     }
 
     fun getLevel(name: Int): Level {
-        return levels.first{ it.name == name }
+        return levels.first { it.name == name }
     }
 
     fun getLevels(levelSet: LevelSet): List<Level> {
         return levels.filter { it.levelSet == levelSet }
     }
 
-    fun getDifficultyProgress(): List<Int>{
-        return listOf(gameData.easyLevelProgress.sum(), gameData.mediumLevelProgress.sum(), gameData.hardLevelProgress.sum())
+    fun getDifficultyProgress(): List<Int> {
+        return listOf(
+            gameData.easyLevelProgress.sum(),
+            gameData.mediumLevelProgress.sum(),
+            gameData.hardLevelProgress.sum()
+        )
     }
 
-    fun getLevelsProgress(difficulty: LevelSet):List<Int>{
-        return when(difficulty){
+    fun getLevelsProgress(difficulty: LevelSet): List<Int> {
+        return when (difficulty) {
             LevelSet.EASY -> {
                 gameData.easyLevelProgress
             }
@@ -52,7 +56,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         }
     }
 
-    fun updateLevelProgress(difficulty: LevelSet, level: Int, stars: Int){
+    fun updateLevelProgress(difficulty: LevelSet, level: Int, stars: Int) {
         gameData.updateProgress(difficulty, level, stars)
     }
 
@@ -72,7 +76,6 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
 //        return list
         return level3
     }
-
 
 
     var level1 = listOf(
@@ -175,7 +178,6 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     )
 
 
-
     var level11 = listOf(
         '.', '.', '.', '.', '.', '.',
         '.', '.', '.', 'b', '.', '.',
@@ -209,18 +211,109 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     )
 
     val levels = listOf(
-        Level(name = 1,  levelSet = LevelSet.EASY, x = 4, y = 6, initialBlocks = level1, minMoves = 3),
-        Level(name = 2,  levelSet = LevelSet.EASY, x = 4, y = 6, initialBlocks = level2, minMoves = 2),
-        Level(name = 3,  levelSet = LevelSet.EASY, x = 4, y = 6, initialBlocks = level3, minMoves = 4),
-        Level(name = 4,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level4, minMoves = 17),
-        Level(name = 5,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level5, minMoves = 14),
-        Level(name = 6,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level6, minMoves = 8),
-        Level(name = 7,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level7, minMoves = 15),
-        Level(name = 8,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level8, minMoves = 21),
-        Level(name = 9,  levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level9, minMoves = 14),
-        Level(name = 10, levelSet = LevelSet.EASY, x = 6, y = 8, initialBlocks = level10, minMoves = 28),
-        Level(name = 11, levelSet = LevelSet.MEDIUM, x = 6, y = 8, initialBlocks = level11, minMoves = 23),
-        Level(name = 12, levelSet = LevelSet.MEDIUM, x = 6, y = 8, initialBlocks = level12, minMoves = 3),
-        Level(name = 13, levelSet = LevelSet.MEDIUM, x = 6, y = 8, initialBlocks = level13, minMoves = 3),
+        Level(
+            name = 1,
+            levelSet = LevelSet.EASY,
+            x = 4,
+            y = 6,
+            initialBlocks = level1,
+            minMoves = 3
+        ),
+        Level(
+            name = 2,
+            levelSet = LevelSet.EASY,
+            x = 4,
+            y = 6,
+            initialBlocks = level2,
+            minMoves = 2
+        ),
+        Level(
+            name = 3,
+            levelSet = LevelSet.EASY,
+            x = 4,
+            y = 6,
+            initialBlocks = level3,
+            minMoves = 4
+        ),
+        Level(
+            name = 4,
+            levelSet = LevelSet.EASY,
+            x = 6,
+            y = 8,
+            initialBlocks = level4,
+            minMoves = 17
+        ),
+        Level(
+            name = 5,
+            levelSet = LevelSet.EASY,
+            x = 6,
+            y = 8,
+            initialBlocks = level5,
+            minMoves = 14
+        ),
+        Level(
+            name = 6,
+            levelSet = LevelSet.EASY,
+            x = 6,
+            y = 8,
+            initialBlocks = level6,
+            minMoves = 8
+        ),
+        Level(
+            name = 7,
+            levelSet = LevelSet.EASY,
+            x = 6,
+            y = 8,
+            initialBlocks = level7,
+            minMoves = 15
+        ),
+        Level(
+            name = 8,
+            levelSet = LevelSet.EASY,
+            x = 6,
+            y = 8,
+            initialBlocks = level8,
+            minMoves = 21
+        ),
+        Level(
+            name = 9,
+            levelSet = LevelSet.EASY,
+            x = 6,
+            y = 8,
+            initialBlocks = level9,
+            minMoves = 14
+        ),
+        Level(
+            name = 10,
+            levelSet = LevelSet.EASY,
+            x = 6,
+            y = 8,
+            initialBlocks = level10,
+            minMoves = 28
+        ),
+        Level(
+            name = 11,
+            levelSet = LevelSet.MEDIUM,
+            x = 6,
+            y = 8,
+            initialBlocks = level11,
+            minMoves = 23
+        ),
+        Level(
+            name = 12,
+            levelSet = LevelSet.MEDIUM,
+            x = 6,
+            y = 8,
+            initialBlocks = level12,
+            minMoves = 3
+        ),
+        Level(
+            name = 13,
+            levelSet = LevelSet.MEDIUM,
+            x = 6,
+            y = 8,
+            initialBlocks = level13,
+            minMoves = 3
+        ),
     )
 }

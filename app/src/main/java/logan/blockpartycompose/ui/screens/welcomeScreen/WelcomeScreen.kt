@@ -23,7 +23,6 @@ fun WelcomeScreen(navController: NavController) {
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
-//        Image(bitmap = , contentDescription = "Welcome to Block Party")
         Text(
             text = "Welcome to\nBlock Party",
             textAlign = TextAlign.Center,

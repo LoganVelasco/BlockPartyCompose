@@ -19,27 +19,30 @@ import logan.blockpartycompose.ui.screens.levelBuilder.LevelBuilderViewModel
 @Composable
 fun CustomLevelScreen(
     navigation: NavController,
-    levelBuilderViewModel: LevelBuilderViewModel = hiltViewModel(navigation.getViewModelStoreOwner(navigation.graph.id)),
+    levelBuilderViewModel: LevelBuilderViewModel = hiltViewModel(
+        navigation.getViewModelStoreOwner(
+            navigation.graph.id
+        )
+    ),
     levelsViewModel: LevelsViewModel = hiltViewModel()
 ) {
 
-
     val state by levelsViewModel.state.observeAsState()
 
-    if(state != null) {
-        when(state!!.gameState){
+    if (state != null) {
+        when (state!!.gameState) {
             GameState.SUCCESS -> {
                 CustomLevelEnd(
                     restartClicked = {
                         levelsViewModel.tryAgain()
                         navigation.popBackStack("level/{levelSet}/{name}", inclusive = false)
-                                     },
+                    },
                     editClicked = {
-                                    navigation.popBackStack("levelBuilder", inclusive = false)
-                                  },
+                        navigation.popBackStack("levelBuilder", inclusive = false)
+                    },
                     backClicked = {
-                                    navigation.popBackStack("levelBuilder", inclusive = false)
-                                  },
+                        navigation.popBackStack("levelBuilder", inclusive = false)
+                    },
                     message = "You Did It!"
                 )
             }
@@ -61,19 +64,26 @@ fun CustomLevelScreen(
                 )
             }
         }
-    }else{
+    } else {
         levelsViewModel.setupLevel(levelBuilderViewModel.level)
     }
 }
 
 
 @Composable
-fun CustomLevelEnd(restartClicked: () -> Unit, editClicked: () -> Unit, backClicked: () -> Unit, message: String) {
-    Card(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()) {
-        Column() {
-            BackIcon (backClicked, Modifier.padding(10.dp))
+fun CustomLevelEnd(
+    restartClicked: () -> Unit,
+    editClicked: () -> Unit,
+    backClicked: () -> Unit,
+    message: String
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+    ) {
+        Column {
+            BackIcon(backClicked, Modifier.padding(10.dp))
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,

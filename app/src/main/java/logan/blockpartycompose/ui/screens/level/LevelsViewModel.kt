@@ -71,7 +71,9 @@ class LevelsViewModel @Inject constructor(
                 level.blueIndex,
                 level.x
             )
-        ) { return }
+        ) {
+            return
+        }
 
         when (block) {
             'r' -> {
@@ -191,7 +193,7 @@ class LevelsViewModel @Inject constructor(
     private fun moveRed(): Boolean {
         if (isInSameColumn()) {
             if (isRedAboveBlue()) {
-                if (!moveRed(Direction.UP)){
+                if (!moveRed(Direction.UP)) {
                     return false
                 }
             } else {
@@ -312,7 +314,7 @@ class LevelsViewModel @Inject constructor(
         level.redIndex = newIndex
     }
 
-        private fun isValidRedMove(newIndex: Int): Boolean {
+    private fun isValidRedMove(newIndex: Int): Boolean {
         return when (_state.value!!.blocks[newIndex]) {
             '.' -> true
             'b' -> true
@@ -341,11 +343,11 @@ class LevelsViewModel @Inject constructor(
     }
 
     private fun getMinMoves(): Int {
-        return  level.minMoves
+        return level.minMoves
     }
 
     fun getStars(movesUsed: Int): Int {
-        return if (movesUsed <= getMinMoves()) 3 else if(movesUsed-2 <= getMinMoves()) 2 else 1
+        return if (movesUsed <= getMinMoves()) 3 else if (movesUsed - 2 <= getMinMoves()) 2 else 1
     }
 }
 

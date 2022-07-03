@@ -38,7 +38,7 @@ fun LevelBuilderScreen(
     }
     val state by viewModel.state.observeAsState()
     if (state == null) viewModel.setupNewLevel()
-    else if(state?.showDialog == null) {
+    else if (state?.showDialog == null) {
         LevelBuilder(
             x = viewModel.level.x,
             blocks = state!!.blocks,
@@ -61,8 +61,8 @@ fun LevelBuilderScreen(
             saveClicked = viewModel::saveClicked,
             clearAllClicked = viewModel::clearAllClicked
         )
-    }else{
-        SaveLevelDialog (dismissLevel = {
+    } else {
+        SaveLevelDialog(dismissLevel = {
             viewModel.clearAllClicked()
             navigation.popBackStack(route = "playMenu", inclusive = false)
         },

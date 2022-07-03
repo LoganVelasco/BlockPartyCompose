@@ -39,8 +39,8 @@ fun LevelController(
                 SuccessScreen(
                     // not great logic tbh the name/levelSet of the parent composable don't change
                     nextLevelOnClick = {
-                                            viewModel.setupLevel(levelSet, nextLevel)
-                                       },
+                        viewModel.setupLevel(levelSet, nextLevel)
+                    },
                     backClicked = { navigation.navigateUp() },
                     movesUsed = state!!.movesUsed,
                     stars = stars,
@@ -215,15 +215,15 @@ private fun SuccessStars(result: Int) {
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        if(result >= 1){
+        if (result >= 1) {
             FilledStar()
-        }else EmptyStar()
-        if(result >= 2) {
+        } else EmptyStar()
+        if (result >= 2) {
             FilledStar()
-        }else EmptyStar()
-        if(result >= 3){
+        } else EmptyStar()
+        if (result >= 3) {
             FilledStar()
-        }else EmptyStar()
+        } else EmptyStar()
     }
 }
 

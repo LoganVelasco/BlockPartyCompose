@@ -23,9 +23,9 @@ class LevelBuilderViewModel @Inject constructor(
     lateinit var level: Level
 
 
-    fun isInProgress():Boolean {
+    fun isInProgress(): Boolean {
         _state.value!!.blocks.toMutableList().forEach {
-            if(it != '.') return true
+            if (it != '.') return true
         }
         return false
     }
@@ -54,7 +54,7 @@ class LevelBuilderViewModel @Inject constructor(
         }
     }
 
-    fun clearAllClicked(){
+    fun clearAllClicked() {
         setupNewLevel()
     }
 
@@ -80,7 +80,7 @@ class LevelBuilderViewModel @Inject constructor(
     fun showPopUpDialog() { // bad logic shouldn't need to pass this
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
-            LevelBuilderState(blocks,null, true)
+            LevelBuilderState(blocks, null, true)
         )
     }
 
@@ -95,6 +95,6 @@ class LevelBuilderViewModel @Inject constructor(
     data class LevelBuilderState(
         val blocks: List<Char>,
         var selectedBlockColor: BlockColor? = null,
-        val showDialog: Boolean?= null
+        val showDialog: Boolean? = null
     )
 }

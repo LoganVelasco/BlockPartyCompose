@@ -11,22 +11,22 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-    @Composable
-    fun EmptyStar() {
-        Icon(
-            Icons.Outlined.Star, contentDescription = "Star", tint = Color.Gray,
-            modifier = Modifier
-                .padding(5.dp)
-                .scale(2.5f)
-        )
-    }
+@Composable
+fun EmptyStar() {
+    Icon(
+        Icons.Outlined.Star, contentDescription = "Star", tint = Color.Gray,
+        modifier = Modifier
+            .padding(5.dp)
+            .scale(2.5f)
+    )
+}
 
-    @Composable
-    fun FilledStar() {
-        Icon(
-            Icons.Filled.Star, contentDescription = "Star",
-            modifier = Modifier
-                .padding(5.dp)
-                .scale(2.5f)
-        )
-    }
+@Composable
+fun FilledStar() {
+    Icon(
+        Icons.Filled.Star, contentDescription = "Star",
+        modifier = Modifier
+            .padding(5.dp)
+            .scale(2.5f)
+    )
+}

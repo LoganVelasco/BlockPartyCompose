@@ -10,8 +10,7 @@ class PlayMenuViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
-
-    fun getProgress(): List<Int>{
+    fun getProgress(): List<Int> {
         return repo.getDifficultyProgress()
     }
 }
