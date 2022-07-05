@@ -66,7 +66,6 @@ private fun LevelsList(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LevelCard(
     navController: NavController,
@@ -74,8 +73,6 @@ private fun LevelCard(
     level: Level,
     stars: Int
 ) {
-
-
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,21 +86,12 @@ private fun LevelCard(
             )// TODO Fix white on rounded corners
             .fillMaxWidth()
     ) {
-//        LevelGrid(blockClicked = { _: Char, _: Int ->
-//        run {
-//            navController.navigate("level/${levelSet.name}/${level.name}")
-//        }
-//        },
-//            x = level.x,
-//            blocks = level.blocks
-//        )
         Spacer(modifier = Modifier.height(10.dp))
-        Text(text = "${level.name}")
-//        Text(text = "Moves Used: 10")
+        Text(text = level.name)
         LevelStars(result = stars, modifier = Modifier.padding(15.dp))
         Button(
             onClick = {
-                navController.navigate("level/${levelSet.name}/${level.name}")
+                navController.navigate("level/${levelSet.name}/${level.id}")
             },
             modifier = Modifier
                 .fillMaxWidth()

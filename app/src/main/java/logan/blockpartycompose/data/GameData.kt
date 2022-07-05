@@ -38,7 +38,12 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
         }
     }
 
-    private fun updateLevel(difficulty: LevelSet, currentProgress: String, level: Int, stars: Int) {
+    private fun updateLevel(
+        difficulty: LevelSet,
+        currentProgress: String,
+        level: Int,
+        stars: Int
+    ): Boolean {
         if (currentProgress[level - 1].code - 48 < stars) {
             val newProgress =
                 StringBuilder(currentProgress).also {
@@ -49,8 +54,9 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
                 }.toString()
             prefs.edit().putString(difficulty.name, newProgress)
                 .apply()
+            return true
         }
-
+        return false
     }
 
     fun updateProgress(difficulty: LevelSet, level: Int, stars: Int) {
@@ -60,19 +66,16 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
         }
         when (difficulty) {
             LevelSet.EASY -> {
-                updateLevel(difficulty, currentProgress, level, stars)
-                if (easyLevelProgress.size <= level) easyLevelProgress.add(stars)
-                else easyLevelProgress[level - 1] = stars
+                if (updateLevel(difficulty, currentProgress, level, stars))
+                    easyLevelProgress[level - 1] = stars
             }
             LevelSet.MEDIUM -> {
-                updateLevel(difficulty, currentProgress, level - 10, stars)
-                if (mediumLevelProgress.size <= level - 10) mediumLevelProgress.add(stars)
-                mediumLevelProgress[level - 11] = stars
+                if (updateLevel(difficulty, currentProgress, level - 10, stars))
+                    mediumLevelProgress[level - 11] = stars
             }
             LevelSet.HARD -> {
-                updateLevel(difficulty, currentProgress, level - 20, stars)
-                if (hardLevelProgress.size <= level - 20) hardLevelProgress.add(stars)
-                hardLevelProgress[level - 21] = stars
+                if(updateLevel(difficulty, currentProgress, level - 20, stars))
+                    hardLevelProgress[level - 21] = stars
             }
             LevelSet.CUSTOM -> TODO()
         }

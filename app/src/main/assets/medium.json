@@ -1,0 +1,94 @@
+{
+  "levels": [
+    {
+      "id": "11",
+      "name": "Level 1",
+      "levelSet": "Medium",
+      "minMoves": "23",
+      "x": "6",
+      "y": "8",
+      "blocks": ".........b....x.....g....gx................ry..."
+    },
+    {
+      "id": "12",
+      "name": "Level 2",
+      "levelSet": "Medium",
+      "minMoves": "3",
+      "x": "6",
+      "y": "8",
+      "blocks": "gg..g.gb..g.....g.g......g.............xx....xry"
+    },
+    {
+      "id": "13",
+      "name": "Level 3",
+      "levelSet": "Medium",
+      "minMoves": "4",
+      "x": "6",
+      "y": "8",
+      "blocks": "b........g...g..x...g....g....g...g.....g....rxy"
+    },
+    {
+      "id": "4",
+      "name": "Level 4",
+      "levelSet": "Medium",
+      "minMoves": "17",
+      "x": "6",
+      "y": "8",
+      "blocks": "...r.y.............xx....x.....xx............b.."
+    },
+    {
+      "id": "5",
+      "name": "Level 5",
+      "levelSet": "Medium",
+      "minMoves": "14",
+      "x": "6",
+      "y": "8",
+      "blocks": ".....y.........r.........x.x..b...x....x........"
+    },
+    {
+      "id": "6",
+      "name": "Level 6",
+      "levelSet": "Medium",
+      "minMoves": "8",
+      "x": "6",
+      "y": "8",
+      "blocks": ".............r....y..x......x...b..............."
+    },
+    {
+      "id": "7",
+      "name": "Level 7",
+      "levelSet": "Medium",
+      "minMoves": "15",
+      "x": "6",
+      "y": "8",
+      "blocks": ".b.........x....x....................r....y....."
+    },
+    {
+      "id": "8",
+      "name": "Level 8",
+      "levelSet": "Medium",
+      "minMoves": "21",
+      "x": "6",
+      "y": "8",
+      "blocks": "....yr.......x..............x......x......b....."
+    },
+    {
+      "id": "9",
+      "name": "Level 9",
+      "levelSet": "Medium",
+      "minMoves": "14",
+      "x": "6",
+      "y": "8",
+      "blocks": ".......r...y..............x.......gb............"
+    },
+    {
+      "id": "10",
+      "name": "Level 10",
+      "levelSet": "Medium",
+      "minMoves": "28",
+      "x": "6",
+      "y": "8",
+      "blocks": ".....y..r.........ggggggggggggbx..gg.xxxg.g..g.."
+    }
+  ]
+}

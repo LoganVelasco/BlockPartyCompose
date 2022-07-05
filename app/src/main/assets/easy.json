@@ -1,0 +1,94 @@
+{
+  "levels": [
+    {
+      "id": "1",
+      "name": "Level 1",
+      "levelSet": "Easy",
+      "minMoves": "3",
+      "x": "4",
+      "y": "6",
+      "blocks": ".........b........y....."
+    },
+    {
+      "id": "2",
+      "name": "Level 2",
+      "levelSet": "Easy",
+      "minMoves": "3",
+      "x": "4",
+      "y": "6",
+      "blocks": "r............b.....y...."
+    },
+    {
+      "id": "3",
+      "name": "Level 3",
+      "levelSet": "Easy",
+      "minMoves": "4",
+      "x": "4",
+      "y": "6",
+      "blocks": ".r...x...b............y."
+    },
+    {
+      "id": "4",
+      "name": "Level 4",
+      "levelSet": "Easy",
+      "minMoves": "17",
+      "x": "6",
+      "y": "8",
+      "blocks": "...r.y.............xx....x.....xx............b.."
+    },
+    {
+      "id": "5",
+      "name": "Level 5",
+      "levelSet": "Easy",
+      "minMoves": "14",
+      "x": "6",
+      "y": "8",
+      "blocks": ".....y.........r.........x.x..b...x....x........"
+    },
+    {
+      "id": "6",
+      "name": "Level 6",
+      "levelSet": "Easy",
+      "minMoves": "8",
+      "x": "6",
+      "y": "8",
+      "blocks": ".............r....y..x......x...b..............."
+    },
+    {
+      "id": "7",
+      "name": "Level 7",
+      "levelSet": "Easy",
+      "minMoves": "15",
+      "x": "6",
+      "y": "8",
+      "blocks": ".b.........x....x....................r....y....."
+    },
+    {
+      "id": "8",
+      "name": "Level 8",
+      "levelSet": "Easy",
+      "minMoves": "21",
+      "x": "6",
+      "y": "8",
+      "blocks": "....yr.......x..............x......x......b....."
+    },
+    {
+      "id": "9",
+      "name": "Level 9",
+      "levelSet": "Easy",
+      "minMoves": "14",
+      "x": "6",
+      "y": "8",
+      "blocks": ".......r...y..............x.......gb............"
+    },
+    {
+      "id": "10",
+      "name": "Level 10",
+      "levelSet": "Easy",
+      "minMoves": "28",
+      "x": "6",
+      "y": "8",
+      "blocks": ".....y..r.........ggggggggggggbx..gg.xxxg.g..g.."
+    }
+  ]
+}

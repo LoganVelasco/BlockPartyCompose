@@ -34,11 +34,11 @@ fun Navigation() {
                 LevelSet.valueOf(it.arguments?.getString("levelSet")!!)
             )
         }
-        composable("level/{levelSet}/{name}") {
+        composable("level/{levelSet}/{id}") {
             LevelController(
                 navController,
                 LevelSet.valueOf(it.arguments?.getString("levelSet")!!),
-                it.arguments?.getString("name")!!.toInt()
+                it.arguments?.getString("id")!!.toInt()
             )
         }
     }

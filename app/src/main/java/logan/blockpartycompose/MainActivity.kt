@@ -22,7 +22,7 @@ class MainActivity  @Inject constructor(): ComponentActivity() {
         super.onCreate(savedInstanceState)
 //        dataRepository.easyFile = assets.open("Easy.txt")
 //        dataRepository.mediumFile = assets.open("Medium.json")
-//        dataRepository.hardFile = assets.open("Easy.json")
+//        dataRepository.hardFile = assets.open("easy.json")
         setContent {
             BlockPartyComposeTheme {
                 // A surface container using the 'background' color from the theme

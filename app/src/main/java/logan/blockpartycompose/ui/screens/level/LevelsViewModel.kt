@@ -51,9 +51,9 @@ class LevelsViewModel @Inject constructor(
         )
     }
 
-    private fun getLevels(levelSet: LevelSet, context:Context): List<Level> {
-        return repo.getLevels(levelSet, context)
-    }
+//    private fun getLevels(levelSet: LevelSet, context:Context): List<Level> {
+//        return repo.getLevels(levelSet, context)
+//    }
 
     private fun getLevel(levelSet: LevelSet, id: Int): Level {
         return repo.levelsSets[levelSet.name]!!.first { it.id == id }
