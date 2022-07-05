@@ -1,6 +1,8 @@
 package logan.blockpartycompose.ui.screens.level
 
+import android.content.Context
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,15 +26,13 @@ class LevelsViewModel @Inject constructor(
     private var _state = MutableLiveData<LevelState>()
     val state: LiveData<LevelState> = _state
 
-    private lateinit var level: Level
+    lateinit var level: Level
 
     fun setupLevel(levelSet: LevelSet, name: Int) {
         level = getLevel(levelSet, name)
         level.resetLevel()
         _state.postValue(
             LevelState(
-                name = name,
-                x = level.x,
                 blocks = level.initialBlocks,
                 movesUsed = 0,
                 gameState = GameState.IN_PROGRESS
@@ -45,20 +45,18 @@ class LevelsViewModel @Inject constructor(
         _state.postValue(
             LevelState(
                 blocks = newLevel.blocks,
-                x = newLevel.x,
                 movesUsed = 0,
-                gameState = GameState.IN_PROGRESS,
-                name = newLevel.name
+                gameState = GameState.IN_PROGRESS
             )
         )
     }
 
-    private fun getLevels(levelSet: LevelSet): List<Level> {
-        return repo.getLevels(levelSet)
+    private fun getLevels(levelSet: LevelSet, context:Context): List<Level> {
+        return repo.getLevels(levelSet, context)
     }
 
-    private fun getLevel(levelSet: LevelSet, name: Int): Level {
-        return getLevels(levelSet).first { it.name == name }
+    private fun getLevel(levelSet: LevelSet, id: Int): Level {
+        return repo.levelsSets[levelSet.name]!!.first { it.id == id }
     }
 
     fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
@@ -95,10 +93,8 @@ class LevelsViewModel @Inject constructor(
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks,
-                            x = state.value!!.x,
                             movesUsed = _state.value!!.movesUsed + 1,
                             gameState = level.state,
-                            name = level.name,
                         )
                     )
                 }
@@ -115,10 +111,8 @@ class LevelsViewModel @Inject constructor(
         _state.postValue(
             LevelState(
                 blocks = level.blocks,
-                x = state.value!!.x,
                 movesUsed = _state.value!!.movesUsed + 1,
                 gameState = level.state,
-                name = level.name,
             )
         )
 
@@ -134,10 +128,8 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
-                        x = level.x,
                         movesUsed = _state.value!!.movesUsed,
                         gameState = level.state,
-                        level.name,
                     )
                 )
 
@@ -146,10 +138,8 @@ class LevelsViewModel @Inject constructor(
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks.toMutableList(),
-                            x = level.x,
                             movesUsed = _state.value!!.movesUsed,
-                            gameState = level.state,
-                            level.name,
+                            gameState = level.state
                         )
                     )
                 }
@@ -268,10 +258,8 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
-                        x = level.x,
                         movesUsed = _state.value!!.movesUsed,
-                        gameState = level.state,
-                        level.name,
+                        gameState = level.state
                     )
                 )
                 delay(250)
@@ -279,10 +267,8 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
-                        x = level.x,
                         movesUsed = _state.value!!.movesUsed,
-                        gameState = level.state,
-                        level.name,
+                        gameState = level.state
                     )
                 )
             }
@@ -334,10 +320,8 @@ class LevelsViewModel @Inject constructor(
         _state.postValue(
             LevelState(
                 blocks = level.blocks,
-                x = level.x,
                 movesUsed = 0,
-                gameState = GameState.IN_PROGRESS,
-                name = level.name,
+                gameState = GameState.IN_PROGRESS
             )
         )
     }
@@ -355,10 +339,8 @@ class LevelsViewModel @Inject constructor(
 @Immutable
 data class LevelState(
     val blocks: List<Char>,
-    val x: Int,
     var movesUsed: Int,
     var gameState: GameState,
-    val name: Int,
 )
 
 enum class GameState {

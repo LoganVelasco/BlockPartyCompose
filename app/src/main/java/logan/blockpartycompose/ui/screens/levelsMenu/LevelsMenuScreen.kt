@@ -1,5 +1,6 @@
 package logan.blockpartycompose.ui.screens.levelsMenu
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,6 +23,7 @@ import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.components.EmptyStar
 import logan.blockpartycompose.ui.components.FilledStar
 import logan.blockpartycompose.ui.screens.level.BackIcon
+import logan.blockpartycompose.ui.screens.level.LevelGrid
 
 @Composable
 fun LevelsMenuScreen(
@@ -28,7 +31,7 @@ fun LevelsMenuScreen(
     levelSet: LevelSet,
 ) {
     val viewModel: LevelsMenuViewModel = hiltViewModel()
-    val levels = viewModel.getLevels(levelSet)
+    val levels = viewModel.getLevels(levelSet, LocalContext.current)
     val progress = viewModel.getProgress(levelSet)
 
     LevelsList(navController, levelSet, levels, progress)
@@ -63,7 +66,7 @@ private fun LevelsList(
     }
 }
 
-//@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LevelCard(
     navController: NavController,
@@ -72,14 +75,7 @@ private fun LevelCard(
     stars: Int
 ) {
 
-//    LevelGrid(blockClicked = { _: Char, _: Int ->
-//        run {
-//            navController.navigate("level/${levelSet.name}/${level.name}")
-//        }
-//    },
-//        x = level.x,
-//        blocks = level.blocks
-//    )
+
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,8 +89,16 @@ private fun LevelCard(
             )// TODO Fix white on rounded corners
             .fillMaxWidth()
     ) {
+//        LevelGrid(blockClicked = { _: Char, _: Int ->
+//        run {
+//            navController.navigate("level/${levelSet.name}/${level.name}")
+//        }
+//        },
+//            x = level.x,
+//            blocks = level.blocks
+//        )
         Spacer(modifier = Modifier.height(10.dp))
-        Text(text = "Level ${level.name}")
+        Text(text = "${level.name}")
 //        Text(text = "Moves Used: 10")
         LevelStars(result = stars, modifier = Modifier.padding(15.dp))
         Button(

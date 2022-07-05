@@ -33,9 +33,9 @@ fun LevelController(
     if (state != null) {
         when (state!!.gameState) {
             GameState.SUCCESS -> {
-                val nextLevel = state!!.name + 1
+                val nextLevel = viewModel.level.id + 1
                 val stars = viewModel.getStars(state!!.movesUsed)
-                viewModel.updateLevel(levelSet, state!!.name, stars)
+                viewModel.updateLevel(levelSet, viewModel.level.id, stars)
                 SuccessScreen(
                     // not great logic tbh the name/levelSet of the parent composable don't change
                     nextLevelOnClick = {
@@ -44,7 +44,7 @@ fun LevelController(
                     backClicked = { navigation.navigateUp() },
                     movesUsed = state!!.movesUsed,
                     stars = stars,
-                    levelName = state!!.name
+                    levelName = viewModel.level.name
                 )
             }
             GameState.FAILED -> {
@@ -56,7 +56,7 @@ fun LevelController(
             GameState.IN_PROGRESS -> {
                 LevelScreen(
                     movesUsed = state!!.movesUsed,
-                    x = state!!.x,
+                    x = viewModel.level.x,
                     blocks = state!!.blocks,
                     blockClicked = viewModel::blockClicked,
                     backClicked = { navigation.navigateUp() },
@@ -178,7 +178,7 @@ fun SuccessScreen(
     nextLevelOnClick: () -> Unit,
     backClicked: () -> Unit,
     movesUsed: Int,
-    levelName: Int,
+    levelName: String,
     stars: Int
 ) {
     Card(
@@ -196,7 +196,7 @@ fun SuccessScreen(
                     .fillMaxHeight()
             ) {
                 Text(text = "You Did it!")
-                Text(text = "Level $levelName Completed in $movesUsed moves!")
+                Text(text = "$levelName Completed in $movesUsed moves!")
                 SuccessStars(stars)
                 Button(onClick = { nextLevelOnClick() }) {
                     Text(text = "Next Level")

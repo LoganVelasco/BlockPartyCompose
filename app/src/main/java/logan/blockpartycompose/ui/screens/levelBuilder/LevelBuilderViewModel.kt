@@ -64,7 +64,8 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun playClicked() {
         level = Level(
-            name = 0,
+            id = 0,
+            name = "Custom Level",
             levelSet = LevelSet.CUSTOM,
             x = 6,
             y = 8,

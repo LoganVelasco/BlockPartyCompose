@@ -57,7 +57,7 @@ fun CustomLevelScreen(
             GameState.IN_PROGRESS -> {
                 LevelScreen(
                     movesUsed = state!!.movesUsed,
-                    x = state!!.x,
+                    x = levelsViewModel.level.x,
                     blocks = state!!.blocks,
                     blockClicked = levelsViewModel::blockClicked,
                     backClicked = { navigation.navigateUp() }

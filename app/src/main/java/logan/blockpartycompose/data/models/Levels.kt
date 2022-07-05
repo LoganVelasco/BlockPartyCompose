@@ -11,7 +11,8 @@ data class LevelInfo(
 
 @Serializable
 data class Level(
-    val name: Int,
+    val id: Int,
+    val name: String,
     val levelSet: LevelSet,
     val x: Int,
     val y: Int,
