@@ -1,10 +1,16 @@
 package logan.blockpartycompose.ui.screens.levelBuilder
 
+import android.content.Context
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.data.models.Level
@@ -22,10 +28,12 @@ class LevelBuilderViewModel @Inject constructor(
 
     lateinit var level: Level
 
+    var saved = false
+
 
     fun isInProgress(): Boolean {
         _state.value!!.blocks.toMutableList().forEach {
-            if (it != '.') return true
+            if (it != '.' && !saved) return true
         }
         return false
     }
@@ -48,6 +56,7 @@ class LevelBuilderViewModel @Inject constructor(
         if (color != null) {
             val blocks = _state.value!!.blocks.toMutableList()
             blocks[index] = color.color
+            saved = false
             _state.postValue(
                 LevelBuilderState(blocks, color)
             )
@@ -74,16 +83,27 @@ class LevelBuilderViewModel @Inject constructor(
         )
     }
 
-    fun saveClicked() {
-        level.blocks = _state.value!!.blocks.toMutableList()
+    fun triggerSaveDialog(){
+        val blocks = _state.value!!.blocks.toMutableList()
+        _state.postValue(
+            LevelBuilderState(blocks, selectedBlockColor = null, saved = true)
+        )
     }
 
-    fun showPopUpDialog() { // bad logic shouldn't need to pass this
+    fun saveClicked(context: Context, string: String) { // bad logic shouldn't need to pass blocks
+        level.blocks = _state.value!!.blocks.toMutableList()
+        level.name = string
+        repo.addCustomLevel(level, context)
+        saved = true
+    }
+
+    fun showPopUpDialog() { // bad logic shouldn't need to pass blocks
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
             LevelBuilderState(blocks, null, true)
         )
     }
+
 
     fun hidePopUpDialog() {
         val blocks = _state.value!!.blocks.toMutableList()
@@ -92,10 +112,19 @@ class LevelBuilderViewModel @Inject constructor(
         )
     }
 
+    fun setupExistingLevel(id: Int) {
+        level = repo.getLevel(LevelSet.CUSTOM, id)
+        level.resetLevel()
+        _state.postValue(
+            LevelBuilderState(level.blocks)
+        )
+    }
+
     @Immutable
     data class LevelBuilderState(
         val blocks: List<Char>,
         var selectedBlockColor: BlockColor? = null,
-        val showDialog: Boolean? = null
+        val showDialog: Boolean = false,
+        val saved: Boolean = false
     )
 }

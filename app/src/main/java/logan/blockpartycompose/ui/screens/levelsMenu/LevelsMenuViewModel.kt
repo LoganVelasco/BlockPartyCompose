@@ -15,10 +15,12 @@ class LevelsMenuViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun getLevels(levelSet: LevelSet, context: Context): List<Level> {
+        if(levelSet == LevelSet.CUSTOM)return repo.getCustomLevels(context)
         return repo.getLevels(levelSet, context)
     }
 
     fun getProgress(levelSet: LevelSet): List<Int> {
+        if(levelSet == LevelSet.CUSTOM)return emptyList()
         return repo.getLevelsProgress(levelSet)
     }
 }

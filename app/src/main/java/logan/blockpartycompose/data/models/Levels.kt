@@ -13,8 +13,14 @@ data class LevelInfo(
 
 data class LevelsDTO(
     val levels: List<LevelDTO>
-){
-    fun convertToLevels(): List<Level>{
+) {
+
+    companion object {
+        fun getDTO(levels: List<Level>):LevelsDTO{
+            return LevelsDTO(levels.map { LevelDTO.getDTO(it) })
+        }
+    }
+    fun convertToLevels(): List<Level> {
         return levels.map { it.convertToLevel() }
     }
 }
@@ -28,6 +34,22 @@ data class LevelDTO(
     val blocks: String,
     val minMoves: Int
 ) {
+
+    companion object {
+        fun getDTO(level: Level): LevelDTO {
+            return LevelDTO(
+                level.id,
+                level.name,
+                level.levelSet.name,
+                level.x,
+                level.y,
+                level.blocks.toString(),
+                level.minMoves,
+            )
+        }
+    }
+
+
     fun convertToLevel(): Level {
         return Level(
             id,
@@ -44,8 +66,8 @@ data class LevelDTO(
 
 @Serializable
 data class Level(
-    val id: Int,
-    val name: String,
+    var id: Int,
+    var name: String,
     val levelSet: LevelSet,
     val x: Int,
     val y: Int,

@@ -38,7 +38,7 @@ fun LevelsMenuScreen(
 }
 
 @Composable
-private fun LevelsList(
+fun LevelsList(
     navController: NavController,
     levelSet: LevelSet,
     levels: List<Level>,
@@ -59,7 +59,8 @@ private fun LevelsList(
             }
             items(levels.size) { index ->
                 val level = levels[index]
-                LevelCard(navController, levelSet, level, progress[index])
+                val stars = if (progress.isEmpty())-1 else progress[index]
+                LevelCard(navController, levelSet, level, stars)
                 Spacer(Modifier.height(25.dp))
             }
         }
@@ -88,7 +89,7 @@ private fun LevelCard(
     ) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = level.name)
-        LevelStars(result = stars, modifier = Modifier.padding(15.dp))
+        if(stars <= 0)LevelStars(result = stars, modifier = Modifier.padding(15.dp))
         Button(
             onClick = {
                 navController.navigate("level/${levelSet.name}/${level.id}")

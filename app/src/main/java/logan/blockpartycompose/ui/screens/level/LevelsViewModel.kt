@@ -28,8 +28,8 @@ class LevelsViewModel @Inject constructor(
 
     lateinit var level: Level
 
-    fun setupLevel(levelSet: LevelSet, name: Int) {
-        level = getLevel(levelSet, name)
+    fun setupLevel(levelSet: LevelSet, id: Int) {
+        level = getLevel(levelSet, id)
         level.resetLevel()
         _state.postValue(
             LevelState(

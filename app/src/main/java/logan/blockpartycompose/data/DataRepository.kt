@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.data.models.LevelsDTO
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import java.io.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,7 +13,7 @@ import javax.inject.Singleton
 class DataRepository @Inject constructor(private val gameData: GameData) {
 
     private val gson = Gson()
-    val levelsSets = mutableMapOf <String, List<Level>>()
+    val levelsSets = mutableMapOf<String, List<Level>>()
 
     fun getNewLevel(x: Int, y: Int): Level {
         return Level(
@@ -31,13 +32,67 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
             '.'
         }
     }
+    fun getLevel(levelSet: LevelSet, id: Int): Level {
+        return levelsSets[levelSet.name]!!.first { it.id == id }
+    }
 
     fun getLevels(difficulty: LevelSet, context: Context): List<Level> {
-        if(levelsSets[difficulty.name] != null) return levelsSets[difficulty.name]!!
-        val json = context.assets.open("${difficulty.name.lowercase()}.json").bufferedReader().readText()
+        if (levelsSets[difficulty.name] != null) return levelsSets[difficulty.name]!!
+        val json =
+            context.assets.open("${difficulty.name.lowercase()}.json").bufferedReader().readText()
         val levels = gson.fromJson(json, LevelsDTO::class.java).convertToLevels()
         levelsSets[difficulty.name] = levels
+
         return levels
+    }
+
+    fun getCustomLevels(context: Context): List<Level> {
+        if (levelsSets[LevelSet.CUSTOM.name] != null) return levelsSets[LevelSet.CUSTOM.name]!!
+        var fileInputStream: FileInputStream? = null
+        return try {
+            fileInputStream = context.openFileInput("custom.json")
+            val inputStreamReader = InputStreamReader(fileInputStream)
+            val json = BufferedReader(inputStreamReader).readText()
+            if (json.isEmpty()) return emptyList()
+            val levels = gson.fromJson(json, LevelsDTO::class.java).convertToLevels()
+            levelsSets[LevelSet.CUSTOM.name] = levels
+            levels
+        } catch (e: FileNotFoundException) {
+            File("${context.filesDir.path}/custom.json").createNewFile()
+            emptyList()
+        }
+    }
+
+    fun addCustomLevel(level: Level, context: Context): Boolean {
+        val levels = getCustomLevels(context)
+        val newLevels = mutableListOf<Level>()
+        newLevels.addAll(levels)
+        level.id = newLevels.size+1
+        newLevels.add(level)
+        val data = gson.toJson(LevelsDTO.getDTO(levels))
+        val fileOutputStream: FileOutputStream
+        return try {
+            fileOutputStream = context.openFileOutput("custom.json", Context.MODE_PRIVATE)
+            fileOutputStream.write(data.toByteArray())
+            levelsSets[LevelSet.CUSTOM.name] = newLevels
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    fun deleteCustomLevel(id: Int, context: Context) {
+        val newLevels = getCustomLevels(context).filter { it.id != id }
+        val data = gson.toJson(LevelsDTO.getDTO(newLevels))
+        val fileOutputStream: FileOutputStream
+        try {
+            fileOutputStream = context.openFileOutput("custom.json", Context.MODE_PRIVATE)
+            fileOutputStream.write(data.toByteArray())
+            levelsSets[LevelSet.CUSTOM.name] = newLevels
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun getDifficultyProgress(): List<Int> {

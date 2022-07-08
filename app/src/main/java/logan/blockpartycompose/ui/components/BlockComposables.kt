@@ -33,71 +33,120 @@ fun Block(modifier: Modifier) {
 @Composable
 fun RedBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Block(modifier = modifier
-        .border(1.dp, Color.Black)
-        .background(Color.Red)
-        .clickable { onClick() }
-    )
+    if (isSelected) {
+        Block(
+            modifier = modifier
+                .border(4.dp, Color.White)
+                .background(Color.Red)
+                .clickable { onClick() })
+    } else
+        Block(modifier = modifier
+            .border(1.dp, Color.Black)
+            .background(Color.Red)
+            .clickable { onClick() }
+        )
 }
 
 @Composable
 fun BlueBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Block(modifier = modifier
-        .border(1.dp, Color.Black)
-        .background(Color.Blue)
-        .clickable { onClick() }
-    )
+    if (isSelected) {
+        Block(
+            modifier = modifier
+                .border(4.dp, Color.White)
+                .background(Color.Blue)
+                .clickable { onClick() })
+    } else
+        Block(modifier = modifier
+            .border(1.dp, Color.Black)
+            .background(Color.Blue)
+            .clickable { onClick() }
+        )
 }
 
 @Composable
 fun YellowBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Block(modifier = modifier
-        .border(1.dp, Color.Black)
-        .background(Color.Yellow)
-        .clickable { onClick() }
-    )
+
+    if (isSelected) {
+        Block(
+            modifier = modifier
+                .border(4.dp, Color.White)
+                .background(Color.Yellow)
+                .clickable { onClick() })
+    } else
+        Block(modifier = modifier
+            .border(1.dp, Color.Black)
+            .background(Color.Yellow)
+            .clickable { onClick() }
+        )
 }
 
 @Composable
 fun GrayBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Block(modifier = modifier
-        .border(1.dp, Color.DarkGray)
-        .background(Color.Gray)
-        .clickable { onClick() }
-    )
+    if (isSelected) {
+        Block(
+            modifier = modifier
+                .border(4.dp, Color.White)
+                .background(Color.Gray)
+                .clickable { onClick() })
+    } else
+        Block(modifier = modifier
+            .border(1.dp, Color.DarkGray)
+            .background(Color.Gray)
+            .clickable { onClick() }
+        )
 }
 
 @Composable
 fun BlackBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Block(modifier = modifier
-        .border(1.dp, Color.DarkGray)
-        .background(Color.Black)
-        .clickable { onClick() }
-    )
+    if (isSelected) {
+        Block(
+            modifier = modifier
+                .border(4.dp, Color.White)
+                .background(Color.Black)
+                .clickable { onClick() })
+    } else
+        Block(modifier = modifier
+            .border(1.dp, Color.DarkGray)
+            .background(Color.Black)
+            .clickable { onClick() }
+        )
 }
 
 @Composable
 fun GreenBox(
     onClick: () -> Unit,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Block(modifier = modifier
-        .border(1.dp, Color.Black)
-        .background(Color.Green)
-        .clickable { onClick() }
-    )
+    if (isSelected) {
+        Block(
+            modifier = modifier
+                .border(4.dp, Color.White)
+                .background(Color.Green)
+                .clickable { onClick() })
+    } else
+        Block(modifier = modifier
+            .border(1.dp, Color.Black)
+            .background(Color.Green)
+            .clickable { onClick() }
+        )
 }

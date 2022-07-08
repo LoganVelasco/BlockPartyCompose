@@ -3,6 +3,7 @@ package logan.blockpartycompose.data
 import android.content.Context
 import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
+import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -74,10 +75,10 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
                     mediumLevelProgress[level - 11] = stars
             }
             LevelSet.HARD -> {
-                if(updateLevel(difficulty, currentProgress, level - 20, stars))
+                if (updateLevel(difficulty, currentProgress, level - 20, stars))
                     hardLevelProgress[level - 21] = stars
             }
-            LevelSet.CUSTOM -> TODO()
+            LevelSet.CUSTOM -> {}
         }
     }
 }
