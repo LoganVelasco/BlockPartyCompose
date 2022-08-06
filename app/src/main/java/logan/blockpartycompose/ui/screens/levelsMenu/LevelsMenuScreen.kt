@@ -1,29 +1,35 @@
 package logan.blockpartycompose.ui.screens.levelsMenu
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.components.EmptyStar
 import logan.blockpartycompose.ui.components.FilledStar
 import logan.blockpartycompose.ui.screens.level.BackIcon
-import logan.blockpartycompose.ui.screens.level.LevelGrid
+import java.util.*
 
 @Composable
 fun LevelsMenuScreen(
@@ -74,31 +80,46 @@ private fun LevelCard(
     level: Level,
     stars: Int
 ) {
-    Column(
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Card(border = BorderStroke(5.dp, Color.DarkGray),
+    shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(15.dp)
-            .background(shape = RectangleShape, color = Color.White)
-            .border(
-                width = 2.dp,
-                color = Color.DarkGray,
-                RoundedCornerShape(2.dp)
-            )// TODO Fix white on rounded corners
-            .fillMaxWidth()
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(text = level.name)
-        if(stars <= 0)LevelStars(result = stars, modifier = Modifier.padding(15.dp))
-        Button(
-            onClick = {
-                navController.navigate("level/${levelSet.name}/${level.id}")
-            },
+        Column(
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .padding(15.dp)
+                .background(shape = RectangleShape, color = Color.White)
                 .fillMaxWidth()
-                .padding(start = 25.dp, end = 25.dp, bottom = 25.dp)
         ) {
-            Text(text = "Play")
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = level.name.uppercase(Locale("us")), fontSize = 32.sp, fontStyle = FontStyle.Italic)
+            Spacer(modifier = Modifier.height(10.dp))
+            Image(
+                painter = painterResource(id = R.drawable.level1),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(25.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.Black,
+                        RoundedCornerShape(2.dp)
+                    )
+            )
+            LevelStars(result = stars, modifier = Modifier.padding(15.dp))
+            Button(
+                onClick = {
+                    navController.navigate("level/${levelSet.name}/${level.id}")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 25.dp, end = 25.dp, bottom = 25.dp)
+            ) {
+                Text(text = "Play")
+            }
         }
     }
 }
