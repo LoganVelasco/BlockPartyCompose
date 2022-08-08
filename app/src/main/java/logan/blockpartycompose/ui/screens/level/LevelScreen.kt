@@ -44,7 +44,8 @@ fun LevelController(
                     backClicked = { navigation.navigateUp() },
                     movesUsed = state!!.movesUsed,
                     stars = stars,
-                    levelName = viewModel.level.name
+                    levelName = viewModel.level.name,
+                    minMoves = viewModel.level.minMoves
                 )
             }
             GameState.FAILED -> {
@@ -180,8 +181,9 @@ fun SuccessScreen(
     backClicked: () -> Unit,
     movesUsed: Int,
     levelName: String,
-    stars: Int
-) {
+    stars: Int,
+    minMoves: Int
+){
     Card(
         modifier = Modifier
             .fillMaxHeight()
@@ -198,6 +200,7 @@ fun SuccessScreen(
             ) {
                 Text(text = "You Did it!")
                 Text(text = "$levelName Completed in $movesUsed moves!")
+                if(stars < 3)Text(text = "Complete in $minMoves moves for 3 stars")
                 SuccessStars(stars)
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
