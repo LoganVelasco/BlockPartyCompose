@@ -6,8 +6,7 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -41,6 +40,7 @@ fun LevelController(
                     nextLevelOnClick = {
                         viewModel.setupLevel(levelSet, nextLevel)
                     },
+                    tryAgainOnClick = viewModel::tryAgain,
                     backClicked = { navigation.navigateUp() },
                     movesUsed = state!!.movesUsed,
                     stars = stars,
@@ -158,17 +158,17 @@ fun LevelFooter() {
         IconButton(
             onClick = { /*TODO*/ },
         ) {
-            Icon(Icons.Filled.Info, contentDescription = "Help")
+            Icon(Icons.Filled.Refresh, contentDescription = "Undo")
         }
         IconButton(
             onClick = { /*TODO*/ },
         ) {
-            Icon(Icons.Filled.Info, contentDescription = "Hint")
+            Icon(Icons.Filled.Info, contentDescription = "Info")
         }
         IconButton(
             onClick = { /*TODO*/ },
         ) {
-            Icon(Icons.Filled.Info, contentDescription = "Undo")
+            Icon(Icons.Filled.Star, contentDescription = "Hint")
         }
     }
 }
@@ -176,6 +176,7 @@ fun LevelFooter() {
 @Composable
 fun SuccessScreen(
     nextLevelOnClick: () -> Unit,
+    tryAgainOnClick: () -> Unit,
     backClicked: () -> Unit,
     movesUsed: Int,
     levelName: String,
@@ -198,8 +199,16 @@ fun SuccessScreen(
                 Text(text = "You Did it!")
                 Text(text = "$levelName Completed in $movesUsed moves!")
                 SuccessStars(stars)
-                Button(onClick = { nextLevelOnClick() }) {
-                    Text(text = "Next Level")
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(onClick = { tryAgainOnClick() }) {
+                        Text(text = "Try Again")
+                    }
+                    Button(onClick = { nextLevelOnClick() }) {
+                        Text(text = "Next Level")
+                    }
                 }
             }
         }

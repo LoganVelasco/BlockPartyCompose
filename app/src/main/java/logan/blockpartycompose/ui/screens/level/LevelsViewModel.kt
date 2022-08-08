@@ -335,7 +335,6 @@ class LevelsViewModel @Inject constructor(
     }
 }
 
-
 @Immutable
 data class LevelState(
     val blocks: List<Char>,
