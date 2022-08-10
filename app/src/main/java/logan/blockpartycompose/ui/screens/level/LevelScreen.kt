@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.ui.components.*
@@ -33,6 +34,7 @@ fun LevelController(
         when (state!!.gameState) {
             GameState.SUCCESS -> {
                 val nextLevel = viewModel.level.id + 1
+                val isFinalLevel = (nextLevel == 11 || nextLevel == 21 || nextLevel == 31)
                 val stars = viewModel.getStars(state!!.movesUsed)
                 viewModel.updateLevel(levelSet, viewModel.level.id, stars)
                 SuccessScreen(
@@ -61,6 +63,7 @@ fun LevelController(
                     blocks = state!!.blocks,
                     blockClicked = viewModel::blockClicked,
                     backClicked = { navigation.navigateUp() },
+                    settingsClicked = { navigation.navigateUp() }
                 )
             }
         }
@@ -77,32 +80,46 @@ fun LevelScreen(
     blocks: List<Char>,
     blockClicked: (Char, Int) -> Unit,
     backClicked: () -> Unit,
+    settingsClicked: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxHeight()
     ) {
-        LevelHeader(movesUsed, backClicked)
+        LevelHeader(movesUsed, backClicked, settingsClicked)
         LevelGrid(blockClicked, x, blocks)
         LevelFooter()
     }
 }
 
 @Composable
-fun LevelHeader(movesUsed: Int, backClicked: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 10.dp)
-    ) {
-        BackIcon(backClicked)
-        Text(
-            text = "Moves Used:  $movesUsed",
-            textAlign = TextAlign.Center,
-        )
-    }
+fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> Unit) {
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        horizontalArrangement = Arrangement.SpaceBetween,
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(end = 10.dp)
+//    ) {
+//        BackIcon(backClicked)
+//        Text(
+//            text = "Moves Used:  $movesUsed",
+//            textAlign = TextAlign.Center,
+//        )
+//    }
+    BaseHeader(
+        firstIcon = Icons.Filled.ArrowBack,
+        firstIconOnclick = backClicked,
+        endIcon = Icons.Filled.Settings,
+        endIconOnclick = settingsClicked,
+        middleContent = {
+            Text(
+                text = "Moves Used:  $movesUsed",
+                fontSize = 18.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(10.dp)
+            )
+        })
 }
 
 @Composable
@@ -183,7 +200,7 @@ fun SuccessScreen(
     levelName: String,
     stars: Int,
     minMoves: Int
-){
+) {
     Card(
         modifier = Modifier
             .fillMaxHeight()
@@ -200,7 +217,7 @@ fun SuccessScreen(
             ) {
                 Text(text = "You Did it!")
                 Text(text = "$levelName Completed in $movesUsed moves!")
-                if(stars < 3)Text(text = "Complete in $minMoves moves for 3 stars")
+                if (stars < 3) Text(text = "Complete in $minMoves moves for 3 stars")
                 SuccessStars(stars)
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,

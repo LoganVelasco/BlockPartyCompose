@@ -9,26 +9,31 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.Level
+import logan.blockpartycompose.ui.components.BaseHeader
 import logan.blockpartycompose.ui.components.EmptyStar
 import logan.blockpartycompose.ui.components.FilledStar
-import logan.blockpartycompose.ui.screens.level.BackIcon
 import java.util.*
 
 @Composable
@@ -40,8 +45,42 @@ fun LevelsMenuScreen(
     val levels = viewModel.getLevels(levelSet, LocalContext.current)
     val progress = viewModel.getProgress(levelSet)
 
-    LevelsList(navController, levelSet, levels, progress)
+    LevelsMenu(navController, levelSet, levels, progress)
+
 }
+
+@Composable
+fun LevelsMenu(
+    navController: NavController,
+    levelSet: LevelSet,
+    levels: List<Level>,
+    progress: List<Int>
+) {
+    Column(Modifier.fillMaxSize()) {
+        BaseHeader(
+            firstIcon = Icons.Filled.ArrowBack,
+            firstIconOnclick = { navController.navigateUp() },
+            endIcon = Icons.Filled.Settings,
+            endIconOnclick = { navController.navigateUp() },
+            middleContent = {
+                Row(Modifier.padding(10.dp)) {
+                    Text(text = "Easy: 15/30", fontSize = 18.sp)
+                    Icon(
+                        Icons.Filled.Star,
+                        contentDescription = "Easy Star Count",
+                        modifier = Modifier
+                            .scale(1.25f)
+                            .padding(start = 5.dp)
+                    )
+                }
+            },
+            modifier = Modifier
+                .border(2.dp, Color.DarkGray, RectangleShape),
+        )
+        LevelsList(navController, levelSet, levels, progress)
+    }
+}
+
 
 @Composable
 fun LevelsList(
@@ -51,7 +90,7 @@ fun LevelsList(
     progress: List<Int>,
 ) {
     Column {
-        BackIcon(backClicked = { navController.navigateUp() }, modifier = Modifier.padding(10.dp))
+//        BackIcon(backClicked = { navController.navigateUp() }, modifier = Modifier.padding(10.dp))
         LazyColumn(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,13 +98,9 @@ fun LevelsList(
                 .padding()
                 .fillMaxSize()
         ) {
-            item {
-                Text(text = levelSet.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(50.dp))
-            }
             items(levels.size) { index ->
                 val level = levels[index]
-                val stars = if (progress.isEmpty())-1 else progress[index]
+                val stars = if (progress.isEmpty()) -1 else progress[index]
                 LevelCard(navController, levelSet, level, stars)
                 Spacer(Modifier.height(25.dp))
             }
@@ -80,8 +115,9 @@ private fun LevelCard(
     level: Level,
     stars: Int
 ) {
-    Card(border = BorderStroke(5.dp, Color.DarkGray),
-    shape = RoundedCornerShape(10.dp),
+    Card(
+        border = BorderStroke(5.dp, Color.DarkGray),
+        shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(15.dp)
     ) {
@@ -94,7 +130,11 @@ private fun LevelCard(
                 .fillMaxWidth()
         ) {
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = level.name.uppercase(Locale("us")), fontSize = 32.sp, fontStyle = FontStyle.Italic)
+            Text(
+                text = level.name.uppercase(Locale("us")),
+                fontSize = 32.sp,
+                fontStyle = FontStyle.Italic
+            )
             Spacer(modifier = Modifier.height(10.dp))
             Image(
                 painter = painterResource(id = R.drawable.level1),

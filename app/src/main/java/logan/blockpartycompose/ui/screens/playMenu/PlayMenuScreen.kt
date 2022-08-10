@@ -2,14 +2,19 @@ package logan.blockpartycompose.ui.screens.playMenu
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.ui.components.BaseHeader
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
 @Composable
@@ -24,17 +29,39 @@ fun PlayMenuScreen(navController: NavController) {
 private fun PlayMenu(navController: NavController, progress: List<Int>) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
         MenuHeader(navController)
         MenuDifficulties(navController, progress)
+        MenuFooter(navController)
     }
 }
 
 @Composable
-private fun MenuHeader(navController: NavController) {
+fun MenuHeader(navController: NavController) {
+    BaseHeader(
+        firstIcon = Icons.Filled.Person,
+        endIcon = Icons.Filled.Settings,
+        middleContent = {
+            Row(Modifier.padding(10.dp)) {
+                Text(text = "15/90", fontSize = 18.sp)
+                Icon(
+                    Icons.Filled.Star, contentDescription = "Total Star Count", modifier = Modifier
+                        .scale(1.25f)
+                        .padding(start = 5.dp)
+                )
+            }
+        },
+        firstIconOnclick = { navController.navigateUp() },
+        endIconOnclick = { navController.navigateUp() }
+    )
+}
+
+@Composable
+private fun MenuFooter(navController: NavController) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -67,10 +94,10 @@ private fun MenuHeader(navController: NavController) {
 private fun MenuDifficulties(navController: NavController, progress: List<Int>) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
+            .fillMaxHeight(.6f)
             .padding(start = 20.dp, end = 20.dp)
     ) {
         DifficultyButton(
