@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.TransformOrigin
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.screens.level.Direction
 import logan.blockpartycompose.ui.screens.level.GameState
@@ -72,43 +73,43 @@ class GameUtils {
         fun levelGridTransitions(initialState: Char, targetState: Char, direction: Direction): ContentTransform {
             return when {
 //                initialState == '.' && targetState == 'b' || initialState == '.' && targetState == 'r' -> {
-                initialState == '.' && targetState != 'r'-> {
+                initialState == '.' && targetState == 'b'-> {
                     return when(direction){
                         Direction.LEFT -> {
-                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with
-                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.End, targetWidth = { 0 })
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.End, targetWidth = { 0 }) // Grey shrink out
                         }
                         Direction.UP -> { //G
-                            slideInVertically(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with
-                                    shrinkVertically(animationSpec = tween(500, delayMillis = 200), shrinkTowards = Alignment.Bottom)
+                            slideInVertically(animationSpec = tween(500, delayMillis = 0)){ height -> height*2 } with // Blue slide in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500), shrinkTowards = Alignment.Top) // Grey shrink out
                         }
                         Direction.RIGHT -> {
-                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height }  with
-                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.Start, targetWidth = { 0 })
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.Start, targetWidth = { 0 }) // Grey shrink out
                         }
                         Direction.DOWN -> {
-                            expandVertically(animationSpec = tween(500, delayMillis = 0), expandFrom = Alignment.Bottom)  with
-                                    shrinkVertically(animationSpec = tween(500, delayMillis = 200), shrinkTowards = Alignment.Bottom)
+                            expandVertically(animationSpec = tween(500, delayMillis = 0), expandFrom = Alignment.Bottom)  with // Blue expand in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500)) // Grey shrink out
                         }
                     }
                 }
-                initialState != '.' && targetState != 'r' -> {
+                initialState == 'b' && targetState == '.' -> {
                     return when(direction){
                         Direction.LEFT -> {
-                            expandHorizontally(animationSpec = tween(500, delayMillis = 200 )) { height -> height + height/2} with
-                                    slideOutHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height }
+                            expandHorizontally(animationSpec = tween(500, delayMillis = 0 )) { height -> height + height/2} with // Grey expand in
+                                    slideOutHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height } // Blue slide out
                         }
                         Direction.UP -> {
-                            expandVertically(animationSpec = tween(1, delayMillis = 0), expandFrom = Alignment.Bottom)  with
-                                    shrinkVertically(animationSpec = tween(500, delayMillis = 0), shrinkTowards = Alignment.Top)
+                            slideInVertically(animationSpec = tween(500, delayMillis = 0)){ height -> height*2 }  with // Grey slide in
+                                    slideOutVertically(animationSpec = tween(1, delayMillis = 500)) { height -> height*2 } // Blue slide out
                         }
                         Direction.RIGHT -> {
-                            expandHorizontally(animationSpec = tween(500, delayMillis = 0 )) { height -> (height + height/2)*-1} with
-                                    slideOutHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }
+                            expandHorizontally(animationSpec = tween(500, delayMillis = 0 )) { height -> (height + height/2)*-1} with // Grey expand in
+                                    slideOutHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height } // Blue slide out
                         }
                         Direction.DOWN -> { //G
-                            expandVertically(animationSpec = tween(1, delayMillis = 0), expandFrom = Alignment.Top)  with
-                                    slideOutVertically(animationSpec = tween(750, delayMillis = 0)) { height -> -height }
+                            expandVertically(animationSpec = tween(500, delayMillis = 0), expandFrom = Alignment.Top)  with // Grey expand in
+                                    slideOutVertically(animationSpec = tween(1, delayMillis = 500)) { height -> -height } // Blue slide out
                         }
                     }
 

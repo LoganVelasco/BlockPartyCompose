@@ -105,6 +105,13 @@ class LevelsViewModel @Inject constructor(
                 }
             }
             'y' -> {
+                _state.postValue(
+                    LevelState(
+                        blocks = level.blocks,
+                        movesUsed = _state.value!!.movesUsed + 1,
+                        gameState = level.state,
+                    )
+                )
                 viewModelScope.launch {
                     delay(450)
                     if (level.state != GameState.FAILED)
@@ -320,7 +327,6 @@ class LevelsViewModel @Inject constructor(
     private fun moveRedToNewIndex(newIndex: Int) {
         level.blocks[level.redIndex] = '.'
         level.blocks[newIndex] = 'r'
-//        level.lastDirection = getDirection(level.redIndex, newIndex, level.x)
         level.redIndex = newIndex
     }
 

@@ -1,6 +1,7 @@
 package logan.blockpartycompose.ui.screens.level
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -33,7 +34,11 @@ fun LevelController(
     val state by viewModel.state.observeAsState()
 
     if (state != null) {
-        when (state!!.gameState) {
+        Crossfade(
+            targetState = state!!.gameState,
+            animationSpec = tween(1000, delayMillis = 200)
+        ) {
+        when (it) {
             GameState.SUCCESS -> {
                 val nextLevel = viewModel.level.id + 1
                 val isFinalLevel = (nextLevel == 11 || nextLevel == 21 || nextLevel == 31)
@@ -69,6 +74,7 @@ fun LevelController(
                     direction = state!!.direction
                 )
             }
+        }
         }
     } else {
         viewModel.setupLevel(levelSet, name)
