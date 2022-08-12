@@ -1,9 +1,6 @@
 package logan.blockpartycompose.ui.screens.levelsMenu
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -120,6 +117,9 @@ private fun LevelCard(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(15.dp)
+            .clickable {
+                navController.navigate("level/${levelSet.name}/${level.id}")
+            }
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceEvenly,
@@ -150,16 +150,16 @@ private fun LevelCard(
                     )
             )
             LevelStars(result = stars, modifier = Modifier.padding(15.dp))
-            Button(
-                onClick = {
-                    navController.navigate("level/${levelSet.name}/${level.id}")
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 25.dp, end = 25.dp, bottom = 25.dp)
-            ) {
-                Text(text = "Play")
-            }
+//            Button(
+//                onClick = {
+//                    navController.navigate("level/${levelSet.name}/${level.id}")
+//                },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(start = 25.dp, end = 25.dp, bottom = 25.dp)
+//            ) {
+//                Text(text = "Play")
+//            }
         }
     }
 }

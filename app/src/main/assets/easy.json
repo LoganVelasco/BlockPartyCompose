@@ -58,7 +58,7 @@
       "id": "7",
       "name": "Level 7",
       "levelSet": "Easy",
-      "minMoves": "15",
+      "minMoves": "16",
       "x": "6",
       "y": "8",
       "blocks": ".b.........x....x....................r....y....."

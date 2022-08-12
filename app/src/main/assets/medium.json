@@ -13,7 +13,7 @@
       "id": "12",
       "name": "Level 2",
       "levelSet": "Medium",
-      "minMoves": "3",
+      "minMoves": "38",
       "x": "6",
       "y": "8",
       "blocks": "gg..g.gb..g.....g.g......g.............xx....xry"

@@ -74,17 +74,17 @@ data class Level(
     val initialBlocks: List<Char>,
     val minMoves: Int
 ) {
+    var state: GameState = GameState.IN_PROGRESS
+    var blocks = initialBlocks.toMutableList()
     var blueIndex: Int = initialBlocks.indexOf('b')
     var redIndex: Int = initialBlocks.indexOf('r')
     var goalIndex: Int = initialBlocks.indexOf('y')
-    var state: GameState = GameState.IN_PROGRESS
-    var blocks = initialBlocks.toMutableList()
 
     fun resetLevel() {
+        state = GameState.IN_PROGRESS
+        blocks = initialBlocks.toMutableList()
         blueIndex = initialBlocks.indexOf('b')
         redIndex = initialBlocks.indexOf('r')
-        blocks = initialBlocks.toMutableList()
-        state = GameState.IN_PROGRESS
     }
 
 }

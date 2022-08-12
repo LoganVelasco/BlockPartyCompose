@@ -1,8 +1,6 @@
 package logan.blockpartycompose.ui.screens.level
 
-import android.content.Context
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +12,13 @@ import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.GameUtils
+import logan.blockpartycompose.utils.GameUtils.Companion.getDirection
+import logan.blockpartycompose.utils.GameUtils.Companion.isAbove
+import logan.blockpartycompose.utils.GameUtils.Companion.isInSameColumn
+import logan.blockpartycompose.utils.GameUtils.Companion.isInSameRow
+import logan.blockpartycompose.utils.GameUtils.Companion.isRightOf
+import logan.blockpartycompose.utils.GameUtils.Companion.isValidRedMove
+import logan.blockpartycompose.utils.GameUtils.Companion.shouldRedAttemptMove
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
@@ -72,14 +77,29 @@ class LevelsViewModel @Inject constructor(
         ) {
             return
         }
-
         when (block) {
             'r' -> {
                 level.state = GameState.FAILED
+                _state.postValue(
+                    LevelState(
+                        blocks = level.blocks,
+                        movesUsed = _state.value!!.movesUsed + 1,
+                        gameState = level.state,
+                    )
+                )
             }
             'g' -> {
                 if (handleGreenMove(index)) {
-                    moveBlue(index)
+                    val direction = moveBlue(index)
+
+                    _state.postValue(
+                        LevelState(
+                            blocks = level.blocks,
+                            movesUsed = _state.value!!.movesUsed + 1,
+                            gameState = level.state,
+                            direction = direction
+                        )
+                    )
                 } else {
                     return
                 }
@@ -88,6 +108,7 @@ class LevelsViewModel @Inject constructor(
                 viewModelScope.launch {
                     delay(450)
                     if (level.state != GameState.FAILED)
+                        moveBlue(index)
                         level.state = GameState.SUCCESS
 
                     _state.postValue(
@@ -101,28 +122,30 @@ class LevelsViewModel @Inject constructor(
                 return
             }
             '.' -> {
-                moveBlue(index)
+                val direction = moveBlue(index)!!
+                _state.postValue(
+                    LevelState(
+                        blocks = level.blocks,
+                        movesUsed = _state.value!!.movesUsed + 1,
+                        gameState = level.state,
+                        direction = direction
+                    )
+                )
             }
             else -> {
                 return
             }
         }
 
-        _state.postValue(
-            LevelState(
-                blocks = level.blocks,
-                movesUsed = _state.value!!.movesUsed + 1,
-                gameState = level.state,
-            )
-        )
 
-        if (shouldRedAttemptMove()) {
+        if (shouldRedAttemptMove(level.redIndex, level.state)) {
             handleRedTurn()
         }
     }
 
     private fun handleRedTurn() {
-        if (moveRed() && level.state == GameState.IN_PROGRESS) {
+        var moveDirection = moveRed()
+        if (moveDirection != null && level.state == GameState.IN_PROGRESS) {
             viewModelScope.launch {
                 delay(100)
                 _state.postValue(
@@ -130,16 +153,21 @@ class LevelsViewModel @Inject constructor(
                         blocks = level.blocks.toMutableList(),
                         movesUsed = _state.value!!.movesUsed,
                         gameState = level.state,
+                        direction = moveDirection
                     )
                 )
 
-                if (level.state == GameState.IN_PROGRESS && moveRed()) {
+                if (level.state != GameState.IN_PROGRESS) return@launch
+
+                moveDirection = moveRed()
+                if (moveDirection != null) {
                     delay(175)
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks.toMutableList(),
                             movesUsed = _state.value!!.movesUsed,
-                            gameState = level.state
+                            gameState = level.state,
+                            direction = moveDirection
                         )
                     )
                 }
@@ -147,10 +175,12 @@ class LevelsViewModel @Inject constructor(
         }
     }
 
-    private fun moveBlue(index: Int) {
+    private fun moveBlue(index: Int): Direction? {
         level.blocks[index] = 'b'
         level.blocks[level.blueIndex] = '.'
+        val direction = getDirection(level.blueIndex, index, level.x)
         level.blueIndex = index
+        return direction
     }
 
     private fun handleGreenMove(index: Int): Boolean {
@@ -180,59 +210,51 @@ class LevelsViewModel @Inject constructor(
         }
     }
 
-    private fun moveRed(): Boolean {
-        if (isInSameColumn()) {
-            if (isRedAboveBlue()) {
+    private fun moveRed(): Direction? {
+        if (isInSameColumn(level.blueIndex, level.redIndex, level.x)) {
+            return if (isAbove(level.redIndex, level.blueIndex)) {
                 if (!moveRed(Direction.UP)) {
-                    return false
-                }
+                    null // Unable to move up return null to signify end of red turn
+                } else Direction.UP
             } else {
                 if (!moveRed(Direction.DOWN)) {
-                    return false
-                }
+                    null // Unable to move down return null to signify end of red turn
+                } else Direction.DOWN
             }
-        } else if (isRedRightOfBlue()) {
+        } else if (isRightOf(level.redIndex, level.blueIndex, level.x)) {
             if (!moveRed(Direction.LEFT)) {
-                if (isInSameRow()) {
-                    return false
+                if (isInSameRow(level.blueIndex, level.redIndex, level.x)) {
+                    return null // Unable to left move return null to signify end of red turn
                 }
-                if (isRedAboveBlue()) {
+                return if (isAbove(level.redIndex, level.blueIndex)) {
                     if (!moveRed(Direction.UP)) {
-                        return false
-                    }
+                        null // Unable to move up return null to signify end of red turn
+                    } else Direction.UP
                 } else {
                     if (!moveRed(Direction.DOWN)) {
-                        return false
-                    }
+                        null // Unable to move down return null to signify end of red turn
+                    } else Direction.DOWN
                 }
-            }
+            } else return Direction.LEFT
         } else {
-            if (!moveRed(Direction.RIGHT)) {
-                if (isInSameRow()) {
-                    return false
-                }
-                if (isRedAboveBlue()) {
-                    if (!moveRed(Direction.UP)) {
-                        return false
+            return if (!moveRed(Direction.RIGHT)) {
+                if (isInSameRow(level.blueIndex, level.redIndex, level.x)) {
+                    null // Unable to move right return null to signify end of red turn
+                } else
+                    if (isAbove(level.redIndex, level.blueIndex)) {
+                        if (!moveRed(Direction.UP)) {
+                            null // Unable to move up return null to signify end of red turn
+                        } else Direction.UP
+                    } else {
+                        if (!moveRed(Direction.DOWN)) {
+                            null // Unable to move down return null to signify end of red turn
+                        } else Direction.DOWN
                     }
-                } else {
-                    if (!moveRed(Direction.DOWN)) {
-                        return false
-                    }
-                }
-            }
+            } else Direction.RIGHT
         }
 
-        return true
     }
 
-    private fun isInSameRow() = (level.redIndex / level.x) == (level.blueIndex / level.x)
-
-    private fun isRedRightOfBlue() = level.redIndex % level.x > level.blueIndex % level.x
-
-    private fun isRedAboveBlue() = level.redIndex > level.blueIndex
-
-    private fun isInSameColumn() = level.redIndex % level.x == level.blueIndex % level.x
 
     private fun moveRed(direction: Direction): Boolean {
         val newIndex = when (direction) {
@@ -259,7 +281,8 @@ class LevelsViewModel @Inject constructor(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
                         movesUsed = _state.value!!.movesUsed,
-                        gameState = level.state
+                        gameState = level.state,
+                        direction = direction
                     )
                 )
                 delay(250)
@@ -281,7 +304,7 @@ class LevelsViewModel @Inject constructor(
             return true
         }
 
-        if (isValidRedMove(newIndex)) {
+        if (isValidRedMove(level.blocks[newIndex])) {
             moveRedToNewIndex(newIndex)
             return true
         }
@@ -297,23 +320,10 @@ class LevelsViewModel @Inject constructor(
     private fun moveRedToNewIndex(newIndex: Int) {
         level.blocks[level.redIndex] = '.'
         level.blocks[newIndex] = 'r'
+//        level.lastDirection = getDirection(level.redIndex, newIndex, level.x)
         level.redIndex = newIndex
     }
 
-    private fun isValidRedMove(newIndex: Int): Boolean {
-        return when (_state.value!!.blocks[newIndex]) {
-            '.' -> true
-            'b' -> true
-            'y' -> true
-            else -> false
-        }
-    }
-
-    private fun shouldRedAttemptMove(): Boolean {
-        return isRedBlockPresent() && level.state == GameState.IN_PROGRESS
-    }
-
-    private fun isRedBlockPresent() = level.redIndex != -1
 
     fun tryAgain() {
         level.resetLevel()
@@ -337,9 +347,10 @@ class LevelsViewModel @Inject constructor(
 
 @Immutable
 data class LevelState(
-    val blocks: List<Char>,
-    var movesUsed: Int,
+    val blocks: List<Char> = emptyList(),
+    var movesUsed: Int = 0,
     var gameState: GameState,
+    var direction: Direction? = null
 )
 
 enum class GameState {

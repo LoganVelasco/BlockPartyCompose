@@ -1,5 +1,6 @@
 package logan.blockpartycompose.ui.screens.level
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -19,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.utils.GameUtils.Companion.levelGridTransitions
 
 @ExperimentalFoundationApi
 @Composable
@@ -63,7 +65,8 @@ fun LevelController(
                     blocks = state!!.blocks,
                     blockClicked = viewModel::blockClicked,
                     backClicked = { navigation.navigateUp() },
-                    settingsClicked = { navigation.navigateUp() }
+                    settingsClicked = { navigation.navigateUp() },
+                    direction = state!!.direction
                 )
             }
         }
@@ -80,14 +83,15 @@ fun LevelScreen(
     blocks: List<Char>,
     blockClicked: (Char, Int) -> Unit,
     backClicked: () -> Unit,
-    settingsClicked: () -> Unit
+    settingsClicked: () -> Unit,
+    direction: Direction?
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxHeight()
     ) {
         LevelHeader(movesUsed, backClicked, settingsClicked)
-        LevelGrid(blockClicked, x, blocks)
+        LevelGrid(blockClicked, x, blocks, direction?:Direction.DOWN)
         LevelFooter()
     }
 }
@@ -132,9 +136,10 @@ fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
-fun LevelGrid(blockClicked: (Char, Int) -> Unit, x: Int, blocks: List<Char>) {
+fun LevelGrid(blockClicked: (Char, Int) -> Unit, x: Int, blocks: List<Char>, direction: Direction = Direction.DOWN) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(x),
         contentPadding = PaddingValues(5.dp),
@@ -142,30 +147,35 @@ fun LevelGrid(blockClicked: (Char, Int) -> Unit, x: Int, blocks: List<Char>) {
     ) {
         items(blocks.size) { index ->
             val onClick = { blockClicked(blocks[index], index) }
-
-            when (blocks[index]) {
-                'r' -> {
-                    RedBox(onClick)
-                }
-                'b' -> {
-                    BlueBox(onClick)
-                }
-                'g' -> {
-                    GreenBox(onClick)
-                }
-                'y' -> {
-                    YellowBox(onClick)
-                }
-                '.' -> {
-                    GrayBox(onClick)
-                }
-                'x' -> {
-                    BlackBox(onClick)
+            AnimatedContent(
+                targetState = blocks[index],
+                transitionSpec = { levelGridTransitions(this.initialState, this.targetState, direction) }
+            ) { type ->
+                when (type) {
+                    'r' -> {
+                        RedBox(onClick)
+                    }
+                    'b' -> {
+                        BlueBox(onClick)
+                    }
+                    'g' -> {
+                        GreenBox(onClick)
+                    }
+                    'y' -> {
+                        YellowBox(onClick)
+                    }
+                    '.' -> {
+                        GrayBox(onClick)
+                    }
+                    'x' -> {
+                        BlackBox(onClick)
+                    }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun LevelFooter() {
