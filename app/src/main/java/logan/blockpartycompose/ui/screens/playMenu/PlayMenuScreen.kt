@@ -34,20 +34,20 @@ private fun PlayMenu(navController: NavController, progress: List<Int>) {
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        MenuHeader(navController)
+        MenuHeader(navController, progress.sum())
         MenuDifficulties(navController, progress)
         MenuFooter(navController)
     }
 }
 
 @Composable
-fun MenuHeader(navController: NavController) {
+fun MenuHeader(navController: NavController, totalStars: Int) {
     BaseHeader(
         firstIcon = Icons.Filled.Person,
         endIcon = Icons.Filled.Settings,
         middleContent = {
             Row(Modifier.padding(10.dp)) {
-                Text(text = "15/90", fontSize = 18.sp)
+                Text(text = "$totalStars/90", fontSize = 18.sp)
                 Icon(
                     Icons.Filled.Star, contentDescription = "Total Star Count", modifier = Modifier
                         .scale(1.25f)

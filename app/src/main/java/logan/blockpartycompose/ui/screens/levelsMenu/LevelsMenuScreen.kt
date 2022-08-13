@@ -61,10 +61,11 @@ fun LevelsMenu(
             endIconOnclick = { navController.navigateUp() },
             middleContent = {
                 Row(Modifier.padding(10.dp)) {
-                    Text(text = "Easy: 15/30", fontSize = 18.sp)
+                    val count = if(progress.isEmpty())0 else progress.sum()
+                    Text(text = "${levelSet.name}: $count/30", fontSize = 18.sp)
                     Icon(
                         Icons.Filled.Star,
-                        contentDescription = "Easy Star Count",
+                        contentDescription = "${levelSet.name} Star Count",
                         modifier = Modifier
                             .scale(1.25f)
                             .padding(start = 5.dp)

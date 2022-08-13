@@ -72,7 +72,6 @@ class GameUtils {
         @OptIn(ExperimentalAnimationApi::class)
         fun levelGridTransitions(initialState: Char, targetState: Char, direction: Direction): ContentTransform {
             return when {
-//                initialState == '.' && targetState == 'b' || initialState == '.' && targetState == 'r' -> {
                 initialState == '.' && targetState == 'b'-> {
                     return when(direction){
                         Direction.LEFT -> {
@@ -153,26 +152,15 @@ class GameUtils {
                                     slideOutVertically(animationSpec = tween(750, delayMillis = 0)) { height -> -height } + fadeOut()
                         }
                     }
-
                 }
-//                initialState == '.' && targetState == 'r' -> {
-//                    slideInVertically { height -> height } + fadeIn() with
-//                            slideOutVertically { height -> -height } + fadeOut()
-//
-//                }
-//                initialState == 'r' && targetState == '.' -> {
-//                    scaleIn() + fadeIn() with
-//                            slideOutVertically { height -> -height } + fadeOut()
-//
-//                }
                 initialState == '.' && targetState == 'g' -> {
                     slideInVertically { height -> height } + fadeIn() with
                             slideOutVertically { height -> -height } + fadeOut()
 
                 }
                 initialState == 'g' && targetState == '.' -> {
-                    slideInVertically { height -> height } + fadeIn() with
-                            slideOutVertically { height -> -height } + fadeOut()
+                    scaleIn() + fadeIn() with
+                            scaleOut() + fadeOut()
 
                 }
                 initialState == 'r' && targetState == 'b' -> {
@@ -201,8 +189,7 @@ class GameUtils {
 
                 }
                 else -> {
-                    slideInVertically { height -> -height } + fadeIn() with
-                            slideOutVertically { height -> height } + fadeOut()
+                     fadeIn() with fadeOut()
                 }
             }
         }
