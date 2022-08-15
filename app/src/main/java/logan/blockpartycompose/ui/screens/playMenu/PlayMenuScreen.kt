@@ -1,5 +1,7 @@
 package logan.blockpartycompose.ui.screens.playMenu
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
@@ -7,6 +9,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -22,11 +26,22 @@ fun PlayMenuScreen(navController: NavController) {
     val viewModel: PlayMenuViewModel = hiltViewModel()
     val progress = viewModel.getProgress()
 
-    PlayMenu(navController, progress)
+    val flags by viewModel.flags.observeAsState()
+
+    if(flags != null)
+        PlayMenu(navController, progress, flags!![0], flags!![1])
+    else
+        viewModel.shouldShowAnimation()
+
 }
 
 @Composable
-private fun PlayMenu(navController: NavController, progress: List<Int>) {
+private fun PlayMenu(
+    navController: NavController,
+    progress: List<Int>,
+    showMediumAnimation: Boolean,
+    showHardAnimation: Boolean,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
@@ -35,7 +50,7 @@ private fun PlayMenu(navController: NavController, progress: List<Int>) {
             .fillMaxHeight()
     ) {
         MenuHeader(navController, progress.sum())
-        MenuDifficulties(navController, progress)
+        MenuDifficulties(navController, progress, showMediumAnimation, showHardAnimation)
         MenuFooter(navController)
     }
 }
@@ -91,7 +106,12 @@ private fun MenuFooter(navController: NavController) {
 }
 
 @Composable
-private fun MenuDifficulties(navController: NavController, progress: List<Int>) {
+private fun MenuDifficulties(
+    navController: NavController,
+    progress: List<Int>,
+    showMediumAnimation: Boolean,
+    showHardAnimation: Boolean,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
@@ -108,12 +128,14 @@ private fun MenuDifficulties(navController: NavController, progress: List<Int>) 
         DifficultyButton(
             LevelSet.MEDIUM,
             progress[1],
-            progress.sum()
+            progress.sum(),
+            showMediumAnimation
         ) { navController.navigate("medium") }
         DifficultyButton(
             LevelSet.HARD,
             progress[2],
-            progress.sum()
+            progress.sum(),
+            showHardAnimation
         ) { navController.navigate("hard") }
     }
 }
@@ -123,7 +145,8 @@ private fun DifficultyButton(
     difficulty: LevelSet,
     progress: Int,
     totalStars: Int,
-    onClick: () -> Unit
+    showAnimation: Boolean = false,
+    onClick: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -134,12 +157,22 @@ private fun DifficultyButton(
                 EnabledDifficulty(progress, onClick, difficulty.name)
             }
             LevelSet.MEDIUM -> {
-                if (totalStars >= 15) EnabledDifficulty(progress, onClick, difficulty.name)
-                else DisabledDifficulty(requirement = 15, difficulty.name)
+                Crossfade(
+                    targetState = showAnimation,
+                    animationSpec = tween(1000, delayMillis = 0)
+                ) { stars ->
+                    if (totalStars >= 3 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
+                    else DisabledDifficulty(requirement = 3, difficulty.name)
+                }
             }
             LevelSet.HARD -> {
-                if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name)
-                else DisabledDifficulty(requirement = 30, difficulty.name)
+                Crossfade(
+                    targetState = showAnimation,
+                    animationSpec = tween(1000, delayMillis = 0)
+                ) { stars ->
+                    if (totalStars >= 6 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
+                    else DisabledDifficulty(requirement = 6, difficulty.name)
+                }
             }
             LevelSet.CUSTOM -> {
 
@@ -154,16 +187,21 @@ private fun EnabledDifficulty(
     onClick: () -> Unit,
     text: String
 ) {
-    Text(
-        text = "$progress/30 Stars Collected"
-    )
-    Spacer(modifier = Modifier.height(5.dp))
-    Spacer(modifier = Modifier.height(5.dp))
-    Button(
-        onClick = onClick,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(text = text)
+    ){
+        Text(
+            text = "$progress/30 Stars Collected"
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
+        Button(
+            onClick = onClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = text)
+        }
     }
 }
 
@@ -172,17 +210,22 @@ private fun DisabledDifficulty(
     requirement: Int,
     text: String
 ) {
-    Text(
-        text = "Collect $requirement stars to unlock"
-    )
-    Spacer(modifier = Modifier.height(5.dp))
-    Spacer(modifier = Modifier.height(5.dp))
-    Button(
-        enabled = false,
-        onClick = {},
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = text)
+        Text(
+            text = "Collect $requirement stars to unlock"
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
+        Button(
+            enabled = false,
+            onClick = {},
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = text)
+        }
     }
 }
 

@@ -121,7 +121,7 @@ class LevelsViewModel @Inject constructor(
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks,
-                            movesUsed = _state.value!!.movesUsed + 1,
+                            movesUsed = _state.value!!.movesUsed,
                             gameState = level.state,
                         )
                     )

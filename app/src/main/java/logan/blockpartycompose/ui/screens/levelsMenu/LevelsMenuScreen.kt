@@ -41,9 +41,30 @@ fun LevelsMenuScreen(
     val viewModel: LevelsMenuViewModel = hiltViewModel()
     val levels = viewModel.getLevels(levelSet, LocalContext.current)
     val progress = viewModel.getProgress(levelSet)
+    if (levels.isEmpty())
+        CustomLevelEmpty(navController, levelSet, progress)
+    else
+        LevelsMenu(navController, levelSet, levels, progress)
 
-    LevelsMenu(navController, levelSet, levels, progress)
+}
 
+@Composable
+fun CustomLevelEmpty(navController: NavController,
+                         levelSet: LevelSet,
+                         progress: List<Int>) {
+    Column(Modifier.fillMaxSize()) {
+        LevelTopBar(navController, levelSet, progress)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(text = "No custom levels saved yet", fontSize = 26.sp, modifier = Modifier.padding(10.dp))
+            Button(onClick = { navController.navigate("levelBuilder") }) {
+                Text(text = "Create Custom Level")
+            }
+        }
+    }
 }
 
 @Composable
@@ -54,29 +75,38 @@ fun LevelsMenu(
     progress: List<Int>
 ) {
     Column(Modifier.fillMaxSize()) {
-        BaseHeader(
-            firstIcon = Icons.Filled.ArrowBack,
-            firstIconOnclick = { navController.navigateUp() },
-            endIcon = Icons.Filled.Settings,
-            endIconOnclick = { navController.navigateUp() },
-            middleContent = {
-                Row(Modifier.padding(10.dp)) {
-                    val count = if(progress.isEmpty())0 else progress.sum()
-                    Text(text = "${levelSet.name}: $count/30", fontSize = 18.sp)
-                    Icon(
-                        Icons.Filled.Star,
-                        contentDescription = "${levelSet.name} Star Count",
-                        modifier = Modifier
-                            .scale(1.25f)
-                            .padding(start = 5.dp)
-                    )
-                }
-            },
-            modifier = Modifier
-                .border(2.dp, Color.DarkGray, RectangleShape),
-        )
+        LevelTopBar(navController, levelSet, progress)
         LevelsList(navController, levelSet, levels, progress)
     }
+}
+
+@Composable
+fun LevelTopBar(
+    navController: NavController,
+    levelSet: LevelSet,
+    progress: List<Int>
+) {
+    BaseHeader(
+        firstIcon = Icons.Filled.ArrowBack,
+        firstIconOnclick = { navController.navigateUp() },
+        endIcon = Icons.Filled.Settings,
+        endIconOnclick = { navController.navigateUp() },
+        middleContent = {
+            Row(Modifier.padding(10.dp)) {
+                val count = if (progress.isEmpty()) 0 else progress.sum()
+                Text(text = "${levelSet.name}: $count/30", fontSize = 18.sp)
+                Icon(
+                    Icons.Filled.Star,
+                    contentDescription = "${levelSet.name} Star Count",
+                    modifier = Modifier
+                        .scale(1.25f)
+                        .padding(start = 5.dp)
+                )
+            }
+        },
+        modifier = Modifier
+            .border(2.dp, Color.DarkGray, RectangleShape),
+    )
 }
 
 

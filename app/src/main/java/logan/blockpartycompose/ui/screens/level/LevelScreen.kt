@@ -36,7 +36,7 @@ fun LevelController(
     if (state != null) {
         Crossfade(
             targetState = state!!.gameState,
-            animationSpec = tween(1000, delayMillis = 200)
+            animationSpec = tween(750, delayMillis = 100)
         ) {
         when (it) {
             GameState.SUCCESS -> {
