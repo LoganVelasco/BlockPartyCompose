@@ -105,26 +105,38 @@ class LevelsViewModel @Inject constructor(
                 }
             }
             'y' -> {
+                val direction = moveBlue(index)
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks,
                         movesUsed = _state.value!!.movesUsed + 1,
                         gameState = level.state,
+                        direction = direction
                     )
                 )
                 viewModelScope.launch {
-                    delay(450)
-                    if (level.state != GameState.FAILED)
-                        moveBlue(index)
-                        level.state = GameState.SUCCESS
-
+                    delay(200)
+                    level.blocks[index] = 'y'
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks,
                             movesUsed = _state.value!!.movesUsed,
                             gameState = level.state,
+                            direction = direction
                         )
                     )
+                    delay(400)
+                    if (level.state != GameState.FAILED)
+                        level.state = GameState.SUCCESS
+                    _state.postValue(
+                        LevelState(
+                            blocks = level.blocks,
+                            movesUsed = _state.value!!.movesUsed,
+                            gameState = level.state,
+                            direction = direction
+                        )
+                    )
+
                 }
                 return
             }

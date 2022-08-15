@@ -38,43 +38,51 @@ fun LevelController(
             targetState = state!!.gameState,
             animationSpec = tween(750, delayMillis = 100)
         ) {
-        when (it) {
-            GameState.SUCCESS -> {
-                val nextLevel = viewModel.level.id + 1
-                val isFinalLevel = (nextLevel == 11 || nextLevel == 21 || nextLevel == 31)
-                val stars = viewModel.getStars(state!!.movesUsed)
-                viewModel.updateLevel(levelSet, viewModel.level.id, stars)
-                SuccessScreen(
-                    // not great logic tbh the name/levelSet of the parent composable don't change
-                    nextLevelOnClick = {
-                        viewModel.setupLevel(levelSet, nextLevel)
-                    },
-                    tryAgainOnClick = viewModel::tryAgain,
-                    backClicked = { navigation.navigateUp() },
-                    movesUsed = state!!.movesUsed,
-                    stars = stars,
-                    levelName = viewModel.level.name,
-                    minMoves = viewModel.level.minMoves
-                )
+            when (it) {
+                GameState.SUCCESS -> {
+                    val nextLevel = viewModel.level.id + 1
+                    val isFinalLevel = (nextLevel == 11 || nextLevel == 21 || nextLevel == 31) // TODO don't hardcode
+                    val stars = viewModel.getStars(state!!.movesUsed)
+                    viewModel.updateLevel(levelSet, viewModel.level.id, stars)
+
+                    val nextLevelOnClick = if(isFinalLevel){
+                        { navigation.navigate("playMenu")}
+                    } else {
+                        {viewModel.setupLevel(levelSet, nextLevel)}
+                    }
+                    SuccessScreen(
+                        // not great logic tbh the name/levelSet of the parent composable don't change
+                        nextLevelOnClick = nextLevelOnClick,
+                        tryAgainOnClick = viewModel::tryAgain,
+                        backClicked = { navigation.navigateUp() },
+                        movesUsed = state!!.movesUsed,
+                        stars = stars,
+                        levelName = viewModel.level.name,
+                        minMoves = viewModel.level.minMoves,
+                        isFinalLevel = isFinalLevel
+                    )
+                }
+                GameState.FAILED -> {
+                    FailureScreen(
+                        tryAgainOnClick = viewModel::tryAgain,
+                        backClicked = { navigation.navigateUp() }
+                    )
+                }
+                GameState.IN_PROGRESS -> {
+                    LevelScreen(
+                        movesUsed = state!!.movesUsed,
+                        x = viewModel.level.x,
+                        blocks = state!!.blocks,
+                        blockClicked = viewModel::blockClicked,
+                        backClicked = { navigation.navigateUp() },
+                        settingsClicked = { navigation.navigateUp() },
+                        undoClicked = {},
+                        restartClicked = {viewModel.tryAgain()},
+                        infoClicked = {},
+                        direction = state!!.direction
+                    )
+                }
             }
-            GameState.FAILED -> {
-                FailureScreen(
-                    tryAgainOnClick = viewModel::tryAgain,
-                    backClicked = { navigation.navigateUp() }
-                )
-            }
-            GameState.IN_PROGRESS -> {
-                LevelScreen(
-                    movesUsed = state!!.movesUsed,
-                    x = viewModel.level.x,
-                    blocks = state!!.blocks,
-                    blockClicked = viewModel::blockClicked,
-                    backClicked = { navigation.navigateUp() },
-                    settingsClicked = { navigation.navigateUp() },
-                    direction = state!!.direction
-                )
-            }
-        }
         }
     } else {
         viewModel.setupLevel(levelSet, name)
@@ -90,6 +98,9 @@ fun LevelScreen(
     blockClicked: (Char, Int) -> Unit,
     backClicked: () -> Unit,
     settingsClicked: () -> Unit,
+    undoClicked: () -> Unit,
+    restartClicked: () -> Unit,
+    infoClicked: () -> Unit,
     direction: Direction?
 ) {
     Column(
@@ -97,8 +108,8 @@ fun LevelScreen(
         modifier = Modifier.fillMaxHeight()
     ) {
         LevelHeader(movesUsed, backClicked, settingsClicked)
-        LevelGrid(blockClicked, x, blocks, direction?:Direction.DOWN)
-        LevelFooter()
+        LevelGrid(blockClicked, x, blocks, direction ?: Direction.DOWN)
+        LevelFooter(undoClicked, restartClicked, infoClicked)
     }
 }
 
@@ -145,7 +156,12 @@ fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
-fun LevelGrid(blockClicked: (Char, Int) -> Unit, x: Int, blocks: List<Char>, direction: Direction = Direction.DOWN) {
+fun LevelGrid(
+    blockClicked: (Char, Int) -> Unit,
+    x: Int,
+    blocks: List<Char>,
+    direction: Direction = Direction.DOWN
+) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(x),
         contentPadding = PaddingValues(5.dp),
@@ -155,9 +171,15 @@ fun LevelGrid(blockClicked: (Char, Int) -> Unit, x: Int, blocks: List<Char>, dir
             val onClick = { blockClicked(blocks[index], index) }
             AnimatedContent(
                 targetState = blocks[index],
-                transitionSpec = { levelGridTransitions(this.initialState, this.targetState, direction) }
+                transitionSpec = {
+                    levelGridTransitions(
+                        this.initialState,
+                        this.targetState,
+                        direction
+                    )
+                }
             ) { type ->
-                when (type) {
+                when (type) { // TODO refactor to be color independent
                     'r' -> {
                         RedBox(onClick)
                     }
@@ -182,27 +204,30 @@ fun LevelGrid(blockClicked: (Char, Int) -> Unit, x: Int, blocks: List<Char>, dir
     }
 }
 
-
 @Composable
-fun LevelFooter() {
+fun LevelFooter(
+    undoClicked: () -> Unit,
+    restartClicked: () -> Unit,
+    infoClicked: () -> Unit,
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = undoClicked,
         ) {
-            Icon(Icons.Filled.Refresh, contentDescription = "Undo")
+            Icon(Icons.Filled.ArrowBack, contentDescription = "Undo")
         }
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = restartClicked,
+        ) {
+            Icon(Icons.Filled.Refresh, contentDescription = "Restart")
+        }
+        IconButton(
+            onClick = infoClicked,
         ) {
             Icon(Icons.Filled.Info, contentDescription = "Info")
-        }
-        IconButton(
-            onClick = { /*TODO*/ },
-        ) {
-            Icon(Icons.Filled.Star, contentDescription = "Hint")
         }
     }
 }
@@ -215,14 +240,15 @@ fun SuccessScreen(
     movesUsed: Int,
     levelName: String,
     stars: Int,
-    minMoves: Int
+    minMoves: Int,
+    isFinalLevel: Boolean
 ) {
     Card(
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
-        Column() {
+        Column {
             BackIcon(backClicked, Modifier.padding(10.dp))
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
@@ -279,7 +305,7 @@ fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit) {
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
-        Column() {
+        Column {
             BackIcon(backClicked, Modifier.padding(10.dp))
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,

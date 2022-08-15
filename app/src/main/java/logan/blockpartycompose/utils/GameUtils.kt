@@ -72,7 +72,7 @@ class GameUtils {
         @OptIn(ExperimentalAnimationApi::class)
         fun levelGridTransitions(initialState: Char, targetState: Char, direction: Direction): ContentTransform {
             return when {
-                initialState == '.' && targetState == 'b'-> {
+                initialState == '.' && targetState == 'b'-> { // Grey box turning Blue
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
@@ -92,7 +92,7 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == 'b' && targetState == '.' -> {
+                initialState == 'b' && targetState == '.' -> { // Blue box turning Grey
                     return when(direction){
                         Direction.LEFT -> {
                             expandHorizontally(animationSpec = tween(500, delayMillis = 0 )) { height -> height + height/2} with // Grey expand in
@@ -113,7 +113,7 @@ class GameUtils {
                     }
 
                 }
-                initialState == '.' && targetState == 'r' -> {
+                initialState == '.' && targetState == 'r' -> { // Grey box turning Red
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  + fadeIn() with
@@ -133,7 +133,7 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == 'r' && targetState == '.' -> {
+                initialState == 'r' && targetState == '.' -> { // Red box turning Grey
                     return when(direction){
                         Direction.LEFT -> {
                             expandHorizontally(animationSpec = tween(1000, delayMillis = 200 )) { height -> height + height/2} + fadeIn() with
@@ -154,24 +154,64 @@ class GameUtils {
                     }
                 }
                 initialState == '.' && targetState == 'g' -> {
-                    slideInVertically { height -> height } + fadeIn() with
-                            slideOutVertically { height -> -height } + fadeOut()
-
+                    return when(direction){
+                        Direction.LEFT -> {
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.End, targetWidth = { 0 }) // Grey shrink out
+                        }
+                        Direction.UP -> { //G
+                            slideInVertically(animationSpec = tween(500, delayMillis = 0)){ height -> height*2 } with // Blue slide in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500), shrinkTowards = Alignment.Top) // Grey shrink out
+                        }
+                        Direction.RIGHT -> {
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.Start, targetWidth = { 0 }) // Grey shrink out
+                        }
+                        Direction.DOWN -> {
+                            expandVertically(animationSpec = tween(500, delayMillis = 0), expandFrom = Alignment.Bottom)  with // Blue expand in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500)) // Grey shrink out
+                        }
+                    }
                 }
                 initialState == 'g' && targetState == '.' -> {
-                    scaleIn() + fadeIn() with
-                            scaleOut() + fadeOut()
-
+                    return when(direction){
+                        Direction.LEFT -> {
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height*2 }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.Start, targetWidth = { 0 }) // Grey shrink out
+                        }
+                        Direction.UP -> { //G
+                            slideInVertically(animationSpec = tween(500, delayMillis = 0)){ height -> -height } with // Blue slide in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500), shrinkTowards = Alignment.Bottom) // Grey shrink out
+                        }
+                        Direction.RIGHT -> {
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height*2 }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.End, targetWidth = { 0 })
+                        }
+                        Direction.DOWN -> {
+                            slideInVertically(animationSpec = tween(500, delayMillis = 0)){ height -> height*2 } with // Blue slide in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500), shrinkTowards = Alignment.Top) // Grey shrink out
+                        }
+                    }
                 }
-                initialState == 'r' && targetState == 'b' -> {
-                    slideInVertically { height -> height } + fadeIn() with
-                            slideOutVertically { height -> -height } + fadeOut()
-
-                }
-                initialState == 'b' && targetState == 'r' -> {
-                    scaleIn() + fadeIn() with
-                            scaleOut() + fadeOut()
-
+                initialState == 'g' && targetState == 'b' -> {
+                    return when(direction){
+                        Direction.LEFT -> {
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.End, targetWidth = { 0 }) // Grey shrink out
+                        }
+                        Direction.UP -> { //G
+                            slideInVertically(animationSpec = tween(500, delayMillis = 0)){ height -> height*2 } with // Blue slide in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500), shrinkTowards = Alignment.Top) // Grey shrink out
+                        }
+                        Direction.RIGHT -> {
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.Start, targetWidth = { 0 }) // Grey shrink out
+                        }
+                        Direction.DOWN -> {
+                            expandVertically(animationSpec = tween(500, delayMillis = 0), expandFrom = Alignment.Bottom)  with // Blue expand in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500)) // Grey shrink out
+                        }
+                    }
                 }
                 initialState == 'y' && targetState == 'r' -> {
                     slideInVertically { height -> height } + fadeIn() with
@@ -183,12 +223,40 @@ class GameUtils {
                             scaleOut() + fadeOut()
 
                 }
-                initialState == 'y' && targetState == 'b' -> {
-                    slideInVertically { height -> height } + fadeIn() with
-                            slideOutVertically { height -> -height } + fadeOut()
+                initialState == 'b' && targetState == 'r' -> { // Kill blue animation
+                    scaleIn() + fadeIn() with
+                            scaleOut() + fadeOut()
 
                 }
-                else -> {
+                initialState == 'y' && targetState == 'b' -> { // Win Animation
+//                    slideInVertically { height -> height } + fadeIn() with
+//                            slideOutVertically { height -> -height } + fadeOut()
+                    return when(direction){
+                        Direction.LEFT -> {
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.End, targetWidth = { 0 }) // Grey shrink out
+                        }
+                        Direction.UP -> { //G
+                            slideInVertically(animationSpec = tween(500, delayMillis = 0)){ height -> height*2 } with // Blue slide in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500), shrinkTowards = Alignment.Top) // Grey shrink out
+                        }
+                        Direction.RIGHT -> {
+                            slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height }  with // Blue slide in
+                                    shrinkHorizontally(animationSpec = tween(1, delayMillis = 200), shrinkTowards = Alignment.Start, targetWidth = { 0 }) // Grey shrink out
+                        }
+                        Direction.DOWN -> {
+                            expandVertically(animationSpec = tween(500, delayMillis = 0), expandFrom = Alignment.Bottom)  with // Blue expand in
+                                    shrinkVertically(animationSpec = tween(1, delayMillis = 500)) // Grey shrink out
+                        }
+                    }
+                }
+                initialState == 'b' && targetState == 'y' -> { // Win Animation 2
+//                    scaleIn(animationSpec = tween(1, delayMillis = 0)) with
+//                            scaleOut(animationSpec = tween(500, delayMillis = 0))
+                    scaleIn() with
+                            scaleOut()
+                }
+                    else -> {
                      fadeIn() with fadeOut()
                 }
             }
