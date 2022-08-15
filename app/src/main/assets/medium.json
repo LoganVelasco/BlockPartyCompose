@@ -28,16 +28,16 @@
       "blocks": "b........g...g..x...g....g....g...g.....g....rxy"
     },
     {
-      "id": "4",
+      "id": "14",
       "name": "Level 4",
       "levelSet": "Medium",
       "minMoves": "17",
       "x": "6",
       "y": "8",
-      "blocks": "...b...g..g................g.y..r..............."
+      "blocks": "........g.....g.....g.....g......gx.....xbr..yx."
     },
     {
-      "id": "5",
+      "id": "15",
       "name": "Level 5",
       "levelSet": "Medium",
       "minMoves": "14",
@@ -46,7 +46,7 @@
       "blocks": "yr................xxb.x....g.g.................."
     },
     {
-      "id": "6",
+      "id": "16",
       "name": "Level 6",
       "levelSet": "Medium",
       "minMoves": "8",
@@ -55,7 +55,7 @@
       "blocks": "......y....r........gg...b......................"
     },
     {
-      "id": "7",
+      "id": "17",
       "name": "Level 7",
       "levelSet": "Medium",
       "minMoves": "15",
@@ -64,7 +64,7 @@
       "blocks": "............r.........gy..bx.g....g....x........"
     },
     {
-      "id": "8",
+      "id": "18",
       "name": "Level 8",
       "levelSet": "Medium",
       "minMoves": "21",
@@ -73,22 +73,22 @@
       "blocks": "y.........g......g...gb......................r.."
     },
     {
-      "id": "9",
+      "id": "19",
       "name": "Level 9",
       "levelSet": "Medium",
       "minMoves": "14",
       "x": "6",
       "y": "8",
-      "blocks": ".......r...y..............x.......gb............"
+      "blocks": "b......ggg.gxxxx.xyx.....xg....x.ggg.x.ggg...g.r"
     },
     {
-      "id": "10",
+      "id": "20",
       "name": "Level 10",
       "levelSet": "Medium",
       "minMoves": "28",
       "x": "6",
       "y": "8",
-      "blocks": ".....y..r.........ggggggggggggbx..gg.xxxg.g..g.."
+      "blocks": "......b...g....g.....g.....x....x...........y..r"
     }
   ]
 }

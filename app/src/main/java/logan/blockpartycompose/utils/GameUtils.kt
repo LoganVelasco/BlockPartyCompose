@@ -229,8 +229,6 @@ class GameUtils {
 
                 }
                 initialState == 'y' && targetState == 'b' -> { // Win Animation
-//                    slideInVertically { height -> height } + fadeIn() with
-//                            slideOutVertically { height -> -height } + fadeOut()
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
@@ -251,8 +249,6 @@ class GameUtils {
                     }
                 }
                 initialState == 'b' && targetState == 'y' -> { // Win Animation 2
-//                    scaleIn(animationSpec = tween(1, delayMillis = 0)) with
-//                            scaleOut(animationSpec = tween(500, delayMillis = 0))
                     scaleIn() with
                             scaleOut()
                 }
