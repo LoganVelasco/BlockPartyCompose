@@ -161,8 +161,8 @@ private fun DifficultyButton(
                     targetState = showAnimation,
                     animationSpec = tween(1000, delayMillis = 0)
                 ) { stars ->
-                    if (totalStars >= 3 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
-                    else DisabledDifficulty(requirement = 3, difficulty.name)
+                    if (totalStars >= 15 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
+                    else DisabledDifficulty(requirement = 15, difficulty.name)
                 }
             }
             LevelSet.HARD -> {
@@ -170,8 +170,8 @@ private fun DifficultyButton(
                     targetState = showAnimation,
                     animationSpec = tween(1000, delayMillis = 0)
                 ) { stars ->
-                    if (totalStars >= 6 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
-                    else DisabledDifficulty(requirement = 6, difficulty.name)
+                    if (totalStars >= 30 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
+                    else DisabledDifficulty(requirement = 30, difficulty.name)
                 }
             }
             LevelSet.CUSTOM -> {

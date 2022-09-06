@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import logan.blockpartycompose.ui.screens.playMenu.PlayMenuScreen
 import logan.blockpartycompose.ui.screens.welcomeScreen.WelcomeScreen
-import logan.blockpartycompose.ui.screens.level.CustomLevelScreen
+import logan.blockpartycompose.ui.screens.customLevels.CustomLevelScreen
 import logan.blockpartycompose.ui.screens.level.LevelController
 import logan.blockpartycompose.ui.screens.levelBuilder.LevelBuilderScreen
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet

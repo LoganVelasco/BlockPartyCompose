@@ -76,12 +76,12 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
                     easyLevelProgress[level - 1] = stars
             }
             LevelSet.MEDIUM -> {
-                if (updateLevel(difficulty, currentProgress, level, stars))
-                    mediumLevelProgress[level - 1] = stars
+                if (updateLevel(difficulty, currentProgress, level - 10, stars))
+                    mediumLevelProgress[level - 11] = stars
             }
             LevelSet.HARD -> {
-                if (updateLevel(difficulty, currentProgress, level, stars))
-                    hardLevelProgress[level - 1] = stars
+                if (updateLevel(difficulty, currentProgress, level - 20, stars))
+                    hardLevelProgress[level - 21] = stars
             }
             LevelSet.CUSTOM -> {}
         }

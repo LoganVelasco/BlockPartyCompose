@@ -1,22 +1,25 @@
 package logan.blockpartycompose.utils
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.TransformOrigin
-import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.screens.level.Direction
 import logan.blockpartycompose.ui.screens.level.GameState
 
 class GameUtils {
 
     companion object {
-        fun isTouchingBlue(index: Int, blueIndex: Int, x: Int): Boolean {
-            if (isEdge(blueIndex, x))
-                return isValidEdgeMove(index, blueIndex, x)
+        private const val playerBlock = 'p'
+        private const val enemyBlock = 'e'
+        private const val movableBlock = 'm'
+        private const val goalBlock = 'g'
+        private const val emptyBlock = '.'
 
-            if (blueIndex + 1 == index || blueIndex - 1 == index || blueIndex + x == index || blueIndex - x == index)
+        fun isTouchingPlayer(index: Int, playerIndex: Int, x: Int): Boolean {
+            if (isEdge(playerIndex, x))
+                return isValidEdgeMove(index, playerIndex, x)
+
+            if (playerIndex + 1 == index || playerIndex - 1 == index || playerIndex + x == index || playerIndex - x == index)
                 return true
 
             return false
@@ -26,13 +29,13 @@ class GameUtils {
             return index % x == 0 || index % x == x - 1
         }
 
-        private fun isValidEdgeMove(index: Int, blueIndex: Int, x: Int): Boolean {
+        private fun isValidEdgeMove(index: Int, playerIndex: Int, x: Int): Boolean {
             return when {
-                blueIndex % x == 0 -> {
-                    blueIndex + 1 == index || blueIndex + x == index || blueIndex - x == index
+                playerIndex % x == 0 -> {
+                    playerIndex + 1 == index || playerIndex + x == index || playerIndex - x == index
                 }
-                blueIndex % x == x - 1 -> {
-                    blueIndex - 1 == index || blueIndex + x == index || blueIndex - x == index
+                playerIndex % x == x - 1 -> {
+                    playerIndex - 1 == index || playerIndex + x == index || playerIndex - x == index
                 }
                 else -> false
             }
@@ -54,25 +57,25 @@ class GameUtils {
             }
         }
 
-        fun isValidRedMove(newIndexType: Char): Boolean {
+        fun isValidEnemyMove(newIndexType: Char): Boolean {
             return when (newIndexType) {
-                '.' -> true
-                'b' -> true
-                'y' -> true
+                emptyBlock -> true
+                playerBlock -> true
+                goalBlock -> true
                 else -> false
             }
         }
 
-        fun shouldRedAttemptMove(index: Int, state: GameState): Boolean {
-            return isRedBlockPresent(index) && state == GameState.IN_PROGRESS
+        fun shouldEnemyAttemptMove(index: Int, state: GameState): Boolean {
+            return isEnemyBlockPresent(index) && state == GameState.IN_PROGRESS
         }
 
-        private fun isRedBlockPresent(index: Int) = index != -1
+        private fun isEnemyBlockPresent(index: Int) = index != -1
 
         @OptIn(ExperimentalAnimationApi::class)
         fun levelGridTransitions(initialState: Char, targetState: Char, direction: Direction): ContentTransform {
             return when {
-                initialState == '.' && targetState == 'b'-> { // Grey box turning Blue
+                initialState == emptyBlock && targetState == playerBlock-> { // Grey box turning Blue
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
@@ -92,7 +95,7 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == 'b' && targetState == '.' -> { // Blue box turning Grey
+                initialState == playerBlock && targetState == emptyBlock -> { // Blue box turning Grey
                     return when(direction){
                         Direction.LEFT -> {
                             expandHorizontally(animationSpec = tween(500, delayMillis = 0 )) { height -> height + height/2} with // Grey expand in
@@ -113,7 +116,7 @@ class GameUtils {
                     }
 
                 }
-                initialState == '.' && targetState == 'r' -> { // Grey box turning Red
+                initialState == emptyBlock && targetState == enemyBlock -> { // Grey box turning Red
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  + fadeIn() with
@@ -133,7 +136,7 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == 'r' && targetState == '.' -> { // Red box turning Grey
+                initialState == enemyBlock && targetState == emptyBlock -> { // Red box turning Grey
                     return when(direction){
                         Direction.LEFT -> {
                             expandHorizontally(animationSpec = tween(1000, delayMillis = 200 )) { height -> height + height/2} + fadeIn() with
@@ -153,7 +156,7 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == '.' && targetState == 'g' -> {
+                initialState == emptyBlock && targetState == movableBlock -> {
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
@@ -173,7 +176,7 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == 'g' && targetState == '.' -> {
+                initialState == movableBlock && targetState == emptyBlock -> {
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> -height*2 }  with // Blue slide in
@@ -193,7 +196,7 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == 'g' && targetState == 'b' -> {
+                initialState == movableBlock && targetState == playerBlock -> {
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
@@ -213,22 +216,22 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == 'y' && targetState == 'r' -> {
+                initialState == goalBlock && targetState == enemyBlock -> {
                     slideInVertically { height -> height } + fadeIn() with
                             slideOutVertically { height -> -height } + fadeOut()
 
                 }
-                initialState == 'r' && targetState == 'y' -> {
+                initialState == enemyBlock && targetState == goalBlock -> {
                     scaleIn() + fadeIn() with
                             scaleOut() + fadeOut()
 
                 }
-                initialState == 'b' && targetState == 'r' -> { // Kill blue animation
+                initialState == playerBlock && targetState == enemyBlock -> { // Kill blue animation
                     scaleIn() + fadeIn() with
                             scaleOut() + fadeOut()
 
                 }
-                initialState == 'y' && targetState == 'b' -> { // Win Animation
+                initialState == goalBlock && targetState == playerBlock -> { // Win Animation
                     return when(direction){
                         Direction.LEFT -> {
                             slideInHorizontally(animationSpec = tween(500, delayMillis = 0)) { height -> height }  with // Blue slide in
@@ -248,7 +251,7 @@ class GameUtils {
                         }
                     }
                 }
-                initialState == 'b' && targetState == 'y' -> { // Win Animation 2
+                initialState == playerBlock && targetState == goalBlock -> { // Win Animation 2
                     scaleIn() with
                             scaleOut()
                 }

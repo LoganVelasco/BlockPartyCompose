@@ -1,10 +1,8 @@
 package logan.blockpartycompose.data.models
 
-import androidx.compose.ui.text.toUpperCase
 import kotlinx.serialization.Serializable
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
-import java.util.*
 
 
 data class LevelInfo(
@@ -76,15 +74,15 @@ data class Level(
 ) {
     var state: GameState = GameState.IN_PROGRESS
     var blocks = initialBlocks.toMutableList()
-    var blueIndex: Int = initialBlocks.indexOf('b')
-    var redIndex: Int = initialBlocks.indexOf('r')
-    var goalIndex: Int = initialBlocks.indexOf('y')
+    var playerIndex: Int = initialBlocks.indexOf('p')
+    var enemyIndex: Int = initialBlocks.indexOf('e')
+    var goalIndex: Int = initialBlocks.indexOf('g')
 
     fun resetLevel() {
         state = GameState.IN_PROGRESS
         blocks = initialBlocks.toMutableList()
-        blueIndex = initialBlocks.indexOf('b')
-        redIndex = initialBlocks.indexOf('r')
+        playerIndex = initialBlocks.indexOf('p')
+        enemyIndex = initialBlocks.indexOf('e')
     }
 
 }
@@ -96,10 +94,10 @@ data class Block(
 )
 
 enum class BlockColor(val color: Char) {
-    BLUE('b'),
-    RED('r'),
-    YELLOW('y'),
-    GREEN('g'),
+    BLUE('p'),
+    RED('e'),
+    YELLOW('g'),
+    GREEN('m'),
     BLACK('x'),
     GRAY('.'),
 }

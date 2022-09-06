@@ -17,8 +17,8 @@ import logan.blockpartycompose.utils.GameUtils.Companion.isAbove
 import logan.blockpartycompose.utils.GameUtils.Companion.isInSameColumn
 import logan.blockpartycompose.utils.GameUtils.Companion.isInSameRow
 import logan.blockpartycompose.utils.GameUtils.Companion.isRightOf
-import logan.blockpartycompose.utils.GameUtils.Companion.isValidRedMove
-import logan.blockpartycompose.utils.GameUtils.Companion.shouldRedAttemptMove
+import logan.blockpartycompose.utils.GameUtils.Companion.isValidEnemyMove
+import logan.blockpartycompose.utils.GameUtils.Companion.shouldEnemyAttemptMove
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
@@ -32,6 +32,12 @@ class LevelsViewModel @Inject constructor(
     val state: LiveData<LevelState> = _state
 
     lateinit var level: Level
+
+    private val playerBlock = 'p'
+    private val enemyBlock = 'e'
+    private val movableBlock = 'm'
+    private val goalBlock = 'g'
+    private val emptyBlock = '.'
 
     fun setupLevel(levelSet: LevelSet, id: Int) {
         level = getLevel(levelSet, id)
@@ -56,10 +62,6 @@ class LevelsViewModel @Inject constructor(
         )
     }
 
-//    private fun getLevels(levelSet: LevelSet, context:Context): List<Level> {
-//        return repo.getLevels(levelSet, context)
-//    }
-
     private fun getLevel(levelSet: LevelSet, id: Int): Level {
         return repo.levelsSets[levelSet.name]!!.first { it.id == id }
     }
@@ -69,16 +71,16 @@ class LevelsViewModel @Inject constructor(
     }
 
     fun blockClicked(block: Char, index: Int) {
-        if (!GameUtils.isTouchingBlue(
+        if (!GameUtils.isTouchingPlayer(
                 index,
-                level.blueIndex,
+                level.playerIndex,
                 level.x
             )
         ) {
             return
         }
         when (block) {
-            'r' -> {
+            enemyBlock -> {
                 level.state = GameState.FAILED
                 _state.postValue(
                     LevelState(
@@ -88,9 +90,9 @@ class LevelsViewModel @Inject constructor(
                     )
                 )
             }
-            'g' -> {
-                if (handleGreenMove(index)) {
-                    val direction = moveBlue(index)
+            movableBlock -> {
+                if (handleMovableBlockMove(index)) {
+                    val direction = movePlayerBlock(index)
 
                     _state.postValue(
                         LevelState(
@@ -104,8 +106,8 @@ class LevelsViewModel @Inject constructor(
                     return
                 }
             }
-            'y' -> {
-                val direction = moveBlue(index)
+            goalBlock -> {
+                val direction = movePlayerBlock(index)
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks,
@@ -116,7 +118,7 @@ class LevelsViewModel @Inject constructor(
                 )
                 viewModelScope.launch {
                     delay(200)
-                    level.blocks[index] = 'y'
+                    level.blocks[index] = goalBlock
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks,
@@ -140,8 +142,8 @@ class LevelsViewModel @Inject constructor(
                 }
                 return
             }
-            '.' -> {
-                val direction = moveBlue(index)!!
+            emptyBlock -> {
+                val direction = movePlayerBlock(index)!!
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks,
@@ -157,13 +159,13 @@ class LevelsViewModel @Inject constructor(
         }
 
 
-        if (shouldRedAttemptMove(level.redIndex, level.state)) {
-            handleRedTurn()
+        if (shouldEnemyAttemptMove(level.enemyIndex, level.state)) {
+            handleEnemyTurn()
         }
     }
 
-    private fun handleRedTurn() {
-        var moveDirection = moveRed()
+    private fun handleEnemyTurn() {
+        var moveDirection = moveEnemyBlock()
         if (moveDirection != null && level.state == GameState.IN_PROGRESS) {
             viewModelScope.launch {
                 delay(100)
@@ -178,7 +180,7 @@ class LevelsViewModel @Inject constructor(
 
                 if (level.state != GameState.IN_PROGRESS) return@launch
 
-                moveDirection = moveRed()
+                moveDirection = moveEnemyBlock()
                 if (moveDirection != null) {
                     delay(175)
                     _state.postValue(
@@ -194,16 +196,16 @@ class LevelsViewModel @Inject constructor(
         }
     }
 
-    private fun moveBlue(index: Int): Direction? {
-        level.blocks[index] = 'b'
-        level.blocks[level.blueIndex] = '.'
-        val direction = getDirection(level.blueIndex, index, level.x)
-        level.blueIndex = index
+    private fun movePlayerBlock(index: Int): Direction? {
+        level.blocks[index] = playerBlock
+        level.blocks[level.playerIndex] = emptyBlock
+        val direction = getDirection(level.playerIndex, index, level.x)
+        level.playerIndex = index
         return direction
     }
 
-    private fun handleGreenMove(index: Int): Boolean {
-        val difference = (index - level.blueIndex)
+    private fun handleMovableBlockMove(index: Int): Boolean {
+        val difference = (index - level.playerIndex)
         val newIndex = index + difference
 
         if (newIndex < 0 || newIndex > level.blocks.size - 1) return false
@@ -215,12 +217,12 @@ class LevelsViewModel @Inject constructor(
         ) return false
 
         return when (level.blocks[newIndex]) {
-            '.' -> {
-                level.blocks[newIndex] = 'g'
+            emptyBlock -> {
+                level.blocks[newIndex] = movableBlock
                 true
             }
-            'g' -> {
-                level.blocks[newIndex] = '.'
+            movableBlock -> {
+                level.blocks[newIndex] = emptyBlock
                 true
             }
             else -> {
@@ -229,44 +231,44 @@ class LevelsViewModel @Inject constructor(
         }
     }
 
-    private fun moveRed(): Direction? {
-        if (isInSameColumn(level.blueIndex, level.redIndex, level.x)) {
-            return if (isAbove(level.redIndex, level.blueIndex)) {
-                if (!moveRed(Direction.UP)) {
-                    null // Unable to move up return null to signify end of red turn
+    private fun moveEnemyBlock(): Direction? {
+        if (isInSameColumn(level.playerIndex, level.enemyIndex, level.x)) {
+            return if (isAbove(level.enemyIndex, level.playerIndex)) {
+                if (!moveEnemyBlock(Direction.UP)) {
+                    null // Unable to move up return null to signify end of enemy turn
                 } else Direction.UP
             } else {
-                if (!moveRed(Direction.DOWN)) {
-                    null // Unable to move down return null to signify end of red turn
+                if (!moveEnemyBlock(Direction.DOWN)) {
+                    null // Unable to move down return null to signify end of enemy turn
                 } else Direction.DOWN
             }
-        } else if (isRightOf(level.redIndex, level.blueIndex, level.x)) {
-            if (!moveRed(Direction.LEFT)) {
-                if (isInSameRow(level.blueIndex, level.redIndex, level.x)) {
-                    return null // Unable to left move return null to signify end of red turn
+        } else if (isRightOf(level.enemyIndex, level.playerIndex, level.x)) {
+            if (!moveEnemyBlock(Direction.LEFT)) {
+                if (isInSameRow(level.playerIndex, level.enemyIndex, level.x)) {
+                    return null // Unable to left move return null to signify end of enemy turn
                 }
-                return if (isAbove(level.redIndex, level.blueIndex)) {
-                    if (!moveRed(Direction.UP)) {
-                        null // Unable to move up return null to signify end of red turn
+                return if (isAbove(level.enemyIndex, level.playerIndex)) {
+                    if (!moveEnemyBlock(Direction.UP)) {
+                        null // Unable to move up return null to signify end of enemy turn
                     } else Direction.UP
                 } else {
-                    if (!moveRed(Direction.DOWN)) {
-                        null // Unable to move down return null to signify end of red turn
+                    if (!moveEnemyBlock(Direction.DOWN)) {
+                        null // Unable to move down return null to signify end of enemy turn
                     } else Direction.DOWN
                 }
             } else return Direction.LEFT
         } else {
-            return if (!moveRed(Direction.RIGHT)) {
-                if (isInSameRow(level.blueIndex, level.redIndex, level.x)) {
-                    null // Unable to move right return null to signify end of red turn
+            return if (!moveEnemyBlock(Direction.RIGHT)) {
+                if (isInSameRow(level.playerIndex, level.enemyIndex, level.x)) {
+                    null // Unable to move right return null to signify end of enemy turn
                 } else
-                    if (isAbove(level.redIndex, level.blueIndex)) {
-                        if (!moveRed(Direction.UP)) {
-                            null // Unable to move up return null to signify end of red turn
+                    if (isAbove(level.enemyIndex, level.playerIndex)) {
+                        if (!moveEnemyBlock(Direction.UP)) {
+                            null // Unable to move up return null to signify end of enemy turn
                         } else Direction.UP
                     } else {
-                        if (!moveRed(Direction.DOWN)) {
-                            null // Unable to move down return null to signify end of red turn
+                        if (!moveEnemyBlock(Direction.DOWN)) {
+                            null // Unable to move down return null to signify end of enemy turn
                         } else Direction.DOWN
                     }
             } else Direction.RIGHT
@@ -275,26 +277,26 @@ class LevelsViewModel @Inject constructor(
     }
 
 
-    private fun moveRed(direction: Direction): Boolean {
+    private fun moveEnemyBlock(direction: Direction): Boolean {
         val newIndex = when (direction) {
             Direction.UP -> {
-                level.redIndex - level.x
+                level.enemyIndex - level.x
             }
             Direction.DOWN -> {
-                level.redIndex + level.x
+                level.enemyIndex + level.x
             }
             Direction.LEFT -> {
-                level.redIndex - 1
+                level.enemyIndex - 1
             }
             Direction.RIGHT -> {
-                level.redIndex + 1
+                level.enemyIndex + 1
             }
         }
 
 
-        if (newIndex == level.blueIndex) { // Red reached Blue
+        if (newIndex == level.playerIndex) { // Red reached Blue
             viewModelScope.launch {
-                moveRedToNewIndex(newIndex)
+                moveEnemyToNewIndex(newIndex)
                 delay(250)
                 _state.postValue(
                     LevelState(
@@ -318,28 +320,28 @@ class LevelsViewModel @Inject constructor(
         }
 
 
-        if (level.redIndex == level.goalIndex) { // Red moves off of Yellow
-            moveRedOffYellow(newIndex)
+        if (level.enemyIndex == level.goalIndex) { // Red moves off of Yellow
+            moveEnemyOffGoal(newIndex)
             return true
         }
 
-        if (isValidRedMove(level.blocks[newIndex])) {
-            moveRedToNewIndex(newIndex)
+        if (isValidEnemyMove(level.blocks[newIndex])) {
+            moveEnemyToNewIndex(newIndex)
             return true
         }
         return false
     }
 
-    private fun moveRedOffYellow(newIndex: Int) {
-        level.blocks[level.redIndex] = 'y'
-        level.blocks[newIndex] = 'r'
-        level.redIndex = newIndex
+    private fun moveEnemyOffGoal(newIndex: Int) {
+        level.blocks[level.enemyIndex] = goalBlock
+        level.blocks[newIndex] = enemyBlock
+        level.enemyIndex = newIndex
     }
 
-    private fun moveRedToNewIndex(newIndex: Int) {
-        level.blocks[level.redIndex] = '.'
-        level.blocks[newIndex] = 'r'
-        level.redIndex = newIndex
+    private fun moveEnemyToNewIndex(newIndex: Int) {
+        level.blocks[level.enemyIndex] = emptyBlock
+        level.blocks[newIndex] = enemyBlock
+        level.enemyIndex = newIndex
     }
 
 

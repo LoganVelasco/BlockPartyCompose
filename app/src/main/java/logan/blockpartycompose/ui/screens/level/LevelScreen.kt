@@ -180,16 +180,16 @@ fun LevelGrid(
                 }
             ) { type ->
                 when (type) { // TODO refactor to be color independent
-                    'r' -> {
+                    'e' -> {
                         RedBox(onClick)
                     }
-                    'b' -> {
+                    'p' -> {
                         BlueBox(onClick)
                     }
-                    'g' -> {
+                    'm' -> {
                         GreenBox(onClick)
                     }
-                    'y' -> {
+                    'g' -> {
                         YellowBox(onClick)
                     }
                     '.' -> {
@@ -243,6 +243,7 @@ fun SuccessScreen(
     minMoves: Int,
     isFinalLevel: Boolean
 ) {
+    if(movesUsed == 0)return
     Card(
         modifier = Modifier
             .fillMaxHeight()

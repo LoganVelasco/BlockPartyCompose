@@ -55,14 +55,14 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     }
 
     fun getCustomLevels(context: Context): List<Level> {
-        if (levelsSets[LevelSet.CUSTOM.name] != null) return levelsSets[LevelSet.CUSTOM.name]!!
+//        if (levelsSets[LevelSet.CUSTOM.name] != null) return levelsSets[LevelSet.CUSTOM.name]!!
         var fileInputStream: FileInputStream? = null
         return try {
             fileInputStream = context.openFileInput("custom.json")
             val inputStreamReader = InputStreamReader(fileInputStream)
             val json = BufferedReader(inputStreamReader).readText()
             if (json.isEmpty()) return emptyList()
-            val levels = gson.fromJson(json, LevelsDTO::class.java).convertToLevels()
+            val levels = gson.fromJson(json, LevelsDTO::class.java).convertToLevels() 
             levelsSets[LevelSet.CUSTOM.name] = levels
             levels
         } catch (e: FileNotFoundException) {
