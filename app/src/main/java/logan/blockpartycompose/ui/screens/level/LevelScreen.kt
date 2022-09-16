@@ -40,6 +40,7 @@ fun LevelController(
         ) {
             when (it) {
                 GameState.SUCCESS -> {
+                    if(state!!.movesUsed == 0)return@Crossfade // TODO figure out why recomposing here instead of catching
                     val nextLevel = viewModel.level.id + 1
                     val isFinalLevel = (nextLevel == 11 || nextLevel == 21 || nextLevel == 31) // TODO don't hardcode
                     val stars = viewModel.getStars(state!!.movesUsed)
