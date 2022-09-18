@@ -62,7 +62,7 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
         endIcon = Icons.Filled.Settings,
         middleContent = {
             Row(Modifier.padding(10.dp)) {
-                Text(text = "$totalStars/90", fontSize = 18.sp)
+                Text(text = "$totalStars/90", fontSize = 18.sp)// TODO: remove hardcoding
                 Icon(
                     Icons.Filled.Star, contentDescription = "Total Star Count", modifier = Modifier
                         .scale(1.25f)
@@ -159,19 +159,27 @@ private fun DifficultyButton(
             LevelSet.MEDIUM -> {
                 Crossfade(
                     targetState = showAnimation,
-                    animationSpec = tween(1000, delayMillis = 0)
+                    animationSpec = tween(1000, delayMillis = 1000)
                 ) { stars ->
-                    if (totalStars >= 15 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
-                    else DisabledDifficulty(requirement = 15, difficulty.name)
+                    if (totalStars >= 3 && !stars){
+                        EnabledDifficulty(progress, onClick, difficulty.name)
+                    }
+                    else{
+                        DisabledDifficulty(requirement = 3, difficulty.name)
+                    }
                 }
             }
             LevelSet.HARD -> {
                 Crossfade(
                     targetState = showAnimation,
-                    animationSpec = tween(1000, delayMillis = 0)
+                    animationSpec = tween(1000, delayMillis = 1000)
                 ) { stars ->
-                    if (totalStars >= 30 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
-                    else DisabledDifficulty(requirement = 30, difficulty.name)
+                    if (totalStars >= 4 && !stars){
+                        EnabledDifficulty(progress, onClick, difficulty.name)
+                    }
+                    else{
+                        DisabledDifficulty(requirement = 4, difficulty.name)
+                    }
                 }
             }
             LevelSet.CUSTOM -> {
