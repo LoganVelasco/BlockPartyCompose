@@ -18,8 +18,6 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
     var mediumLevelProgress = mutableListOf<Int>()
     var hardLevelProgress = mutableListOf<Int>()
 
-    var showMediumAnimation = false
-    var showHardAnimation = false
 
     init {
         prefs.getString(LevelSet.EASY.name, "").also { easyProgress ->
@@ -40,8 +38,6 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
             }
             while (hardLevelProgress.size <= 10) hardLevelProgress.add(0)
         }
-        showMediumAnimation = prefs.getBoolean(LevelSet.MEDIUM.name, false)
-        showHardAnimation = prefs.getBoolean(LevelSet.HARD.name, false)
     }
 
     private fun updateLevel(
@@ -87,18 +83,4 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
         }
     }
 
-    fun enableDifficultyAnimation(difficulty: LevelSet) {
-        prefs.edit().putBoolean(difficulty.name, true)
-        when(difficulty){
-            LevelSet.MEDIUM -> showMediumAnimation = true
-            LevelSet.HARD -> showHardAnimation = true
-            else -> {}
-        }
-    }
-    fun disableAnimations(){
-        prefs.edit().putBoolean(LevelSet.MEDIUM.name, false)
-        prefs.edit().putBoolean(LevelSet.HARD.name, false)
-        showMediumAnimation = false
-        showHardAnimation = false
-    }
 }

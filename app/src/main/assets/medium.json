@@ -4,43 +4,43 @@
       "id": "11",
       "name": "Level 1",
       "levelSet": "Medium",
-      "minMoves": "23",
+      "minMoves": "14",
       "x": "6",
       "y": "8",
-      "blocks": ".........p....x.....m....mx................eg..."
+      "blocks": ".......e...g..............x.......mp............"
     },
     {
       "id": "12",
       "name": "Level 2",
       "levelSet": "Medium",
-      "minMoves": "38",
+      "minMoves": "10",
       "x": "6",
       "y": "8",
-      "blocks": "mm..m.mp..m.....m.m......m.............xx....xeg"
+      "blocks": "......g....e........mm.....p...................."
     },
     {
       "id": "13",
       "name": "Level 3",
       "levelSet": "Medium",
-      "minMoves": "4",
+      "minMoves": "8",
       "x": "6",
       "y": "8",
-      "blocks": "p........m...m..x...m....m....m...m.....m....exg"
+      "blocks": "............e.........xg..px.m....m............."
     },
     {
       "id": "14",
       "name": "Level 4",
       "levelSet": "Medium",
-      "minMoves": "17",
+      "minMoves": "11",
       "x": "6",
       "y": "8",
-      "blocks": "........m.....m.....m.....mm......mx.....xpe..gx."
+      "blocks": "g.........m..........mp......................e.."
     },
     {
       "id": "15",
       "name": "Level 5",
       "levelSet": "Medium",
-      "minMoves": "14",
+      "minMoves": "17",
       "x": "6",
       "y": "8",
       "blocks": "ge................xxp.x....m.m.................."
@@ -49,46 +49,46 @@
       "id": "16",
       "name": "Level 6",
       "levelSet": "Medium",
-      "minMoves": "8",
+      "minMoves": "28",
       "x": "6",
       "y": "8",
-      "blocks": "......g....e........mm...p......................"
+      "blocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
     },
     {
       "id": "17",
       "name": "Level 7",
       "levelSet": "Medium",
-      "minMoves": "15",
+      "minMoves": "23",
       "x": "6",
       "y": "8",
-      "blocks": "............e.........mg..px.m....m....x........"
+      "blocks": ".........p....x.....m....mx................eg..."
     },
     {
       "id": "18",
       "name": "Level 8",
       "levelSet": "Medium",
-      "minMoves": "21",
+      "minMoves": "17",
       "x": "6",
       "y": "8",
-      "blocks": "g.........m......m...mp......................e.."
+      "blocks": "........m.....m.....m.....m......mx.....xpe..gx."
     },
     {
       "id": "19",
       "name": "Level 9",
       "levelSet": "Medium",
-      "minMoves": "14",
+      "minMoves": "4",
       "x": "6",
       "y": "8",
-      "blocks": "p......mmm.mxxxx.xgx.....xm....x.mmm.x.mmm...m.e"
+      "blocks": "p........m...m..x...m....m....m...m.....m....exg"
     },
     {
       "id": "20",
       "name": "Level 10",
       "levelSet": "Medium",
-      "minMoves": "28",
+      "minMoves": "38",
       "x": "6",
       "y": "8",
-      "blocks": "......p...m....m.....m.....x....x...........g..e"
+      "blocks": "mm..m.mp..m.....m.m......m.............xx....xeg"
     }
   ]
 }

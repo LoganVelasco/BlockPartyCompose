@@ -26,21 +26,15 @@ fun PlayMenuScreen(navController: NavController) {
     val viewModel: PlayMenuViewModel = hiltViewModel()
     val progress = viewModel.getProgress()
 
-    val flags by viewModel.flags.observeAsState()
+    PlayMenu(navController, progress)
 
-    if(flags != null)
-        PlayMenu(navController, progress, flags!![0], flags!![1])
-    else
-        viewModel.shouldShowAnimation()
 
 }
 
 @Composable
 private fun PlayMenu(
     navController: NavController,
-    progress: List<Int>,
-    showMediumAnimation: Boolean,
-    showHardAnimation: Boolean,
+    progress: List<Int>
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,7 +44,7 @@ private fun PlayMenu(
             .fillMaxHeight()
     ) {
         MenuHeader(navController, progress.sum())
-        MenuDifficulties(navController, progress, showMediumAnimation, showHardAnimation)
+        MenuDifficulties(navController, progress)
         MenuFooter(navController)
     }
 }
@@ -62,7 +56,7 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
         endIcon = Icons.Filled.Settings,
         middleContent = {
             Row(Modifier.padding(10.dp)) {
-                Text(text = "$totalStars/90", fontSize = 18.sp)
+                Text(text = "$totalStars/90 Total", fontSize = 18.sp)
                 Icon(
                     Icons.Filled.Star, contentDescription = "Total Star Count", modifier = Modifier
                         .scale(1.25f)
@@ -108,9 +102,7 @@ private fun MenuFooter(navController: NavController) {
 @Composable
 private fun MenuDifficulties(
     navController: NavController,
-    progress: List<Int>,
-    showMediumAnimation: Boolean,
-    showHardAnimation: Boolean,
+    progress: List<Int>
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -129,14 +121,14 @@ private fun MenuDifficulties(
             LevelSet.MEDIUM,
             progress[1],
             progress.sum(),
-            showMediumAnimation
-        ) { navController.navigate("medium") }
+
+            ) { navController.navigate("medium") }
         DifficultyButton(
             LevelSet.HARD,
             progress[2],
             progress.sum(),
-            showHardAnimation
-        ) { navController.navigate("hard") }
+
+            ) { navController.navigate("hard") }
     }
 }
 
@@ -145,7 +137,6 @@ private fun DifficultyButton(
     difficulty: LevelSet,
     progress: Int,
     totalStars: Int,
-    showAnimation: Boolean = false,
     onClick: () -> Unit,
 ) {
     Column(
@@ -157,22 +148,12 @@ private fun DifficultyButton(
                 EnabledDifficulty(progress, onClick, difficulty.name)
             }
             LevelSet.MEDIUM -> {
-                Crossfade(
-                    targetState = showAnimation,
-                    animationSpec = tween(1000, delayMillis = 0)
-                ) { stars ->
-                    if (totalStars >= 15 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
-                    else DisabledDifficulty(requirement = 15, difficulty.name)
-                }
+                if (totalStars >= 15) EnabledDifficulty(progress, onClick, difficulty.name)
+                else DisabledDifficulty(requirement = 15, difficulty.name)
             }
             LevelSet.HARD -> {
-                Crossfade(
-                    targetState = showAnimation,
-                    animationSpec = tween(1000, delayMillis = 0)
-                ) { stars ->
-                    if (totalStars >= 30 && !stars) EnabledDifficulty(progress, onClick, difficulty.name)
-                    else DisabledDifficulty(requirement = 30, difficulty.name)
-                }
+                if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name)
+                else DisabledDifficulty(requirement = 30, difficulty.name)
             }
             LevelSet.CUSTOM -> {
 
@@ -190,7 +171,7 @@ private fun EnabledDifficulty(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
-    ){
+    ) {
         Text(
             text = "$progress/30 Stars Collected"
         )
@@ -215,7 +196,7 @@ private fun DisabledDifficulty(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Collect $requirement stars to unlock"
+            text = "Collect $requirement Stars to Unlock"
         )
         Spacer(modifier = Modifier.height(5.dp))
         Spacer(modifier = Modifier.height(5.dp))

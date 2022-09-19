@@ -24,16 +24,4 @@ class PlayMenuViewModel @Inject constructor(
         return repo.getDifficultyProgress()
     }
 
-    fun shouldShowAnimation(){
-        val flags = repo.getDifficultyAnimationFlags()
-        _flags.value = flags
-    }
-
-    fun animationShown() {
-        viewModelScope.launch {
-            delay(1500)
-            _flags.value = listOf(false, false)
-            repo.animationShown()
-        }
-    }
 }

@@ -27,13 +27,6 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         )
     }
 
-    private fun enableDifficultyAnimation(difficulty: LevelSet){
-        gameData.enableDifficultyAnimation(difficulty)
-    }
-
-    fun getDifficultyAnimationFlags():List<Boolean>{
-        return listOf(gameData.showMediumAnimation, gameData.showHardAnimation)
-    }
 
     private fun getBlankLayout(x: Int, y: Int): List<Char> {
         return MutableList(x * y) {
@@ -130,12 +123,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         val currentStars = getDifficultyProgress().sum()
         gameData.updateProgress(difficulty, level, stars)
         val newStars = getDifficultyProgress().sum()
-        if(currentStars < 3 && newStars >= 3)enableDifficultyAnimation(LevelSet.MEDIUM)
-        if(currentStars < 6 && newStars >= 6)enableDifficultyAnimation(LevelSet.HARD)
-    }
 
-    fun animationShown() {
-        gameData.disableAnimations()
     }
 
 }

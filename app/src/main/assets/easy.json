@@ -22,23 +22,32 @@
       "id": "3",
       "name": "Level 3",
       "levelSet": "Easy",
-      "minMoves": "4",
+      "minMoves": "5",
       "x": "4",
       "y": "6",
-      "blocks": ".e...x...p............g."
+      "blocks": ".e...x...p.............g"
     },
     {
       "id": "4",
       "name": "Level 4",
       "levelSet": "Easy",
-      "minMoves": "17",
+      "minMoves": "8",
       "x": "6",
       "y": "8",
-      "blocks": "...e.g.............xx....x.....xx............p.."
+      "blocks": "............exp.........................g......."
     },
     {
       "id": "5",
       "name": "Level 5",
+      "levelSet": "Easy",
+      "minMoves": "10",
+      "x": "6",
+      "y": "8",
+      "blocks": ".....g......e......x.x....x...p................."
+    },
+    {
+      "id": "6",
+      "name": "Level 6",
       "levelSet": "Easy",
       "minMoves": "14",
       "x": "6",
@@ -46,8 +55,8 @@
       "blocks": ".....g.........e.........x.x..p...x....x........"
     },
     {
-      "id": "6",
-      "name": "Level 6",
+      "id": "7",
+      "name": "Level 7",
       "levelSet": "Easy",
       "minMoves": "8",
       "x": "6",
@@ -55,40 +64,31 @@
       "blocks": ".............e....g..x......x...p..............."
     },
     {
-      "id": "7",
-      "name": "Level 7",
-      "levelSet": "Easy",
-      "minMoves": "16",
-      "x": "6",
-      "y": "8",
-      "blocks": ".p.........x....x....................e....g....."
-    },
-    {
       "id": "8",
       "name": "Level 8",
       "levelSet": "Easy",
-      "minMoves": "21",
+      "minMoves": "17",
       "x": "6",
       "y": "8",
-      "blocks": "....ge.......x..............x......x......p....."
+      "blocks": "...e.g.............xx....x.....xx............p.."
     },
     {
       "id": "9",
       "name": "Level 9",
       "levelSet": "Easy",
-      "minMoves": "14",
+      "minMoves": "27",
       "x": "6",
       "y": "8",
-      "blocks": ".......e...g..............x.......mp............"
+      "blocks": "........x....x.x.......e.xx....x...g.xx...p....."
     },
     {
       "id": "10",
       "name": "Level 10",
       "levelSet": "Easy",
-      "minMoves": "28",
+      "minMoves": "21",
       "x": "6",
       "y": "8",
-      "blocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
+      "blocks": "....ge.......x..............x......x......p....."
     }
   ]
 }
