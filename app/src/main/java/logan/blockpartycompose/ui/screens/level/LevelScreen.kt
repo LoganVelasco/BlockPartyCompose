@@ -4,8 +4,8 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -164,7 +164,7 @@ fun LevelGrid(
     direction: Direction = Direction.DOWN
 ) {
     LazyVerticalGrid(
-        cells = GridCells.Fixed(x),
+        columns = GridCells.Fixed(x),
         contentPadding = PaddingValues(5.dp),
         modifier = Modifier.fillMaxWidth()
     ) {

@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -224,7 +224,7 @@ fun LevelBuilder(
 @Composable
 fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> Unit) {
     LazyVerticalGrid( // refactor to Row
-        cells = GridCells.Adaptive(60.dp),
+        columns = GridCells.Adaptive(60.dp),
         contentPadding = PaddingValues(5.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
