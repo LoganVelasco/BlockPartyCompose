@@ -14,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -173,7 +174,8 @@ private fun EnabledDifficulty(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "$progress/30 Stars Collected"
+            text = "$progress/30 Stars Collected",
+            modifier = Modifier.testTag("$text text")
         )
         Spacer(modifier = Modifier.height(5.dp))
         Spacer(modifier = Modifier.height(5.dp))

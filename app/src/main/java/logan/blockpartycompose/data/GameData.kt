@@ -14,31 +14,38 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
         context.getSharedPreferences("levels", Context.MODE_PRIVATE)
 
 
-    var easyLevelProgress = mutableListOf<Int>()
-    var mediumLevelProgress = mutableListOf<Int>()
-    var hardLevelProgress = mutableListOf<Int>()
-
-
-    init {
-        prefs.getString(LevelSet.EASY.name, "").also { easyProgress ->
-            if (!easyProgress.isNullOrEmpty()) {
-                easyLevelProgress = easyProgress.map { it.code - 48 } as MutableList<Int>
+    val easyLevelProgress: MutableList<Int>
+        get() {
+        return if (!prefs.getString(LevelSet.EASY.name, "").isNullOrEmpty()) {
+            prefs.getString(LevelSet.EASY.name, "")!!.map { it.code - 48 } as MutableList<Int>
+        } else {
+            mutableListOf<Int>().apply {
+                while (this.size <= 10) this.add(0)
             }
-            while (easyLevelProgress.size <= 10) easyLevelProgress.add(0)
-        }
-        prefs.getString(LevelSet.MEDIUM.name, "").also { mediumProgress ->
-            if (!mediumProgress.isNullOrEmpty()) {
-                mediumLevelProgress = mediumProgress.map { it.code - 48 } as MutableList<Int>
-            }
-            while (mediumLevelProgress.size <= 10) mediumLevelProgress.add(0)
-        }
-        prefs.getString(LevelSet.HARD.name, "").also { hardProgress ->
-            if (!hardProgress.isNullOrEmpty()) {
-                hardLevelProgress = hardProgress.map { it.code - 48 } as MutableList<Int>
-            }
-            while (hardLevelProgress.size <= 10) hardLevelProgress.add(0)
         }
     }
+
+    val mediumLevelProgress: MutableList<Int>
+        get() {
+            return if (!prefs.getString(LevelSet.MEDIUM.name, "").isNullOrEmpty()) {
+                prefs.getString(LevelSet.MEDIUM.name, "")!!.map { it.code - 48 } as MutableList<Int>
+            } else {
+                mutableListOf<Int>().apply {
+                    while (this.size <= 10) this.add(0)
+                }
+            }
+        }
+
+    val hardLevelProgress: MutableList<Int>
+        get() {
+            return if (!prefs.getString(LevelSet.HARD.name, "").isNullOrEmpty()) {
+                prefs.getString(LevelSet.HARD.name, "")!!.map { it.code - 48 } as MutableList<Int>
+            } else {
+                mutableListOf<Int>().apply {
+                    while (this.size <= 10) this.add(0)
+                }
+            }
+        }
 
     private fun updateLevel(
         difficulty: LevelSet,
@@ -68,16 +75,13 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
         }
         when (difficulty) {
             LevelSet.EASY -> {
-                if (updateLevel(difficulty, currentProgress, level, stars))
-                    easyLevelProgress[level - 1] = stars
+                updateLevel(difficulty, currentProgress, level, stars)
             }
             LevelSet.MEDIUM -> {
-                if (updateLevel(difficulty, currentProgress, level - 10, stars))
-                    mediumLevelProgress[level - 11] = stars
+                updateLevel(difficulty, currentProgress, level - 10, stars)
             }
             LevelSet.HARD -> {
-                if (updateLevel(difficulty, currentProgress, level - 20, stars))
-                    hardLevelProgress[level - 21] = stars
+                updateLevel(difficulty, currentProgress, level - 20, stars)
             }
             LevelSet.CUSTOM -> {}
         }
