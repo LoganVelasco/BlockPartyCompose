@@ -32,7 +32,7 @@ fun Block(modifier: Modifier) {
 
 @Composable
 fun RedBox(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -52,7 +52,7 @@ fun RedBox(
 
 @Composable
 fun BlueBox(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -72,7 +72,7 @@ fun BlueBox(
 
 @Composable
 fun YellowBox(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -93,7 +93,7 @@ fun YellowBox(
 
 @Composable
 fun GrayBox(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -113,7 +113,7 @@ fun GrayBox(
 
 @Composable
 fun BlackBox(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -133,7 +133,7 @@ fun BlackBox(
 
 @Composable
 fun GreenBox(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {

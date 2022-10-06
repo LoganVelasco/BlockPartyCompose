@@ -32,6 +32,7 @@ class LevelsViewModel @Inject constructor(
     val state: LiveData<LevelState> = _state
 
     lateinit var level: Level
+    var isTutorialMode = false
 
     private val playerBlock = 'p'
     private val enemyBlock = 'e'

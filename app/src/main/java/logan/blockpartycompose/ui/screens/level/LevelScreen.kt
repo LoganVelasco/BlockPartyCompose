@@ -80,7 +80,8 @@ fun LevelController(
                         undoClicked = {},
                         restartClicked = {viewModel.tryAgain()},
                         infoClicked = {},
-                        direction = state!!.direction
+                        direction = state!!.direction,
+                        isTutorialMode = viewModel.isTutorialMode
                     )
                 }
             }
@@ -102,7 +103,8 @@ fun LevelScreen(
     undoClicked: () -> Unit,
     restartClicked: () -> Unit,
     infoClicked: () -> Unit,
-    direction: Direction?
+    direction: Direction?,
+    isTutorialMode: Boolean
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -110,7 +112,42 @@ fun LevelScreen(
     ) {
         LevelHeader(movesUsed, backClicked, settingsClicked)
         LevelGrid(blockClicked, x, blocks, direction ?: Direction.DOWN)
+        if(isTutorialMode)TutorialWindow()
         LevelFooter(undoClicked, restartClicked, infoClicked)
+    }
+}
+
+@Composable
+fun TutorialWindow(type: Char='0') {
+    Card() {
+        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+            var string = "This block is controlled by the player"
+            when (type) { // TODO refactor to be color independent
+                'e' -> {
+                    RedBox()
+                    string = ""
+                }
+                'p' -> {
+                    BlueBox()
+                }
+                'm' -> {
+                    GreenBox()
+                }
+                'g' -> {
+                    YellowBox()
+                }
+                '.' -> {
+                    GrayBox()
+                }
+                'x' -> {
+                    BlackBox()
+                }
+                else -> {
+
+                }
+            }
+            Text(text = string)
+        }
     }
 }
 
