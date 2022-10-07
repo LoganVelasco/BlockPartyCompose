@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 
@@ -41,12 +42,14 @@ fun RedBox(
             modifier = modifier
                 .border(4.dp, Color.White)
                 .background(Color.Red)
-                .clickable { onClick() })
+                .clickable { onClick() }
+                .testTag("enemy"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.Black)
             .background(Color.Red)
             .clickable { onClick() }
+            .testTag("enemy")
         )
 }
 
@@ -61,12 +64,14 @@ fun BlueBox(
             modifier = modifier
                 .border(4.dp, Color.White)
                 .background(Color.Blue)
-                .clickable { onClick() })
+                .clickable { onClick() }
+                .testTag("player"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.Black)
             .background(Color.Blue)
             .clickable { onClick() }
+            .testTag("player")
         )
 }
 
@@ -76,18 +81,19 @@ fun YellowBox(
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-
     if (isSelected) {
         Block(
             modifier = modifier
                 .border(4.dp, Color.White)
                 .background(Color.Yellow)
-                .clickable { onClick() })
+                .clickable { onClick() }
+                .testTag("goal"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.Black)
             .background(Color.Yellow)
             .clickable { onClick() }
+            .testTag("goal")
         )
 }
 
@@ -102,12 +108,14 @@ fun GrayBox(
             modifier = modifier
                 .border(4.dp, Color.White)
                 .background(Color.Gray)
-                .clickable { onClick() })
+                .clickable { onClick() }
+            .testTag("empty"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.DarkGray)
             .background(Color.Gray)
             .clickable { onClick() }
+            .testTag("empty")
         )
 }
 
@@ -122,12 +130,14 @@ fun BlackBox(
             modifier = modifier
                 .border(4.dp, Color.White)
                 .background(Color.Black)
-                .clickable { onClick() })
+                .clickable { onClick() }
+                .testTag("x"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.DarkGray)
             .background(Color.Black)
             .clickable { onClick() }
+            .testTag("x")
         )
 }
 
@@ -142,11 +152,13 @@ fun GreenBox(
             modifier = modifier
                 .border(4.dp, Color.White)
                 .background(Color.Green)
-                .clickable { onClick() })
+                .clickable { onClick() }
+                .testTag("movable"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.Black)
             .background(Color.Green)
             .clickable { onClick() }
+            .testTag("movable")
         )
 }

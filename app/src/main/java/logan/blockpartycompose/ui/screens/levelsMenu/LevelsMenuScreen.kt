@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -147,6 +148,7 @@ private fun LevelCard(
         border = BorderStroke(5.dp, Color.DarkGray),
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
+            .testTag("${level.name} card")
             .padding(15.dp)
             .clickable {
                 navController.navigate("level/${levelSet.name}/${level.id}")
@@ -180,17 +182,10 @@ private fun LevelCard(
                         RoundedCornerShape(2.dp)
                     )
             )
-            LevelStars(result = stars, modifier = Modifier.padding(15.dp))
-//            Button(
-//                onClick = {
-//                    navController.navigate("level/${levelSet.name}/${level.id}")
-//                },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(start = 25.dp, end = 25.dp, bottom = 25.dp)
-//            ) {
-//                Text(text = "Play")
-//            }
+            LevelStars(result = stars, modifier = Modifier
+                .padding(15.dp)
+                .testTag("${level.name} stars")
+            )
         }
     }
 }
@@ -201,6 +196,7 @@ private fun LevelStars(result: Int, modifier: Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = modifier
+            .testTag("stars: $result")
             .fillMaxWidth()
             .padding(10.dp)
     ) {

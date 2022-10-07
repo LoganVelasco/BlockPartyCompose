@@ -1,23 +1,17 @@
 package logan.blockpartycompose.ui.screens.levelsMenu
 
-import android.content.Context
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import logan.blockpartycompose.MainActivity
-import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
-
+import logan.blockpartycompose.ui.screens.utils.clearProgress
+import logan.blockpartycompose.ui.screens.utils.openLevelMenu
+import logan.blockpartycompose.ui.screens.utils.setProgress
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.junit.Before
-import org.junit.Rule
-
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @RunWith(AndroidJUnit4::class)
 class LevelsMenuScreenInstrumentedTest {
 
@@ -26,30 +20,122 @@ class LevelsMenuScreenInstrumentedTest {
 
     @Before
     fun setup() {
-        val prefs = composeTestRule.activity.getSharedPreferences("levels", Context.MODE_PRIVATE)
-        prefs.edit().putString(LevelSet.EASY.name, "3333333333")
-            .apply()
+        clearProgress(composeTestRule.activity)
     }
 
     @Test
     fun clickingEasy_DisplaysInitialEasyLevels() {
-        composeTestRule.onNodeWithText("Play").performClick()
-        composeTestRule.onNodeWithText("EASY").performClick()
-        composeTestRule.onNodeWithText("EASY: 30/30").assertIsDisplayed()
+        composeTestRule.apply {
+            openLevelMenu(LevelSet.EASY)
 
+            onNodeWithText("EASY: 0/30").assertIsDisplayed()
+        }
     }
+
+    @Test
+    fun clickingEasy_DisplaysAllEasyLevels() {
+        composeTestRule.apply {
+            openLevelMenu(LevelSet.EASY)
+
+            onNodeWithText("LEVEL 1").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 2").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 3").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 4").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 5").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 6").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 7").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 8").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 9").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 10").assertIsDisplayed()
+        }
+    }
+
     @Test
     fun clickingMedium_DisplaysInitialMediumLevels() {
-        composeTestRule.onNodeWithText("Play").performClick()
-        composeTestRule.onNodeWithText("MEDIUM").performClick()
-        composeTestRule.onNodeWithText("MEDIUM: 0/30").assertIsDisplayed()
+        composeTestRule.apply {
+            setProgress(activity, LevelSet.EASY, "3333333333")
+            openLevelMenu(LevelSet.MEDIUM)
 
+            composeTestRule.onNodeWithText("MEDIUM: 0/30").assertIsDisplayed()
+        }
     }
+
+    @Test
+    fun clickingMedium_DisplaysAllMediumLevels() {
+        composeTestRule.apply {
+            setProgress(activity, LevelSet.EASY, "3333333333")
+            openLevelMenu(LevelSet.MEDIUM)
+
+            onNodeWithText("LEVEL 1").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 2").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 3").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 4").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 5").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 6").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 7").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 8").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 9").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 10").assertIsDisplayed()
+        }
+    }
+
     @Test
     fun clickingHard_DisplaysInitialHardLevels() {
-        composeTestRule.onNodeWithText("Play").performClick()
-        composeTestRule.onNodeWithText("HARD").performClick()
-        composeTestRule.onNodeWithText("HARD: 0/30").assertIsDisplayed()
+        composeTestRule.apply {
+            setProgress(activity, LevelSet.EASY, "3333333333")
+            openLevelMenu(LevelSet.HARD)
 
+            onNodeWithText("HARD: 0/30").assertIsDisplayed()
+        }
     }
+
+    @Test
+    fun clickingHard_DisplaysAllHardLevels() {
+        composeTestRule.apply {
+            setProgress(activity, LevelSet.EASY, "3333333333")
+            openLevelMenu(LevelSet.HARD)
+
+            onNodeWithText("LEVEL 1").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 2").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 3").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 4").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 5").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 6").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 7").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 8").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 9").performTouchInput { swipeUp() }
+            onNodeWithText("LEVEL 10").assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun displaysCorrectLevelProgress() {
+        composeTestRule.apply {
+            setProgress(activity = activity, levelSet = LevelSet.EASY, progress = "3210000000")
+
+            openLevelMenu(LevelSet.EASY)
+
+            onNodeWithTag("Level 1 stars", true).onChildren().assertAll(
+                hasContentDescription("Star")
+            )
+
+            onNodeWithText("LEVEL 1").performTouchInput { swipeUp() }
+            val level2Stars = onNodeWithTag("Level 2 stars", true).onChildren()
+            level2Stars[0].assertContentDescriptionEquals("Star")
+            level2Stars[1].assertContentDescriptionEquals("Star")
+            level2Stars[2].assertContentDescriptionEquals("Empty Star")
+
+            onNodeWithText("LEVEL 2").performTouchInput { swipeUp() }
+            val level3Stars = onNodeWithTag("Level 3 stars", true).onChildren()
+            level3Stars[0].assertContentDescriptionEquals("Star")
+            level3Stars[1].assertContentDescriptionEquals("Empty Star")
+            level3Stars[2].assertContentDescriptionEquals("Empty Star")
+
+            onNodeWithText("LEVEL 3").performTouchInput { swipeUp() }
+            onNodeWithTag("Level 4 stars", true).onChildren().assertAll(
+                hasContentDescription("Empty Star")
+            )
+        }
+    }
+
 }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -166,7 +167,7 @@ fun LevelGrid(
     LazyVerticalGrid(
         columns = GridCells.Fixed(x),
         contentPadding = PaddingValues(5.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().testTag("level")
     ) {
         items(blocks.size) { index ->
             val onClick = { blockClicked(blocks[index], index) }

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun EmptyStar() {
     Icon(
-        Icons.Outlined.Star, contentDescription = "Star", tint = Color.Gray,
+        Icons.Outlined.Star, contentDescription = "Empty Star", tint = Color.Gray,
         modifier = Modifier
             .padding(5.dp)
             .scale(2.5f)
