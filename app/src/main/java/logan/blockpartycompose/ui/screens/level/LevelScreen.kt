@@ -288,6 +288,7 @@ private fun SuccessStars(result: Int) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
+            .testTag("stars")
     ) {
         if (result >= 1) {
             FilledStar()

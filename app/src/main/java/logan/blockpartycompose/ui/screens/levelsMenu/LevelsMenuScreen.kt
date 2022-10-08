@@ -126,6 +126,7 @@ fun LevelsList(
             modifier = Modifier
                 .padding()
                 .fillMaxSize()
+                .testTag("levels")
         ) {
             items(levels.size) { index ->
                 val level = levels[index]
