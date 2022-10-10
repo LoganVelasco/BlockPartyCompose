@@ -30,7 +30,7 @@ fun LevelController(
     navigation: NavController,
     levelSet: LevelSet,
     name: Int,
-    viewModel: LevelsViewModel = hiltViewModel()
+    viewModel: LevelViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.observeAsState()
 

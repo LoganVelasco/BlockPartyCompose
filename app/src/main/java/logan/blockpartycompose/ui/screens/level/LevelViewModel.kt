@@ -24,7 +24,7 @@ import kotlin.math.absoluteValue
 
 
 @HiltViewModel
-class LevelsViewModel @Inject constructor(
+class LevelViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
@@ -85,7 +85,7 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks,
-                        movesUsed = _state.value!!.movesUsed + 1,
+                        movesUsed = ++level.movesUsed,
                         gameState = level.state,
                     )
                 )
@@ -97,7 +97,7 @@ class LevelsViewModel @Inject constructor(
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks,
-                            movesUsed = _state.value!!.movesUsed + 1,
+                            movesUsed = ++level.movesUsed,
                             gameState = level.state,
                             direction = direction
                         )
@@ -111,7 +111,7 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks,
-                        movesUsed = _state.value!!.movesUsed + 1,
+                        movesUsed = ++level.movesUsed,
                         gameState = level.state,
                         direction = direction
                     )
@@ -122,7 +122,7 @@ class LevelsViewModel @Inject constructor(
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks,
-                            movesUsed = _state.value!!.movesUsed,
+                            movesUsed = level.movesUsed,
                             gameState = level.state,
                             direction = direction
                         )
@@ -133,7 +133,7 @@ class LevelsViewModel @Inject constructor(
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks,
-                            movesUsed = _state.value!!.movesUsed,
+                            movesUsed = level.movesUsed,
                             gameState = level.state,
                             direction = direction
                         )
@@ -147,7 +147,7 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks,
-                        movesUsed = _state.value!!.movesUsed + 1,
+                        movesUsed = ++level.movesUsed,
                         gameState = level.state,
                         direction = direction
                     )
@@ -172,7 +172,7 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
-                        movesUsed = _state.value!!.movesUsed,
+                        movesUsed = level.movesUsed,
                         gameState = level.state,
                         direction = moveDirection
                     )
@@ -186,7 +186,7 @@ class LevelsViewModel @Inject constructor(
                     _state.postValue(
                         LevelState(
                             blocks = level.blocks.toMutableList(),
-                            movesUsed = _state.value!!.movesUsed,
+                            movesUsed = level.movesUsed,
                             gameState = level.state,
                             direction = moveDirection
                         )
@@ -301,7 +301,7 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
-                        movesUsed = _state.value!!.movesUsed,
+                        movesUsed = level.movesUsed,
                         gameState = level.state,
                         direction = direction
                     )
@@ -311,7 +311,7 @@ class LevelsViewModel @Inject constructor(
                 _state.postValue(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
-                        movesUsed = _state.value!!.movesUsed,
+                        movesUsed = level.movesUsed,
                         gameState = level.state
                     )
                 )

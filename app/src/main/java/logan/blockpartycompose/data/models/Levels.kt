@@ -74,6 +74,7 @@ data class Level(
 ) {
     var state: GameState = GameState.IN_PROGRESS
     var blocks = initialBlocks.toMutableList()
+    var movesUsed = 0
     var playerIndex: Int = initialBlocks.indexOf('p')
     var enemyIndex: Int = initialBlocks.indexOf('e')
     var goalIndex: Int = initialBlocks.indexOf('g')
@@ -81,6 +82,7 @@ data class Level(
     fun resetLevel() {
         state = GameState.IN_PROGRESS
         blocks = initialBlocks.toMutableList()
+        movesUsed = 0
         playerIndex = initialBlocks.indexOf('p')
         enemyIndex = initialBlocks.indexOf('e')
     }

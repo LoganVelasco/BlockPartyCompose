@@ -1,4 +1,4 @@
-package logan.blockpartycompose.ui.screens.level
+package logan.blockpartycompose.feature.level
 
 import androidx.compose.ui.semantics.SemanticsProperties.TestTag
 import androidx.compose.ui.test.*
@@ -6,7 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import logan.blockpartycompose.MainActivity
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
-import logan.blockpartycompose.ui.screens.utils.*
+import logan.blockpartycompose.utils.*
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,7 +15,7 @@ import org.junit.Before
 import org.junit.Rule
 
 @RunWith(AndroidJUnit4::class)
-class LevelsScreenInstrumentedTest {
+class LevelsScreenFeatureTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()

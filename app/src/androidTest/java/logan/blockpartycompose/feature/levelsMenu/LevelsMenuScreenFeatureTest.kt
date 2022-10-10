@@ -1,19 +1,20 @@
-package logan.blockpartycompose.ui.screens.levelsMenu
+package logan.blockpartycompose.feature.levelsMenu
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import logan.blockpartycompose.MainActivity
-import logan.blockpartycompose.ui.screens.utils.clearProgress
-import logan.blockpartycompose.ui.screens.utils.openLevelMenu
-import logan.blockpartycompose.ui.screens.utils.setProgress
+import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.utils.clearProgress
+import logan.blockpartycompose.utils.openLevelMenu
+import logan.blockpartycompose.utils.setProgress
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class LevelsMenuScreenInstrumentedTest {
+class LevelsMenuScreenFeatureTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()

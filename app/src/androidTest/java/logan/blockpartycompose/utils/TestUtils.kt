@@ -1,4 +1,4 @@
-package logan.blockpartycompose.ui.screens.utils
+package logan.blockpartycompose.utils
 
 import android.content.Context
 import androidx.compose.ui.semantics.SemanticsProperties

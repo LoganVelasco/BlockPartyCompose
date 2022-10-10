@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import logan.blockpartycompose.ui.screens.level.BackIcon
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.level.LevelScreen
-import logan.blockpartycompose.ui.screens.level.LevelsViewModel
+import logan.blockpartycompose.ui.screens.level.LevelViewModel
 import logan.blockpartycompose.ui.screens.levelBuilder.LevelBuilderViewModel
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
@@ -30,7 +30,7 @@ fun CustomLevelScreen(
             navigation.graph.id
         )
     ),
-    levelsViewModel: LevelsViewModel = hiltViewModel()
+    levelsViewModel: LevelViewModel = hiltViewModel()
 ) {
 
     val state by levelsViewModel.state.observeAsState()
