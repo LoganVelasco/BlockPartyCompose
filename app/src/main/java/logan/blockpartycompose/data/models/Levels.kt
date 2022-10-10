@@ -18,6 +18,7 @@ data class LevelsDTO(
             return LevelsDTO(levels.map { LevelDTO.getDTO(it) })
         }
     }
+
     fun convertToLevels(): List<Level> {
         return levels.map { it.convertToLevel() }
     }
@@ -29,7 +30,7 @@ data class LevelDTO(
     val levelSet: String,
     val x: Int,
     val y: Int,
-    val blocks: String,
+    val initialBlocks: String,
     val minMoves: Int
 ) {
 
@@ -41,7 +42,7 @@ data class LevelDTO(
                 level.levelSet.name,
                 level.x,
                 level.y,
-                level.blocks.toString(),
+                level.initialBlocks.toString(),
                 level.minMoves,
             )
         }
@@ -55,7 +56,7 @@ data class LevelDTO(
             LevelSet.valueOf(levelSet.uppercase()),
             x,
             y,
-            blocks.toList(),
+            initialBlocks.filter { it != ','  && it != '[' && it != ']' && it != ' ' }.toList(),
             minMoves
         )
     }

@@ -83,17 +83,27 @@ class LevelBuilderViewModel @Inject constructor(
         )
     }
 
-    fun triggerSaveDialog(){
+    fun triggerSaveDialog() {
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
             LevelBuilderState(blocks, selectedBlockColor = null, saved = true)
         )
     }
 
-    fun saveClicked(context: Context, string: String) { // bad logic shouldn't need to pass blocks
+    fun saveClicked(context: Context, name: String) { // bad logic shouldn't need to pass blocks
         level.blocks = _state.value!!.blocks.toMutableList()
-        level.name = string
-        repo.addCustomLevel(level, context)
+
+        val newLevel = Level(
+            level.id,
+            name,
+            level.levelSet,
+            level.x,
+            level.y,
+            _state.value!!.blocks.toMutableList(),
+            level.minMoves,
+        )
+
+        repo.addCustomLevel(newLevel, context)
         saved = true
     }
 

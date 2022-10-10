@@ -95,8 +95,9 @@ fun LevelTopBar(
         middleContent = {
             Row(Modifier.padding(10.dp)) {
                 val count = if (progress.isEmpty()) 0 else progress.sum()
-                Text(text = "${levelSet.name}: $count/30", fontSize = 18.sp)
-                Icon(
+                val text = if(levelSet == LevelSet.CUSTOM)"My Levels" else "${levelSet.name}: $count/30"
+                Text(text = text, fontSize = 18.sp)
+                if(levelSet != LevelSet.CUSTOM) Icon(
                     Icons.Filled.Star,
                     contentDescription = "${levelSet.name} Star Count",
                     modifier = Modifier
@@ -119,7 +120,6 @@ fun LevelsList(
     progress: List<Int>,
 ) {
     Column {
-//        BackIcon(backClicked = { navController.navigateUp() }, modifier = Modifier.padding(10.dp))
         LazyColumn(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -183,10 +183,11 @@ private fun LevelCard(
                         RoundedCornerShape(2.dp)
                     )
             )
-            LevelStars(result = stars, modifier = Modifier
-                .padding(15.dp)
-                .testTag("${level.name} stars")
-            )
+            if(level.levelSet != LevelSet.CUSTOM)
+                LevelStars(result = stars, modifier = Modifier
+                    .padding(15.dp)
+                    .testTag("${level.name} stars")
+                )
         }
     }
 }

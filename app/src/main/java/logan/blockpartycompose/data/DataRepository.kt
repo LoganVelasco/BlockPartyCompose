@@ -68,14 +68,13 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         val levels = getCustomLevels(context)
         val newLevels = mutableListOf<Level>()
         newLevels.addAll(levels)
-        level.id = newLevels.size+1
+        level.id = (newLevels.size) *-1
         newLevels.add(level)
-        val data = gson.toJson(LevelsDTO.getDTO(levels))
+        val data = gson.toJson(LevelsDTO.getDTO(newLevels))
         val fileOutputStream: FileOutputStream
         return try {
             fileOutputStream = context.openFileOutput("custom.json", Context.MODE_PRIVATE)
             fileOutputStream.write(data.toByteArray())
-            levelsSets[LevelSet.CUSTOM.name] = newLevels
             true
         } catch (e: Exception) {
             e.printStackTrace()

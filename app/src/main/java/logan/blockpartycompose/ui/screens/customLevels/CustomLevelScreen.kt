@@ -44,11 +44,12 @@ fun CustomLevelScreen(
                         navigation.popBackStack("level/{levelSet}/{name}", inclusive = false)
                     },
                     editClicked = {
-                        if(id != -1)navigation.navigate("levelBuilder/$id")
+                        levelsViewModel.tryAgain()
+                        if (id != -1) navigation.navigate("levelBuilder/$id")
                         else navigation.popBackStack("levelBuilder", inclusive = false)
                     },
                     backClicked = {
-                        navigation.popBackStack("levelBuilder", inclusive = false)
+                        navigation.navigateUp()
                     },
                     message = "You Did It!"
                 )
@@ -56,7 +57,10 @@ fun CustomLevelScreen(
             GameState.FAILED -> {
                 CustomLevelEnd(
                     restartClicked = { levelsViewModel.tryAgain() },
-                    editClicked = { navigation.navigate("levelBuilder") },
+                    editClicked = {
+                        levelsViewModel.tryAgain()
+                        navigation.navigate("levelBuilder")
+                    },
                     backClicked = { navigation.navigateUp() },
                     message = "Level Failed"
                 )
@@ -70,7 +74,7 @@ fun CustomLevelScreen(
                     backClicked = { navigation.navigateUp() },
                     settingsClicked = { navigation.navigateUp() },
                     undoClicked = {},
-                    restartClicked = {levelsViewModel.tryAgain()},
+                    restartClicked = { levelsViewModel.tryAgain() },
                     infoClicked = {},
                     direction = state!!.direction
                 )
