@@ -40,6 +40,11 @@ fun ComposeContentTestRule.openLevelMenu(levelSet: LevelSet = LevelSet.EASY) {
     this.onNodeWithText(levelSet.name).performClick()
 }
 
+fun ComposeContentTestRule.openLevelBuilder() {
+    this.openPlayMenu()
+    this.onNodeWithText("Level Builder").performClick()
+}
+
 fun ComposeContentTestRule.openLevel(level: Int = 1, levelSet: LevelSet = LevelSet.EASY) {
     this.openLevelMenu(levelSet)
     this.onNodeWithTag("levels").performScrollToIndex(level - 1)

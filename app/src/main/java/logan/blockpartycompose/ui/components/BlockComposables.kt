@@ -43,7 +43,7 @@ fun RedBox(
                 .border(4.dp, Color.White)
                 .background(Color.Red)
                 .clickable { onClick() }
-                .testTag("enemy"))
+                .testTag("selected:enemy"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.Black)
@@ -65,7 +65,7 @@ fun BlueBox(
                 .border(4.dp, Color.White)
                 .background(Color.Blue)
                 .clickable { onClick() }
-                .testTag("player"))
+                .testTag("selected:player"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.Black)
@@ -87,7 +87,7 @@ fun YellowBox(
                 .border(4.dp, Color.White)
                 .background(Color.Yellow)
                 .clickable { onClick() }
-                .testTag("goal"))
+                .testTag("selected:goal"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.Black)
@@ -109,7 +109,7 @@ fun GrayBox(
                 .border(4.dp, Color.White)
                 .background(Color.Gray)
                 .clickable { onClick() }
-            .testTag("empty"))
+            .testTag("selected:empty"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.DarkGray)
@@ -131,7 +131,7 @@ fun BlackBox(
                 .border(4.dp, Color.White)
                 .background(Color.Black)
                 .clickable { onClick() }
-                .testTag("x"))
+                .testTag("selected:x"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.DarkGray)
@@ -153,7 +153,7 @@ fun GreenBox(
                 .border(4.dp, Color.White)
                 .background(Color.Green)
                 .clickable { onClick() }
-                .testTag("movable"))
+                .testTag("selected:movable"))
     } else
         Block(modifier = modifier
             .border(1.dp, Color.Black)

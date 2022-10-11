@@ -91,7 +91,7 @@ class LevelBuilderViewModel @Inject constructor(
     }
 
     fun saveClicked(context: Context, name: String) { // bad logic shouldn't need to pass blocks
-        level.blocks = _state.value!!.blocks.toMutableList()
+//        level.blocks = _state.value!!.blocks.toMutableList()
 
         val newLevel = Level(
             level.id,

@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalTextInputService
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -116,7 +117,7 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
             Button(
                 onClick = saveLevel
             ) {
-                Text("Continue")
+                Text("Save")
             }
         },
         dismissButton =
@@ -130,7 +131,6 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
     )
 }
 
-//@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SaveLevelDialog(
     context: Context,
@@ -138,13 +138,10 @@ fun SaveLevelDialog(
     saveLevel: KFunction2<Context, String, Unit>
 ) {
     val levelName = remember { mutableStateOf("") }
-//    val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-//        delay(100)
-//        keyboard?.show()
-    }
+//    LaunchedEffect(Unit) {
+//        focusRequester.requestFocus()
+//    }
     AlertDialog(
         onDismissRequest = closeDialog,
         title = {
@@ -159,7 +156,7 @@ fun SaveLevelDialog(
                 TextField(
                     value = levelName.value,
                     onValueChange = { levelName.value = it },
-                    modifier = Modifier.focusRequester(focusRequester)
+                    modifier = Modifier.focusRequester(focusRequester).testTag("level name")
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 Row(
@@ -209,7 +206,7 @@ fun LevelBuilder(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            BackIcon(backClicked = { backClicked() })
+            BackIcon(backClicked = { backClicked() }, modifier = Modifier.testTag("back button"))
             Button(onClick = { clearAllClicked() }, Modifier.padding(15.dp)) {
                 Text(text = "Clear All")
             }
@@ -226,7 +223,7 @@ fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> 
     LazyVerticalGrid( // refactor to Row
         columns = GridCells.Adaptive(60.dp),
         contentPadding = PaddingValues(5.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().testTag("palette")
     ) {
         item {
             BlueBox(

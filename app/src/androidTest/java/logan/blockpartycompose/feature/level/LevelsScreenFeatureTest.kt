@@ -45,7 +45,7 @@ class LevelsScreenFeatureTest {
             movePlayerDown()
             movePlayerDown()
 
-            waitUntilExists(hasText("You Did it!"), 1000)
+            waitUntilExists(hasText("You Did it!"))
             onNodeWithText("Level 1 Completed in 3 moves!").assertIsDisplayed()
 
             var stars = onNodeWithTag("stars", true).onChildren()
@@ -61,7 +61,7 @@ class LevelsScreenFeatureTest {
             movePlayerDown()
             movePlayerDown()
 
-            waitUntilExists(hasText("You Did it!"), 1000)
+            waitUntilExists(hasText("You Did it!"))
             onNodeWithText("Level 1 Completed in 5 moves!").assertIsDisplayed()
 
             stars = onNodeWithTag("stars", true).onChildren()
@@ -89,7 +89,7 @@ class LevelsScreenFeatureTest {
         }
     }
 
-    @Test
+    @Test // Flaky?
     fun clickingNextLevel_goesToNextLevel() {
         composeTestRule.apply {
             openLevel(1, LevelSet.EASY)
