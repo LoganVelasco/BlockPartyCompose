@@ -11,11 +11,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun Block(modifier: Modifier) {
+fun BaseBlock(size: Dp = 50.dp, modifier: Modifier) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -23,8 +24,8 @@ fun Block(modifier: Modifier) {
     ) {
         Box(
             modifier = modifier
-                .height(50.dp)
-                .width(50.dp)
+                .height(size)
+                .width(size)
                 .padding(5.dp)
                 .clip(RectangleShape)
         )
@@ -32,133 +33,153 @@ fun Block(modifier: Modifier) {
 }
 
 @Composable
-fun RedBox(
-    onClick: () -> Unit,
+fun Block(
+    backgroundColor: Color,
+    defaultColor: Color,
+    selectedColor: Color,
+    testTag: String,
+    modifier: Modifier = Modifier,
+    size: Dp = 50.dp,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier
+    onClick: (() -> Unit)?,
 ) {
-    if (isSelected) {
-        Block(
-            modifier = modifier
-                .border(4.dp, Color.White)
-                .background(Color.Red)
-                .clickable { onClick() }
-                .testTag("selected:enemy"))
-    } else
-        Block(modifier = modifier
-            .border(1.dp, Color.Black)
-            .background(Color.Red)
+    val defaultModifier = if (onClick != null) {
+        Modifier
+            .background(backgroundColor)
             .clickable { onClick() }
-            .testTag("enemy")
-        )
+    } else {
+        Modifier
+            .background(backgroundColor)
+    }
+
+    val selectedModifier = if (isSelected) {
+        Modifier
+            .border(4.dp, selectedColor)
+            .testTag("selected:$testTag")
+    } else {
+        Modifier
+            .border(1.dp, defaultColor)
+            .testTag(testTag)
+    }
+
+    BaseBlock(
+        size = size,
+        modifier = modifier.then(defaultModifier.then(selectedModifier))
+    )
 }
 
 @Composable
-fun BlueBox(
-    onClick: () -> Unit,
+fun EnemyBlock(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier
+    size: Dp = 50.dp,
 ) {
-    if (isSelected) {
-        Block(
-            modifier = modifier
-                .border(4.dp, Color.White)
-                .background(Color.Blue)
-                .clickable { onClick() }
-                .testTag("selected:player"))
-    } else
-        Block(modifier = modifier
-            .border(1.dp, Color.Black)
-            .background(Color.Blue)
-            .clickable { onClick() }
-            .testTag("player")
-        )
+    Block(
+        onClick = onClick,
+        isSelected = isSelected,
+        size = size,
+        modifier = modifier,
+        backgroundColor = Color.Red,
+        defaultColor = Color.Black,
+        selectedColor = Color.White,
+        testTag = "enemy"
+    )
+}
+
+
+@Composable
+fun PlayerBlock(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    isSelected: Boolean = false,
+    size: Dp = 50.dp,
+) {
+    Block(
+        onClick = onClick,
+        isSelected = isSelected,
+        size = size,
+        modifier = modifier,
+        backgroundColor = Color.Blue,
+        defaultColor = Color.Black,
+        selectedColor = Color.White,
+        testTag = "player"
+    )
+}
+
+
+@Composable
+fun GoalBlock(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    isSelected: Boolean = false,
+    size: Dp = 50.dp,
+) {
+    Block(
+        onClick = onClick,
+        isSelected = isSelected,
+        size = size,
+        modifier = modifier,
+        backgroundColor = Color.Yellow,
+        defaultColor = Color.Black,
+        selectedColor = Color.White,
+        testTag = "goal"
+    )
 }
 
 @Composable
-fun YellowBox(
-    onClick: () -> Unit,
+fun EmptyBlock(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier
+    size: Dp = 50.dp,
 ) {
-    if (isSelected) {
-        Block(
-            modifier = modifier
-                .border(4.dp, Color.White)
-                .background(Color.Yellow)
-                .clickable { onClick() }
-                .testTag("selected:goal"))
-    } else
-        Block(modifier = modifier
-            .border(1.dp, Color.Black)
-            .background(Color.Yellow)
-            .clickable { onClick() }
-            .testTag("goal")
-        )
+    Block(
+        onClick = onClick,
+        isSelected = isSelected,
+        size = size,
+        modifier = modifier,
+        backgroundColor = Color.Gray,
+        defaultColor = Color.DarkGray,
+        selectedColor = Color.White,
+        testTag = "empty"
+    )
 }
 
 @Composable
-fun GrayBox(
-    onClick: () -> Unit,
+fun UnmovableBlock(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier
+    size: Dp = 50.dp,
 ) {
-    if (isSelected) {
-        Block(
-            modifier = modifier
-                .border(4.dp, Color.White)
-                .background(Color.Gray)
-                .clickable { onClick() }
-            .testTag("selected:empty"))
-    } else
-        Block(modifier = modifier
-            .border(1.dp, Color.DarkGray)
-            .background(Color.Gray)
-            .clickable { onClick() }
-            .testTag("empty")
-        )
+    Block(
+        onClick = onClick,
+        isSelected = isSelected,
+        size = size,
+        modifier = modifier,
+        backgroundColor = Color.Black,
+        defaultColor = Color.DarkGray,
+        selectedColor = Color.White,
+        testTag = "x"
+    )
 }
 
 @Composable
-fun BlackBox(
-    onClick: () -> Unit,
+fun MovableBlock(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
-    modifier: Modifier = Modifier
+    size: Dp = 50.dp,
 ) {
-    if (isSelected) {
-        Block(
-            modifier = modifier
-                .border(4.dp, Color.White)
-                .background(Color.Black)
-                .clickable { onClick() }
-                .testTag("selected:x"))
-    } else
-        Block(modifier = modifier
-            .border(1.dp, Color.DarkGray)
-            .background(Color.Black)
-            .clickable { onClick() }
-            .testTag("x")
-        )
-}
-
-@Composable
-fun GreenBox(
-    onClick: () -> Unit,
-    isSelected: Boolean = false,
-    modifier: Modifier = Modifier
-) {
-    if (isSelected) {
-        Block(
-            modifier = modifier
-                .border(4.dp, Color.White)
-                .background(Color.Green)
-                .clickable { onClick() }
-                .testTag("selected:movable"))
-    } else
-        Block(modifier = modifier
-            .border(1.dp, Color.Black)
-            .background(Color.Green)
-            .clickable { onClick() }
-            .testTag("movable")
-        )
+    Block(
+        onClick = onClick,
+        isSelected = isSelected,
+        size = size,
+        modifier = modifier,
+        backgroundColor = Color.Green,
+        defaultColor = Color.Black,
+        selectedColor = Color.White,
+        testTag = "movable"
+    )
 }

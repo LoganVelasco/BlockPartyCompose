@@ -1,13 +1,15 @@
 package logan.blockpartycompose.ui.screens.levelsMenu
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -18,20 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.Level
-import logan.blockpartycompose.ui.components.BaseHeader
-import logan.blockpartycompose.ui.components.EmptyStar
-import logan.blockpartycompose.ui.components.FilledStar
+import logan.blockpartycompose.ui.components.*
 import java.util.*
 
 @Composable
@@ -50,9 +47,11 @@ fun LevelsMenuScreen(
 }
 
 @Composable
-fun CustomLevelEmpty(navController: NavController,
-                         levelSet: LevelSet,
-                         progress: List<Int>) {
+fun CustomLevelEmpty(
+    navController: NavController,
+    levelSet: LevelSet,
+    progress: List<Int>
+) {
     Column(Modifier.fillMaxSize()) {
         LevelTopBar(navController, levelSet, progress)
         Column(
@@ -60,7 +59,11 @@ fun CustomLevelEmpty(navController: NavController,
             verticalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(text = "No custom levels saved yet", fontSize = 26.sp, modifier = Modifier.padding(10.dp))
+            Text(
+                text = "No custom levels saved yet",
+                fontSize = 26.sp,
+                modifier = Modifier.padding(10.dp)
+            )
             Button(onClick = { navController.navigate("levelBuilder") }) {
                 Text(text = "Create Custom Level")
             }
@@ -95,9 +98,10 @@ fun LevelTopBar(
         middleContent = {
             Row(Modifier.padding(10.dp)) {
                 val count = if (progress.isEmpty()) 0 else progress.sum()
-                val text = if(levelSet == LevelSet.CUSTOM)"My Levels" else "${levelSet.name}: $count/30"
+                val text =
+                    if (levelSet == LevelSet.CUSTOM) "My Levels" else "${levelSet.name}: $count/30"
                 Text(text = text, fontSize = 18.sp)
-                if(levelSet != LevelSet.CUSTOM) Icon(
+                if (levelSet != LevelSet.CUSTOM) Icon(
                     Icons.Filled.Star,
                     contentDescription = "${levelSet.name} Star Count",
                     modifier = Modifier
@@ -163,39 +167,90 @@ private fun LevelCard(
                 .background(shape = RectangleShape, color = Color.White)
                 .fillMaxWidth()
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = level.name.uppercase(Locale("us")),
                 fontSize = 32.sp,
                 fontStyle = FontStyle.Italic
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            Image(
-                painter = painterResource(id = R.drawable.level1),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(25.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color.Black,
-                        RoundedCornerShape(2.dp)
-                    )
-            )
-            if(level.levelSet != LevelSet.CUSTOM)
-                LevelStars(result = stars, modifier = Modifier
-                    .padding(15.dp)
-                    .testTag("${level.name} stars")
+            Spacer(modifier = Modifier.height(20.dp))
+            LevelPicture(level.x, level.initialBlocks)
+//            Image(
+//                painter = painterResource(id = R.drawable.level1),
+//                contentDescription = "",
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(25.dp)
+//                    .border(
+//                        width = 1.dp,
+//                        color = Color.Black,
+//                        RoundedCornerShape(2.dp)
+//                    )
+//            )
+            if (level.levelSet != LevelSet.CUSTOM) {
+                Spacer(modifier = Modifier.height(20.dp))
+                LevelStars(
+                    result = stars, modifier = Modifier
+                        .padding(15.dp)
+                        .testTag("${level.name} stars")
                 )
+            }
         }
     }
 }
 
 @Composable
+fun LevelPicture(
+    x: Int,
+    blocks: List<Char>,
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(x),
+        verticalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        userScrollEnabled = false,
+        modifier = Modifier
+            .height(335.dp)
+            .background(MaterialTheme.colors.background)
+            .border(
+                width = 1.dp,
+                color = Color.Black,
+                RoundedCornerShape(2.dp)
+            )
+            .padding(top = 5.dp, bottom = 10.dp)
+            .testTag("level")
+    ) {
+        val scale = if (x == 4) 48.dp else 40.dp
+        items(blocks.size) { index ->
+            when (blocks[index]) {
+                'e' -> {
+                    EnemyBlock(size = scale)
+                }
+                'p' -> {
+                    PlayerBlock(size = scale)
+                }
+                'm' -> {
+                    MovableBlock(size = scale)
+                }
+                'g' -> {
+                    GoalBlock(size = scale)
+                }
+                '.' -> {
+                    EmptyBlock(size = scale)
+                }
+                'x' -> {
+                    UnmovableBlock(size = scale)
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
 private fun LevelStars(result: Int, modifier: Modifier) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = modifier
             .testTag("stars: $result")

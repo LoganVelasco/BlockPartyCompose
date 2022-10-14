@@ -183,22 +183,22 @@ fun LevelGrid(
             ) { type ->
                 when (type) { // TODO refactor to be color independent
                     'e' -> {
-                        RedBox(onClick)
+                        EnemyBlock(onClick= onClick)
                     }
                     'p' -> {
-                        BlueBox(onClick)
+                        PlayerBlock(onClick= onClick)
                     }
                     'm' -> {
-                        GreenBox(onClick)
+                        MovableBlock(onClick= onClick)
                     }
                     'g' -> {
-                        YellowBox(onClick)
+                        GoalBlock(onClick= onClick)
                     }
                     '.' -> {
-                        GrayBox(onClick)
+                        EmptyBlock(onClick= onClick)
                     }
                     'x' -> {
-                        BlackBox(onClick)
+                        UnmovableBlock(onClick= onClick)
                     }
                 }
             }

@@ -13,18 +13,14 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.delay
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.level.BackIcon
@@ -226,37 +222,37 @@ fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> 
         modifier = Modifier.fillMaxWidth().testTag("palette")
     ) {
         item {
-            BlueBox(
+            PlayerBlock(
                 onClick = { colorClicked(BlockColor.BLUE) },
-                selectedBlockColor == BlockColor.BLUE
+                isSelected = selectedBlockColor == BlockColor.BLUE
             )
         }
         item {
-            RedBox(onClick = { colorClicked(BlockColor.RED) },
-                selectedBlockColor == BlockColor.RED)
+            EnemyBlock(onClick = { colorClicked(BlockColor.RED) },
+                isSelected = selectedBlockColor == BlockColor.RED)
         }
         item {
-            YellowBox(
+            GoalBlock(
                 onClick = { colorClicked(BlockColor.YELLOW) },
-                selectedBlockColor == BlockColor.YELLOW
+                isSelected = selectedBlockColor == BlockColor.YELLOW
             )
         }
         item {
-            GreenBox(
+            MovableBlock(
                 onClick = { colorClicked(BlockColor.GREEN) },
-                selectedBlockColor == BlockColor.GREEN
+                isSelected = selectedBlockColor == BlockColor.GREEN
             )
         }
         item {
-            BlackBox(
+            UnmovableBlock(
                 onClick = { colorClicked(BlockColor.BLACK) },
-                selectedBlockColor == BlockColor.BLACK
+                isSelected = selectedBlockColor == BlockColor.BLACK
             )
         }
         item {
-            GrayBox(
+            EmptyBlock(
                 onClick = { colorClicked(BlockColor.GRAY) },
-                selectedBlockColor == BlockColor.GRAY
+                isSelected = selectedBlockColor == BlockColor.GRAY
             )
         }
     }
