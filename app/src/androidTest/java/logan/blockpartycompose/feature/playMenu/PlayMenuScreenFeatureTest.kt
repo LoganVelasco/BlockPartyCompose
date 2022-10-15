@@ -4,6 +4,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import logan.blockpartycompose.MainActivity
+import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.clearProgress
 import logan.blockpartycompose.utils.openPlayMenu
@@ -31,16 +32,16 @@ class PlayMenuScreenFeatureTest {
         composeTestRule.apply {
             openPlayMenu()
 
-            onNodeWithText("EASY").assertIsDisplayed()
-            onNodeWithText("MEDIUM").assertIsDisplayed()
-            onNodeWithText("HARD").assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.easy)).assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.medium)).assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.hard)).assertIsDisplayed()
 
-            onNodeWithText("EASY").assertIsEnabled()
-            onNodeWithText("MEDIUM").assertIsNotEnabled()
-            onNodeWithText("HARD").assertIsNotEnabled()
+            onNodeWithText(activity.getString(R.string.easy)).assertIsEnabled()
+            onNodeWithText(activity.getString(R.string.medium)).assertIsNotEnabled()
+            onNodeWithText(activity.getString(R.string.hard)).assertIsNotEnabled()
 
-            onNodeWithText("0/30 Stars Collected").assertIsDisplayed()
-            onNodeWithText("0/90 Total").assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.difficulty_star_progress, 0)).assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.total_star_progress, 0)).assertIsDisplayed()
         }
     }
 
@@ -50,14 +51,14 @@ class PlayMenuScreenFeatureTest {
             setProgress(activity, LevelSet.EASY, "3333300000")
             openPlayMenu()
 
-            onNodeWithText("EASY").assertIsEnabled()
-            onNodeWithText("MEDIUM").assertIsEnabled()
-            onNodeWithText("HARD").assertIsNotEnabled()
+            onNodeWithText(activity.getString(R.string.easy)).assertIsEnabled()
+            onNodeWithText(activity.getString(R.string.medium)).assertIsEnabled()
+            onNodeWithText(activity.getString(R.string.hard)).assertIsNotEnabled()
 
-            onNodeWithText("15/90 Total").assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.total_star_progress, 15)).assertIsDisplayed()
 
-            onNodeWithTag("EASY text").assertTextEquals("15/30 Stars Collected")
-            onNodeWithTag("MEDIUM text").assertTextEquals("0/30 Stars Collected")
+            onNodeWithTag(activity.getString(R.string.difficulty_text, "EASY")).assertTextEquals(activity.getString(R.string.difficulty_star_progress, 15))
+            onNodeWithTag(activity.getString(R.string.difficulty_text, "MEDIUM")).assertTextEquals(activity.getString(R.string.difficulty_star_progress, 0))
         }
     }
 
@@ -67,15 +68,15 @@ class PlayMenuScreenFeatureTest {
             setProgress(activity, LevelSet.EASY, "3333333333")
             openPlayMenu()
 
-            onNodeWithText("EASY").assertIsEnabled()
-            onNodeWithText("MEDIUM").assertIsEnabled()
-            onNodeWithText("HARD").assertIsEnabled()
+            onNodeWithText(activity.getString(R.string.easy)).assertIsEnabled()
+            onNodeWithText(activity.getString(R.string.medium)).assertIsEnabled()
+            onNodeWithText(activity.getString(R.string.hard)).assertIsEnabled()
 
-            onNodeWithText("30/90 Total").assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.total_star_progress, 30)).assertIsDisplayed()
 
-            onNodeWithTag("EASY text").assertTextEquals("30/30 Stars Collected")
-            onNodeWithTag("MEDIUM text").assertTextEquals("0/30 Stars Collected")
-            onNodeWithTag("HARD text").assertTextEquals("0/30 Stars Collected")
+            onNodeWithTag(activity.getString(R.string.difficulty_text, "EASY")).assertTextEquals(activity.getString(R.string.difficulty_star_progress, 30))
+            onNodeWithTag(activity.getString(R.string.difficulty_text, "MEDIUM")).assertTextEquals(activity.getString(R.string.difficulty_star_progress, 0))
+            onNodeWithTag(activity.getString(R.string.difficulty_text, "HARD")).assertTextEquals(activity.getString(R.string.difficulty_star_progress, 0))
         }
     }
 
@@ -87,11 +88,11 @@ class PlayMenuScreenFeatureTest {
             setProgress(activity, LevelSet.HARD, "3333333000")
             openPlayMenu()
 
-            onNodeWithText("72/90 Total").assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.total_star_progress, 72)).assertIsDisplayed()
 
-            onNodeWithTag("EASY text").assertTextEquals("27/30 Stars Collected")
-            onNodeWithTag("MEDIUM text").assertTextEquals("24/30 Stars Collected")
-            onNodeWithTag("HARD text").assertTextEquals("21/30 Stars Collected")
+            onNodeWithTag(activity.getString(R.string.difficulty_text, "EASY")).assertTextEquals(activity.getString(R.string.difficulty_star_progress, 27))
+            onNodeWithTag(activity.getString(R.string.difficulty_text, "MEDIUM")).assertTextEquals(activity.getString(R.string.difficulty_star_progress, 24))
+            onNodeWithTag(activity.getString(R.string.difficulty_text, "HARD")).assertTextEquals(activity.getString(R.string.difficulty_star_progress, 21))
         }
     }
 }

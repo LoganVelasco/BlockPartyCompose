@@ -3,6 +3,7 @@ package logan.blockpartycompose.data
 import android.content.Context
 import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
+import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,7 +12,7 @@ import javax.inject.Singleton
 class GameData @Inject constructor(@ApplicationContext context: Context) {
 
     private val prefs: SharedPreferences =
-        context.getSharedPreferences("levels", Context.MODE_PRIVATE)
+        context.getSharedPreferences(context.getString(R.string.levels), Context.MODE_PRIVATE)
 
 
     val easyLevelProgress: MutableList<Int>

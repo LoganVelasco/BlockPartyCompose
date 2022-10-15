@@ -15,10 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.BaseHeader
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
@@ -57,9 +59,9 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
         endIcon = Icons.Filled.Settings,
         middleContent = {
             Row(Modifier.padding(10.dp)) {
-                Text(text = "$totalStars/90 Total", fontSize = 18.sp)
+                Text(text = stringResource(id = R.string.total_star_progress, totalStars), fontSize = 18.sp)
                 Icon(
-                    Icons.Filled.Star, contentDescription = "Total Star Count", modifier = Modifier
+                    Icons.Filled.Star, contentDescription = stringResource(R.string.total_star_count), modifier = Modifier
                         .scale(1.25f)
                         .padding(start = 5.dp)
                 )
@@ -83,7 +85,7 @@ private fun MenuFooter(navController: NavController) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "Level Builder",
+                text = stringResource(R.string.level_builder),
                 fontSize = 12.sp
             )
         }
@@ -93,7 +95,7 @@ private fun MenuFooter(navController: NavController) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "My Levels",
+                text = stringResource(id = R.string.my_levels),
                 fontSize = 12.sp
             )
         }
@@ -167,15 +169,15 @@ private fun DifficultyButton(
 private fun EnabledDifficulty(
     progress: Int,
     onClick: () -> Unit,
-    text: String
+    difficulty: String
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "$progress/30 Stars Collected",
-            modifier = Modifier.testTag("$text text")
+            text = stringResource(id = R.string.difficulty_star_progress, progress),
+            modifier = Modifier.testTag(stringResource(id = R.string.difficulty_text, difficulty))
         )
         Spacer(modifier = Modifier.height(5.dp))
         Spacer(modifier = Modifier.height(5.dp))
@@ -183,7 +185,7 @@ private fun EnabledDifficulty(
             onClick = onClick,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = text)
+            Text(text = difficulty)
         }
     }
 }
@@ -198,7 +200,7 @@ private fun DisabledDifficulty(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Collect $requirement Stars to Unlock"
+            text = stringResource(id = R.string.collection_requirement, requirement)
         )
         Spacer(modifier = Modifier.height(5.dp))
         Spacer(modifier = Modifier.height(5.dp))

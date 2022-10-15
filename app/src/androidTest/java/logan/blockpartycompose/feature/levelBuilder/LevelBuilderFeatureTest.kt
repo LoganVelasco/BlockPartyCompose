@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import logan.blockpartycompose.MainActivity
 import logan.blockpartycompose.utils.*
+import logan.blockpartycompose.R
 
 import org.junit.runner.RunWith
 
@@ -28,7 +29,7 @@ class LevelBuilderFeatureTest {
         composeTestRule.apply {
             openLevelBuilder()
 
-            onNodeWithTag("level").onChildren().assertAll(hasTestTag("empty"))
+            onNodeWithTag(activity.getString(R.string.level)).onChildren().assertAll(hasTestTag(activity.getString(R.string.empty)))
         }
     }
 
@@ -37,40 +38,40 @@ class LevelBuilderFeatureTest {
         composeTestRule.apply {
             openLevelBuilder()
 
-            onNodeWithTag("player").performClick()
-            onNodeWithTag("selected:player").assertIsDisplayed()
-            onNodeWithTag("player").assertDoesNotExist()
-            onNodeWithTag("level").onChildren()[0].performClick()
-            onNodeWithTag("level").onChildren()[0].assert(hasTestTag("player"))
+            onNodeWithTag(activity.getString(R.string.player)).performClick()
+            onNodeWithTag(activity.getString(R.string.selected_block, activity.getString(R.string.player))).assertIsDisplayed()
+            onNodeWithTag(activity.getString(R.string.player)).assertDoesNotExist()
+            blockAtIndex(0).performClick()
+            blockAtIndex(0).assert(hasTestTag(activity.getString(R.string.player)))
 
-            onNodeWithTag("enemy").performClick()
-            onNodeWithTag("selected:enemy").assertIsDisplayed()
-            onNodeWithTag("enemy").assertDoesNotExist()
-            onNodeWithTag("level").onChildren()[1].performClick()
-            onNodeWithTag("level").onChildren()[1].assert(hasTestTag("enemy"))
+            onNodeWithTag(activity.getString(R.string.enemy)).performClick()
+            onNodeWithTag(activity.getString(R.string.selected_block, activity.getString(R.string.enemy))).assertIsDisplayed()
+            onNodeWithTag(activity.getString(R.string.enemy)).assertDoesNotExist()
+            blockAtIndex(1).performClick()
+            blockAtIndex(1).assert(hasTestTag(activity.getString(R.string.enemy)))
 
-            onNodeWithTag("goal").performClick()
-            onNodeWithTag("selected:goal").assertIsDisplayed()
-            onNodeWithTag("goal").assertDoesNotExist()
-            onNodeWithTag("level").onChildren()[2].performClick()
-            onNodeWithTag("level").onChildren()[2].assert(hasTestTag("goal"))
+            onNodeWithTag(activity.getString(R.string.goal)).performClick()
+            onNodeWithTag(activity.getString(R.string.selected_block, activity.getString(R.string.goal))).assertIsDisplayed()
+            onNodeWithTag(activity.getString(R.string.goal)).assertDoesNotExist()
+            blockAtIndex(2).performClick()
+            blockAtIndex(2).assert(hasTestTag(activity.getString(R.string.goal)))
 
-            onNodeWithTag("movable").performClick()
-            onNodeWithTag("selected:movable").assertIsDisplayed()
-            onNodeWithTag("movable").assertDoesNotExist()
-            onNodeWithTag("level").onChildren()[3].performClick()
-            onNodeWithTag("level").onChildren()[3].assert(hasTestTag("movable"))
+            onNodeWithTag(activity.getString(R.string.movable)).performClick()
+            onNodeWithTag(activity.getString(R.string.selected_block, activity.getString(R.string.movable))).assertIsDisplayed()
+            onNodeWithTag(activity.getString(R.string.movable)).assertDoesNotExist()
+            blockAtIndex(3).performClick()
+            blockAtIndex(3).assert(hasTestTag(activity.getString(R.string.movable)))
 
-            onNodeWithTag("x").performClick()
-            onNodeWithTag("selected:x").assertIsDisplayed()
-            onNodeWithTag("x").assertDoesNotExist()
-            onNodeWithTag("level").onChildren()[4].performClick()
-            onNodeWithTag("level").onChildren()[4].assert(hasTestTag("x"))
+            onNodeWithTag(activity.getString(R.string.unmovable)).performClick()
+            onNodeWithTag(activity.getString(R.string.selected_block, activity.getString(R.string.unmovable))).assertIsDisplayed()
+            onNodeWithTag(activity.getString(R.string.unmovable)).assertDoesNotExist()
+            blockAtIndex(4).performClick()
+            blockAtIndex(4).assert(hasTestTag(activity.getString(R.string.unmovable)))
 
-            onNodeWithTag("palette").onChildren().filterToOne(hasTestTag("empty")).performClick()
-            onNodeWithTag("selected:empty").assertIsDisplayed()
-            onNodeWithTag("level").onChildren()[5].performClick()
-            onNodeWithTag("level").onChildren()[5].assert(hasTestTag("empty"))
+            onNodeWithTag(activity.getString(R.string.palette)).onChildren().filterToOne(hasTestTag(activity.getString(R.string.empty))).performClick()
+            onNodeWithTag(activity.getString(R.string.selected_block, activity.getString(R.string.empty))).assertIsDisplayed()
+            blockAtIndex(5).performClick()
+            blockAtIndex(5).assert(hasTestTag(activity.getString(R.string.empty)))
 
         }
     }
@@ -79,8 +80,8 @@ class LevelBuilderFeatureTest {
     fun backingOutOnEmptyLevelShowsNoPopup() {
         composeTestRule.apply {
             openLevelBuilder()
-            onNodeWithTag("back button").performClick()
-            onNodeWithText("Save Level?").assertDoesNotExist()
+            onNodeWithTag(activity.getString(R.string.back_button)).performClick()
+            onNodeWithText(activity.getString(R.string.save_level_question)).assertDoesNotExist()
         }
     }
 
@@ -89,16 +90,16 @@ class LevelBuilderFeatureTest {
         composeTestRule.apply {
             openLevelBuilder()
 
-            onNodeWithTag("player").performClick()
-            onNodeWithTag("level").onChildren()[0].performClick()
-            onNodeWithTag("goal").performClick()
-            onNodeWithTag("level").onChildren()[9].performClick()
+            onNodeWithTag(activity.getString(R.string.player)).performClick()
+            blockAtIndex(0).performClick()
+            onNodeWithTag(activity.getString(R.string.goal)).performClick()
+            blockAtIndex(9).performClick()
 
-            onNodeWithTag("back button").performClick()
-            waitUntilExists(hasText("Save Level?"))
+            onNodeWithTag(activity.getString(R.string.back_button)).performClick()
+            waitUntilExists(hasText(activity.getString(R.string.save_level_question)))
 
-            onNodeWithText("Save").performClick()
-            onNodeWithText("Save Level").assertIsDisplayed()
+            onNodeWithText(activity.getString(R.string.save)).performClick()
+            onNodeWithText(activity.getString(R.string.save_level)).assertIsDisplayed()
 
         }
     }
@@ -108,16 +109,16 @@ class LevelBuilderFeatureTest {
         composeTestRule.apply {
             openLevelBuilder()
 
-            onNodeWithTag("player").performClick()
-            onNodeWithTag("level").onChildren()[0].performClick()
-            onNodeWithTag("goal").performClick()
-            onNodeWithTag("level").onChildren()[9].performClick()
+            onNodeWithTag(activity.getString(R.string.player)).performClick()
+            blockAtIndex(0).performClick()
+            onNodeWithTag(activity.getString(R.string.goal)).performClick()
+            blockAtIndex(9).performClick()
 
-            onNodeWithContentDescription("Save").performClick()
-            waitUntilExists(hasText("Save Level"))
-            onNodeWithTag("level name").performTextInput("CustomLevel")
+            onNodeWithContentDescription(activity.getString(R.string.save)).performClick()
+            waitUntilExists(hasText(activity.getString(R.string.save_level)))
+            onNodeWithTag(activity.getString(R.string.level_name)).performTextInput("CustomLevel")
 
-            onNodeWithText("Save").performClick()
+            onNodeWithText(activity.getString(R.string.save)).performClick()
 
             //TODO add to test after snackbar added
 
@@ -130,13 +131,13 @@ class LevelBuilderFeatureTest {
         composeTestRule.apply {
             openLevelBuilder()
 
-            onNodeWithTag("player").performClick()
-            onNodeWithTag("level").onChildren()[0].performClick()
-            onNodeWithTag("goal").performClick()
-            onNodeWithTag("level").onChildren()[9].performClick()
+            onNodeWithTag(activity.getString(R.string.player)).performClick()
+            blockAtIndex(0).performClick()
+            onNodeWithTag(activity.getString(R.string.goal)).performClick()
+            blockAtIndex(9).performClick()
 
-            onNodeWithTag("back button").performClick()
-            onNodeWithText("Save Level").assertDoesNotExist()
+            onNodeWithTag(activity.getString(R.string.back_button)).performClick()
+            onNodeWithText(activity.getString(R.string.save_level)).assertDoesNotExist()
         }
     }
 
@@ -145,16 +146,16 @@ class LevelBuilderFeatureTest {
         composeTestRule.apply {
             openLevelBuilder()
 
-            onNodeWithTag("player").performClick()
-            onNodeWithTag("level").onChildren()[0].performClick()
-            onNodeWithTag("enemy").performClick()
-            onNodeWithTag("level").onChildren()[5].performClick()
-            onNodeWithTag("goal").performClick()
-            onNodeWithTag("level").onChildren()[9].performClick()
+            onNodeWithTag(activity.getString(R.string.player)).performClick()
+            blockAtIndex(0).performClick()
+            onNodeWithTag(activity.getString(R.string.enemy)).performClick()
+            blockAtIndex(5).performClick()
+            onNodeWithTag(activity.getString(R.string.goal)).performClick()
+            blockAtIndex(9).performClick()
 
-            onNodeWithText("Clear All").performClick()
+            onNodeWithText(activity.getString(R.string.clear_all)).performClick()
 
-            onNodeWithTag("level").onChildren().assertAll(hasTestTag("empty"))
+            onNodeWithTag(activity.getString(R.string.level)).onChildren().assertAll(hasTestTag(activity.getString(R.string.empty)))
         }
     }
 

@@ -14,6 +14,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
 
     private val gson = Gson()
     val levelsSets = mutableMapOf<String, List<Level>>()
+    val customFileName = "custom.json"
 
     fun getNewLevel(x: Int, y: Int): Level {
         return Level(
@@ -51,7 +52,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
 //        if (levelsSets[LevelSet.CUSTOM.name] != null) return levelsSets[LevelSet.CUSTOM.name]!!
         var fileInputStream: FileInputStream? = null
         return try {
-            fileInputStream = context.openFileInput("custom.json")
+            fileInputStream = context.openFileInput(customFileName)
             val inputStreamReader = InputStreamReader(fileInputStream)
             val json = BufferedReader(inputStreamReader).readText()
             if (json.isEmpty()) return emptyList()
@@ -59,7 +60,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
             levelsSets[LevelSet.CUSTOM.name] = levels
             levels
         } catch (e: FileNotFoundException) {
-            File("${context.filesDir.path}/custom.json").createNewFile()
+            File("${context.filesDir.path}/$customFileName").createNewFile()
             emptyList()
         }
     }
@@ -73,7 +74,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         val data = gson.toJson(LevelsDTO.getDTO(newLevels))
         val fileOutputStream: FileOutputStream
         return try {
-            fileOutputStream = context.openFileOutput("custom.json", Context.MODE_PRIVATE)
+            fileOutputStream = context.openFileOutput(customFileName, Context.MODE_PRIVATE)
             fileOutputStream.write(data.toByteArray())
             true
         } catch (e: Exception) {
@@ -87,7 +88,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         val data = gson.toJson(LevelsDTO.getDTO(newLevels))
         val fileOutputStream: FileOutputStream
         try {
-            fileOutputStream = context.openFileOutput("custom.json", Context.MODE_PRIVATE)
+            fileOutputStream = context.openFileOutput(customFileName, Context.MODE_PRIVATE)
             fileOutputStream.write(data.toByteArray())
             levelsSets[LevelSet.CUSTOM.name] = newLevels
         } catch (e: Exception) {

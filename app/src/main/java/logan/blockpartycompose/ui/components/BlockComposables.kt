@@ -57,7 +57,7 @@ fun Block(
     val selectedModifier = if (isSelected) {
         Modifier
             .border(4.dp, selectedColor)
-            .testTag("selected:$testTag")
+            .testTag(stringResource(id = R.string.selected_block, testTag))
     } else {
         Modifier
             .border(1.dp, defaultColor)

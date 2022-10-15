@@ -101,11 +101,13 @@ fun LevelTopBar(
             Row(Modifier.padding(10.dp)) {
                 val count = if (progress.isEmpty()) 0 else progress.sum()
                 val text =
-                    if (levelSet == LevelSet.CUSTOM) stringResource(R.string.my_levels) else "${levelSet.name}: $count/30"
+                    if (levelSet == LevelSet.CUSTOM) stringResource(R.string.my_levels) else stringResource(
+                        id = R.string.difficulty_star_count, levelSet.name, count
+                    )
                 Text(text = text, fontSize = 18.sp)
                 if (levelSet != LevelSet.CUSTOM) Icon(
                     Icons.Filled.Star,
-                    contentDescription = "${levelSet.name} Star Count",
+                    contentDescription = stringResource(id = R.string.star_count, levelSet.name),
                     modifier = Modifier
                         .scale(1.25f)
                         .padding(start = 5.dp)
@@ -155,7 +157,7 @@ private fun LevelCard(
         border = BorderStroke(5.dp, Color.DarkGray),
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
-            .testTag("${level.name} card")
+            .testTag(stringResource(id = R.string.level_card))
             .padding(15.dp)
             .clickable {
                 navController.navigate("level/${levelSet.name}/${level.id}")
@@ -174,27 +176,17 @@ private fun LevelCard(
                 fontSize = 32.sp,
                 fontStyle = FontStyle.Italic
             )
+
             Spacer(modifier = Modifier.height(20.dp))
+
             LevelPicture(level.x, level.initialBlocks)
-//            Image(
-//                painter = painterResource(id = R.drawable.level1),
-//                contentDescription = "",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(25.dp)
-//                    .border(
-//                        width = 1.dp,
-//                        color = Color.Black,
-//                        RoundedCornerShape(2.dp)
-//                    )
-//            )
+
             if (level.levelSet != LevelSet.CUSTOM) {
                 Spacer(modifier = Modifier.height(20.dp))
                 LevelStars(
                     result = stars, modifier = Modifier
                         .padding(15.dp)
-                        .testTag("${level.name} stars")
+                        .testTag(stringResource(id = R.string.level_stars, level.name))
                 )
             }
         }
@@ -255,7 +247,7 @@ private fun LevelStars(result: Int, modifier: Modifier) {
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = modifier
-            .testTag("stars: $result")
+//            .testTag("stars: $result")
             .fillMaxWidth()
             .padding(10.dp)
     ) {

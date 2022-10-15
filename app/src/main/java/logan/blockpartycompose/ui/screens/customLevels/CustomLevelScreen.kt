@@ -113,10 +113,10 @@ fun CustomLevelEnd(
             ) {
                 Text(text = message)
                 Button(onClick = { restartClicked() }) {
-                    Text(text = "Restart")
+                    Text(text = stringResource(id = R.string.try_again))
                 }
                 Button(onClick = { editClicked() }) {
-                    Text(text = "Edit Level")
+                    Text(text = stringResource(R.string.edit_level))
                 }
             }
         }

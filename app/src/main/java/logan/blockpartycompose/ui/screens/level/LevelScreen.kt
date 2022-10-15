@@ -139,7 +139,7 @@ fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> 
         endIconOnclick = settingsClicked,
         middleContent = {
             Text(
-                text = "Moves Used:  $movesUsed",
+                text = stringResource(id = R.string.moves_used, movesUsed),
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(10.dp)
@@ -265,8 +265,8 @@ fun SuccessScreen(
                     .fillMaxHeight()
             ) {
                 Text(text = stringResource(id = R.string.you_did_it))
-                Text(text = "$levelName Completed in $movesUsed moves!")
-                if (stars < 3) Text(text = "Complete in $minMoves moves for 3 stars")
+                Text(text = stringResource(id = R.string.level_completed_in,levelName ,movesUsed))
+                if (stars < 3) Text(text = stringResource(id = R.string.complete_in, minMoves))
                 SuccessStars(stars)
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,

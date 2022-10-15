@@ -1,5 +1,7 @@
 package logan.blockpartycompose.feature.level
 
+import androidx.activity.ComponentActivity
+import androidx.annotation.StringRes
 import androidx.compose.ui.semantics.SemanticsProperties.TestTag
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -7,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import logan.blockpartycompose.MainActivity
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.*
+import logan.blockpartycompose.R
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,14 +28,19 @@ class LevelsScreenFeatureTest {
         clearProgress(composeTestRule.activity)
     }
 
+    fun hasText(@StringRes resId: Int) =
+        hasText(composeTestRule.activity.getString(resId))
+    fun <A: ComponentActivity> hasText(@StringRes resId: Int, activity: A) =
+        hasTestTag(activity.getString(resId))
     @Test
     fun displaysInitialLevel() {
+
         composeTestRule.apply {
             openLevel(1, LevelSet.EASY)
 
-            onNodeWithTag("level").onChildren()[9].assert(hasTestTag("player"))
-            onNodeWithTag("level").onChildren()[18].assert(hasTestTag("goal"))
-            onNodeWithTag("level").onChildren().filter(hasTestTag("empty")).assertCountEquals(22)
+            blockAtIndex(9).assert(hasTestTag(activity.getString(R.string.player)))
+            blockAtIndex(18).assert(hasTestTag(activity.getString(R.string.goal)))
+            onNodeWithTag(activity.getString(R.string.level)).onChildren().filter(hasTestTag(activity.getString(R.string.empty))).assertCountEquals(22)
         }
     }
 
@@ -45,15 +53,12 @@ class LevelsScreenFeatureTest {
             movePlayerDown()
             movePlayerDown()
 
-            waitUntilExists(hasText("You Did it!"))
-            onNodeWithText("Level 1 Completed in 3 moves!").assertIsDisplayed()
+            waitUntilExists(hasText(activity.getString(R.string.you_did_it)))
+            onNodeWithText(activity.getString(R.string.level_completed_in, "Level 1", 3)).assertIsDisplayed()
 
-            var stars = onNodeWithTag("stars", true).onChildren()
-            stars[0].assertContentDescriptionEquals("Star")
-            stars[1].assertContentDescriptionEquals("Star")
-            stars[2].assertContentDescriptionEquals("Star")
+            assertStarsShown(3)
 
-            onNodeWithText("Try Again").performClick()
+            onNodeWithText(activity.getString(R.string.try_again)).performClick()
 
             movePlayerLeft()
             movePlayerRight()
@@ -61,15 +66,12 @@ class LevelsScreenFeatureTest {
             movePlayerDown()
             movePlayerDown()
 
-            waitUntilExists(hasText("You Did it!"))
-            onNodeWithText("Level 1 Completed in 5 moves!").assertIsDisplayed()
+            waitUntilExists(hasText(activity.getString(R.string.you_did_it)))
+            onNodeWithText(activity.getString(R.string.level_completed_in, "Level 1", 5)).assertIsDisplayed()
 
-            stars = onNodeWithTag("stars", true).onChildren()
-            stars[0].assertContentDescriptionEquals("Star")
-            stars[1].assertContentDescriptionEquals("Star")
-            stars[2].assertContentDescriptionEquals("Empty Star")
+            assertStarsShown(2)
 
-            onNodeWithText("Try Again").performClick()
+            onNodeWithText(activity.getString(R.string.try_again)).performClick()
 
             movePlayerLeft()
             movePlayerRight()
@@ -79,13 +81,10 @@ class LevelsScreenFeatureTest {
             movePlayerDown()
             movePlayerDown()
 
-            waitUntilExists(hasText("You Did it!"), 1000)
-            onNodeWithText("Level 1 Completed in 7 moves!").assertIsDisplayed()
+            waitUntilExists(hasText(activity.getString(R.string.you_did_it)))
+            onNodeWithText(activity.getString(R.string.level_completed_in, "Level 1", 7)).assertIsDisplayed()
 
-            stars = onNodeWithTag("stars", true).onChildren()
-            stars[0].assertContentDescriptionEquals("Star")
-            stars[1].assertContentDescriptionEquals("Empty Star")
-            stars[2].assertContentDescriptionEquals("Empty Star")
+            assertStarsShown(1)
         }
     }
 
@@ -98,13 +97,13 @@ class LevelsScreenFeatureTest {
             movePlayerDown()
             movePlayerDown()
 
-            waitUntilExists(hasText("You Did it!"), 1000)
-            onNodeWithText("Next Level").performClick()
+            waitUntilExists(hasText(activity.getString(R.string.you_did_it)))
+            onNodeWithText(activity.getString(R.string.next_level)).performClick()
 
-            onNodeWithTag("level").onChildren()[13].assert(hasTestTag("player"))
-            onNodeWithTag("level").onChildren()[0].assert(hasTestTag("enemy"))
-            onNodeWithTag("level").onChildren()[19].assert(hasTestTag("goal"))
-            onNodeWithTag("level").onChildren().filter(hasTestTag("empty")).assertCountEquals(21)
+            blockAtIndex(13).assert(hasTestTag(activity.getString(R.string.player)))
+            blockAtIndex(0).assert(hasTestTag(activity.getString(R.string.enemy)))
+            blockAtIndex(19).assert(hasTestTag(activity.getString(R.string.goal)))
+            onNodeWithTag(activity.getString(R.string.level)).onChildren().filter(hasTestTag(activity.getString(R.string.empty))).assertCountEquals(21)
 
         }
     }
@@ -136,8 +135,8 @@ class LevelsScreenFeatureTest {
             movePlayerRight()
             movePlayerRight()
 
-            waitUntilExists(hasText("You Did it!"), 1000)
-            onNodeWithText("Next Level").performClick()
+            waitUntilExists(hasText(activity.getString(R.string.you_did_it)))
+            onNodeWithText(activity.getString(R.string.next_level)).performClick()
 
             onNodeWithText("3/30 Stars Collected").assertIsDisplayed()
             onNodeWithText("3/90 Total").assertIsDisplayed()
@@ -156,10 +155,10 @@ class LevelsScreenFeatureTest {
 
             onNodeWithText("Try Again").performClick()
 
-            onNodeWithTag("level").onChildren()[13].assert(hasTestTag("player"))
-            onNodeWithTag("level").onChildren()[0].assert(hasTestTag("enemy"))
-            onNodeWithTag("level").onChildren()[19].assert(hasTestTag("goal"))
-            onNodeWithTag("level").onChildren().filter(hasTestTag("empty")).assertCountEquals(21)
+            blockAtIndex(13).assert(hasTestTag("player"))
+            blockAtIndex(0).assert(hasTestTag("enemy"))
+            blockAtIndex(19).assert(hasTestTag("goal"))
+            onNodeWithTag(activity.getString(R.string.level)).onChildren().filter(hasTestTag("empty")).assertCountEquals(21)
 
         }
     }
@@ -171,26 +170,26 @@ class LevelsScreenFeatureTest {
 
             movePlayerRight()
 
-            onNodeWithTag("level").onChildren()[10].assert(hasTestTag("player"))
-            onNodeWithTag("level").onChildren()[2].assert(hasTestTag("enemy"))
-            waitUntil { onNodeWithTag("level").onChildren()[6].fetchSemanticsNode().config[TestTag] == "enemy" }
+            blockAtIndex(10).assert(hasTestTag("player"))
+            blockAtIndex(2).assert(hasTestTag("enemy"))
+            waitUntil { blockAtIndex(6).fetchSemanticsNode().config[TestTag] == "enemy" }
             movePlayerRight()
-            waitUntilExists(hasText("You Died!"), 1000)
+            waitUntilExists(hasText("You Died!"))
             onNodeWithText("Try Again").performClick()
 
             movePlayerLeft()
 
-            onNodeWithTag("level").onChildren()[8].assert(hasTestTag("player"))
-            onNodeWithTag("level").onChildren()[0].assert(hasTestTag("enemy"))
-            waitUntil { onNodeWithTag("level").onChildren()[4].fetchSemanticsNode().config[TestTag] == "enemy" }
+            blockAtIndex(8).assert(hasTestTag("player"))
+            blockAtIndex(0).assert(hasTestTag("enemy"))
+            waitUntil { blockAtIndex(4).fetchSemanticsNode().config[TestTag] == "enemy" }
             movePlayerDown()
-            waitUntilExists(hasText("You Died!"), 1000)
+            waitUntilExists(hasText("You Died!"))
             onNodeWithText("Try Again").performClick()
 
             movePlayerDown()
 
-            onNodeWithTag("level").onChildren()[13].assert(hasTestTag("player"))
-            onNodeWithTag("level").onChildren()[1].assert(hasTestTag("enemy"))
+            blockAtIndex(13).assert(hasTestTag("player"))
+            blockAtIndex(1).assert(hasTestTag("enemy"))
         }
     }
 

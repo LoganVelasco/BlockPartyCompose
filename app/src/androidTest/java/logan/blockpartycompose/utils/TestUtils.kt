@@ -1,10 +1,12 @@
 package logan.blockpartycompose.utils
 
 import android.content.Context
+import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import logan.blockpartycompose.MainActivity
+import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
 fun ComposeContentTestRule.waitUntilNodeCount(
@@ -67,6 +69,38 @@ fun ComposeContentTestRule.movePlayerUp() {
 fun ComposeContentTestRule.movePlayerDown() {
     val x = if(this.onNodeWithTag("level").onChildren().fetchSemanticsNodes().count() <= 24) 4 else 6
     this.onNodeWithTag("level").onChildren()[getPlayerIndex()+x].performClick()
+}
+
+fun ComposeContentTestRule.blockAtIndex(index: Int): SemanticsNodeInteraction {
+    return onNodeWithTag("level").onChildren()[index]
+}
+
+fun ComposeContentTestRule.assertStarsShown(count: Int) {
+    val stars = onNodeWithTag("stars", true).onChildren()
+    when(count) {
+        0 -> {
+            stars[0].assertContentDescriptionEquals("empty star")
+            stars[1].assertContentDescriptionEquals("empty star")
+            stars[2].assertContentDescriptionEquals("empty star")
+        }
+        1 -> {
+            stars[0].assertContentDescriptionEquals("star")
+            stars[1].assertContentDescriptionEquals("empty star")
+            stars[2].assertContentDescriptionEquals("empty star")
+        }
+        2 -> {
+            stars[0].assertContentDescriptionEquals("star")
+            stars[1].assertContentDescriptionEquals("star")
+            stars[2].assertContentDescriptionEquals("empty star")
+        }
+        3 -> {
+            stars[0].assertContentDescriptionEquals("star")
+            stars[1].assertContentDescriptionEquals("star")
+            stars[2].assertContentDescriptionEquals("star")
+        }
+        else -> assert(false)
+    }
+
 }
 
 private fun ComposeContentTestRule.getPlayerIndex(): Int {

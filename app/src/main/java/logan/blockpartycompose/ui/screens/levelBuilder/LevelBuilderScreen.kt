@@ -103,7 +103,7 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
     AlertDialog(
         onDismissRequest = dismissLevel,
         title = {
-            Text(text = stringResource(R.string.save_level))
+            Text(text = stringResource(R.string.save_level_question))
         },
         text = {
             Text(
@@ -206,9 +206,9 @@ fun LevelBuilder(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            BackIcon(backClicked = { backClicked() }, modifier = Modifier.testTag("back button"))
+            BackIcon(backClicked = { backClicked() }, modifier = Modifier.testTag(stringResource(R.string.back_button)))
             Button(onClick = { clearAllClicked() }, Modifier.padding(15.dp)) {
-                Text(text = "Clear All")
+                Text(text = stringResource(R.string.clear_all))
             }
         }
         LevelGrid(blockClicked = blockClicked, x = x, blocks = blocks)

@@ -1,5 +1,6 @@
 package logan.blockpartycompose.feature.levelsMenu
 
+import logan.blockpartycompose.R
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -117,24 +118,24 @@ class LevelsMenuScreenFeatureTest {
             openLevelMenu(LevelSet.EASY)
 
             onNodeWithTag("Level 1 stars", true).onChildren().assertAll(
-                hasContentDescription("Star")
+                hasContentDescription(activity.getString(R.string.star))
             )
 
             onNodeWithText("LEVEL 1").performTouchInput { swipeUp() }
             val level2Stars = onNodeWithTag("Level 2 stars", true).onChildren()
-            level2Stars[0].assertContentDescriptionEquals("Star")
-            level2Stars[1].assertContentDescriptionEquals("Star")
-            level2Stars[2].assertContentDescriptionEquals("Empty Star")
+            level2Stars[0].assertContentDescriptionEquals(activity.getString(R.string.star))
+            level2Stars[1].assertContentDescriptionEquals(activity.getString(R.string.star))
+            level2Stars[2].assertContentDescriptionEquals(activity.getString(R.string.empty_star))
 
             onNodeWithText("LEVEL 2").performTouchInput { swipeUp() }
             val level3Stars = onNodeWithTag("Level 3 stars", true).onChildren()
-            level3Stars[0].assertContentDescriptionEquals("Star")
-            level3Stars[1].assertContentDescriptionEquals("Empty Star")
-            level3Stars[2].assertContentDescriptionEquals("Empty Star")
+            level3Stars[0].assertContentDescriptionEquals(activity.getString(R.string.star))
+            level3Stars[1].assertContentDescriptionEquals(activity.getString(R.string.empty_star))
+            level3Stars[2].assertContentDescriptionEquals(activity.getString(R.string.empty_star))
 
             onNodeWithText("LEVEL 3").performTouchInput { swipeUp() }
             onNodeWithTag("Level 4 stars", true).onChildren().assertAll(
-                hasContentDescription("Empty Star")
+                hasContentDescription(activity.getString(R.string.empty_star))
             )
         }
     }
