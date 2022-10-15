@@ -18,9 +18,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.level.BackIcon
@@ -101,11 +103,11 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
     AlertDialog(
         onDismissRequest = dismissLevel,
         title = {
-            Text(text = "Save Level?")
+            Text(text = stringResource(R.string.save_level))
         },
         text = {
             Text(
-                "You haven't saved this level"
+                stringResource(R.string.level_not_saved)
             )
         },
         confirmButton =
@@ -113,7 +115,7 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
             Button(
                 onClick = saveLevel
             ) {
-                Text("Save")
+                Text(stringResource(R.string.save))
             }
         },
         dismissButton =
@@ -121,7 +123,7 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
             Button(
                 onClick = dismissLevel
             ) {
-                Text("Discard")
+                Text(stringResource(R.string.discard))
             }
         }
     )
@@ -141,10 +143,10 @@ fun SaveLevelDialog(
     AlertDialog(
         onDismissRequest = closeDialog,
         title = {
-            Text(text = "Save Level")
+            Text(text = stringResource(id = R.string.save_level))
         },
         text = {
-            Text(text = "Enter Level Name")
+            Text(text = stringResource(R.string.enter_level_name))
         },
         confirmButton =
         {
@@ -152,7 +154,9 @@ fun SaveLevelDialog(
                 TextField(
                     value = levelName.value,
                     onValueChange = { levelName.value = it },
-                    modifier = Modifier.focusRequester(focusRequester).testTag("level name")
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .testTag(stringResource(R.string.level_name))
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 Row(
@@ -162,7 +166,7 @@ fun SaveLevelDialog(
                     Button(
                         onClick = closeDialog
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
                     Button(
                         onClick = {
@@ -170,7 +174,7 @@ fun SaveLevelDialog(
                             closeDialog()
                         }
                     ) {
-                        Text("Save")
+                        Text(stringResource(id = R.string.save))
                     }
                 }
             }
@@ -219,7 +223,9 @@ fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> 
     LazyVerticalGrid( // refactor to Row
         columns = GridCells.Adaptive(60.dp),
         contentPadding = PaddingValues(5.dp),
-        modifier = Modifier.fillMaxWidth().testTag("palette")
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("palette")
     ) {
         item {
             PlayerBlock(

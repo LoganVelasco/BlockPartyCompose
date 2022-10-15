@@ -22,11 +22,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.components.*
 import java.util.*
@@ -60,12 +62,12 @@ fun CustomLevelEmpty(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "No custom levels saved yet",
+                text = stringResource(R.string.no_custom_levels),
                 fontSize = 26.sp,
                 modifier = Modifier.padding(10.dp)
             )
             Button(onClick = { navController.navigate("levelBuilder") }) {
-                Text(text = "Create Custom Level")
+                Text(text = stringResource(R.string.create_custom_level))
             }
         }
     }
@@ -99,7 +101,7 @@ fun LevelTopBar(
             Row(Modifier.padding(10.dp)) {
                 val count = if (progress.isEmpty()) 0 else progress.sum()
                 val text =
-                    if (levelSet == LevelSet.CUSTOM) "My Levels" else "${levelSet.name}: $count/30"
+                    if (levelSet == LevelSet.CUSTOM) stringResource(R.string.my_levels) else "${levelSet.name}: $count/30"
                 Text(text = text, fontSize = 18.sp)
                 if (levelSet != LevelSet.CUSTOM) Icon(
                     Icons.Filled.Star,
@@ -130,7 +132,7 @@ fun LevelsList(
             modifier = Modifier
                 .padding()
                 .fillMaxSize()
-                .testTag("levels")
+                .testTag(stringResource(R.string.levels))
         ) {
             items(levels.size) { index ->
                 val level = levels[index]
@@ -218,7 +220,7 @@ fun LevelPicture(
                 RoundedCornerShape(2.dp)
             )
             .padding(top = 5.dp, bottom = 10.dp)
-            .testTag("level")
+            .testTag(stringResource(R.string.level))
     ) {
         val scale = if (x == 4) 48.dp else 40.dp
         items(blocks.size) { index ->

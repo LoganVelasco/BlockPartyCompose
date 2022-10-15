@@ -15,11 +15,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.GameUtils.Companion.levelGridTransitions
@@ -151,7 +153,7 @@ fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
         onClick = backClicked,
         modifier = modifier
     ) {
-        Icon(Icons.Filled.ArrowBack, contentDescription = "Back to Menu")
+        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.back_to_menu))
     }
 }
 
@@ -167,7 +169,9 @@ fun LevelGrid(
     LazyVerticalGrid(
         columns = GridCells.Fixed(x),
         contentPadding = PaddingValues(5.dp),
-        modifier = Modifier.fillMaxWidth().testTag("level")
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(stringResource(id = R.string.level))
     ) {
         items(blocks.size) { index ->
             val onClick = { blockClicked(blocks[index], index) }
@@ -181,7 +185,7 @@ fun LevelGrid(
                     )
                 }
             ) { type ->
-                when (type) { // TODO refactor to be color independent
+                when (type) {
                     'e' -> {
                         EnemyBlock(onClick= onClick)
                     }
@@ -260,7 +264,7 @@ fun SuccessScreen(
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                Text(text = "You Did it!")
+                Text(text = stringResource(id = R.string.you_did_it))
                 Text(text = "$levelName Completed in $movesUsed moves!")
                 if (stars < 3) Text(text = "Complete in $minMoves moves for 3 stars")
                 SuccessStars(stars)
@@ -269,10 +273,10 @@ fun SuccessScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(onClick = { tryAgainOnClick() }) {
-                        Text(text = "Try Again")
+                        Text(text = stringResource(R.string.try_again))
                     }
                     Button(onClick = { nextLevelOnClick() }) {
-                        Text(text = "Next Level")
+                        Text(text = stringResource(R.string.next_level))
                     }
                 }
             }
@@ -288,7 +292,7 @@ private fun SuccessStars(result: Int) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .testTag("stars")
+            .testTag(stringResource(R.string.stars))
     ) {
         if (result >= 1) {
             FilledStar()
@@ -318,9 +322,9 @@ fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit) {
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                Text(text = "You Died!")
+                Text(text = stringResource(R.string.you_died))
                 Button(onClick = { tryAgainOnClick() }) {
-                    Text(text = "Try Again")
+                    Text(text = stringResource(id = R.string.try_again))
                 }
             }
         }

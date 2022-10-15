@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import logan.blockpartycompose.R
 
 @Composable
 fun EmptyStar(scale: Float = 2.75f) {
     Icon(
-        Icons.Outlined.Star, contentDescription = "Empty Star", tint = Color.Gray,
+        Icons.Outlined.Star, contentDescription = stringResource(R.string.empty_star), tint = Color.Gray,
         modifier = Modifier
             .padding(5.dp)
             .scale(scale)
@@ -24,7 +26,7 @@ fun EmptyStar(scale: Float = 2.75f) {
 @Composable
 fun FilledStar(scale: Float = 2.75f) {
     Icon(
-        Icons.Filled.Star, contentDescription = "Star",
+        Icons.Filled.Star, contentDescription = stringResource(R.string.star),
         modifier = Modifier
             .padding(5.dp)
             .scale(scale)

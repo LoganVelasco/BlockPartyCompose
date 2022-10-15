@@ -11,8 +11,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import logan.blockpartycompose.R
 
 
 @Composable
@@ -83,7 +85,7 @@ fun EnemyBlock(
         backgroundColor = Color.Red,
         defaultColor = Color.Black,
         selectedColor = Color.White,
-        testTag = "enemy"
+        testTag = stringResource(R.string.enemy)
     )
 }
 
@@ -103,7 +105,7 @@ fun PlayerBlock(
         backgroundColor = Color.Blue,
         defaultColor = Color.Black,
         selectedColor = Color.White,
-        testTag = "player"
+        testTag = stringResource(R.string.player)
     )
 }
 
@@ -123,7 +125,7 @@ fun GoalBlock(
         backgroundColor = Color.Yellow,
         defaultColor = Color.Black,
         selectedColor = Color.White,
-        testTag = "goal"
+        testTag = stringResource(R.string.goal)
     )
 }
 
@@ -142,7 +144,7 @@ fun EmptyBlock(
         backgroundColor = Color.Gray,
         defaultColor = Color.DarkGray,
         selectedColor = Color.White,
-        testTag = "empty"
+        testTag = stringResource(R.string.empty)
     )
 }
 
@@ -161,7 +163,7 @@ fun UnmovableBlock(
         backgroundColor = Color.Black,
         defaultColor = Color.DarkGray,
         selectedColor = Color.White,
-        testTag = "x"
+        testTag = stringResource(R.string.unmovable)
     )
 }
 
@@ -180,6 +182,6 @@ fun MovableBlock(
         backgroundColor = Color.Green,
         defaultColor = Color.Black,
         selectedColor = Color.White,
-        testTag = "movable"
+        testTag = stringResource(R.string.movable)
     )
 }

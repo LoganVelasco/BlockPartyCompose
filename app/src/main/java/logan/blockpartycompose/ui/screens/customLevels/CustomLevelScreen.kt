@@ -10,9 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.screens.level.BackIcon
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.level.LevelScreen
@@ -51,7 +53,7 @@ fun CustomLevelScreen(
                     backClicked = {
                         navigation.navigateUp()
                     },
-                    message = "You Did It!"
+                    message = stringResource(R.string.you_did_it)
                 )
             }
             GameState.FAILED -> {
@@ -62,7 +64,7 @@ fun CustomLevelScreen(
                         navigation.navigate("levelBuilder")
                     },
                     backClicked = { navigation.navigateUp() },
-                    message = "Level Failed"
+                    message = stringResource(R.string.level_failed)
                 )
             }
             GameState.IN_PROGRESS -> {
