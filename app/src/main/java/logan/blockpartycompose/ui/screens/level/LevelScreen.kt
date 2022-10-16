@@ -3,6 +3,9 @@ package logan.blockpartycompose.ui.screens.level
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.OverscrollEffect
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -10,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -166,43 +170,47 @@ fun LevelGrid(
     blocks: List<Char>,
     direction: Direction = Direction.DOWN
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(x),
-        contentPadding = PaddingValues(5.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag(stringResource(id = R.string.level))
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null
     ) {
-        items(blocks.size) { index ->
-            val onClick = { blockClicked(blocks[index], index) }
-            AnimatedContent(
-                targetState = blocks[index],
-                transitionSpec = {
-                    levelGridTransitions(
-                        this.initialState,
-                        this.targetState,
-                        direction
-                    )
-                }
-            ) { type ->
-                when (type) {
-                    'e' -> {
-                        EnemyBlock(onClick= onClick)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(x),
+            contentPadding = PaddingValues(5.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(stringResource(id = R.string.level))
+        ) {
+            items(blocks.size) { index ->
+                val onClick = { blockClicked(blocks[index], index) }
+                AnimatedContent(
+                    targetState = blocks[index],
+                    transitionSpec = {
+                        levelGridTransitions(
+                            this.initialState,
+                            this.targetState,
+                            direction
+                        )
                     }
-                    'p' -> {
-                        PlayerBlock(onClick= onClick)
-                    }
-                    'm' -> {
-                        MovableBlock(onClick= onClick)
-                    }
-                    'g' -> {
-                        GoalBlock(onClick= onClick)
-                    }
-                    '.' -> {
-                        EmptyBlock(onClick= onClick)
-                    }
-                    'x' -> {
-                        UnmovableBlock(onClick= onClick)
+                ) { type ->
+                    when (type) {
+                        'e' -> {
+                            EnemyBlock(onClick = onClick)
+                        }
+                        'p' -> {
+                            PlayerBlock(onClick = onClick)
+                        }
+                        'm' -> {
+                            MovableBlock(onClick = onClick)
+                        }
+                        'g' -> {
+                            GoalBlock(onClick = onClick)
+                        }
+                        '.' -> {
+                            EmptyBlock(onClick = onClick)
+                        }
+                        'x' -> {
+                            UnmovableBlock(onClick = onClick)
+                        }
                     }
                 }
             }

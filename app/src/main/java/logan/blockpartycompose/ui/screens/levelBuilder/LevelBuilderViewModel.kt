@@ -122,11 +122,10 @@ class LevelBuilderViewModel @Inject constructor(
         )
     }
 
-    fun setupExistingLevel(id: Int) {
-        level = repo.getLevel(LevelSet.CUSTOM, id)
-        level.resetLevel()
+    fun setupExistingLevel(existingLevel: Level) {
+        level = existingLevel
         _state.postValue(
-            LevelBuilderState(level.blocks)
+            LevelBuilderState(blocks = level.blocks, isEdit =  true)
         )
     }
 
@@ -135,6 +134,7 @@ class LevelBuilderViewModel @Inject constructor(
         val blocks: List<Char>,
         var selectedBlockColor: BlockColor? = null,
         val showDialog: Boolean = false,
-        val saved: Boolean = false
+        val saved: Boolean = false,
+        val isEdit: Boolean = false
     )
 }

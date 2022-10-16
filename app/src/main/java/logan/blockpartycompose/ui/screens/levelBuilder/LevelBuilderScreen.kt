@@ -3,6 +3,10 @@ package logan.blockpartycompose.ui.screens.levelBuilder
 import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -47,8 +51,9 @@ fun LevelBuilderScreen(
 
     val state by viewModel.state.observeAsState()
     val context = LocalContext.current
-    if (state == null && id != -1) viewModel.setupExistingLevel(id)
-    else if (state == null) viewModel.setupNewLevel()
+    if (state == null){
+        viewModel.setupNewLevel()
+    }
     else if (state?.showDialog == true) {
         UnsavedLevelDialog(
             dismissLevel = {
@@ -220,46 +225,57 @@ fun LevelBuilder(
 @ExperimentalFoundationApi
 @Composable
 fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> Unit) {
-    LazyVerticalGrid( // refactor to Row
-        columns = GridCells.Adaptive(60.dp),
-        contentPadding = PaddingValues(5.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag("palette")
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null
     ) {
-        item {
-            PlayerBlock(
-                onClick = { colorClicked(BlockColor.BLUE) },
-                isSelected = selectedBlockColor == BlockColor.BLUE
-            )
-        }
-        item {
-            EnemyBlock(onClick = { colorClicked(BlockColor.RED) },
-                isSelected = selectedBlockColor == BlockColor.RED)
-        }
-        item {
-            GoalBlock(
-                onClick = { colorClicked(BlockColor.YELLOW) },
-                isSelected = selectedBlockColor == BlockColor.YELLOW
-            )
-        }
-        item {
-            MovableBlock(
-                onClick = { colorClicked(BlockColor.GREEN) },
-                isSelected = selectedBlockColor == BlockColor.GREEN
-            )
-        }
-        item {
-            UnmovableBlock(
-                onClick = { colorClicked(BlockColor.BLACK) },
-                isSelected = selectedBlockColor == BlockColor.BLACK
-            )
-        }
-        item {
-            EmptyBlock(
-                onClick = { colorClicked(BlockColor.GRAY) },
-                isSelected = selectedBlockColor == BlockColor.GRAY
-            )
+        LazyVerticalGrid( // refactor to Row
+            columns = GridCells.Adaptive(60.dp),
+            contentPadding = PaddingValues(5.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .scrollable(
+                    state = ScrollableState { 0f },
+                    orientation = Orientation.Vertical,
+                    enabled = false
+                )
+                .testTag("palette")
+        ) {
+            item {
+                PlayerBlock(
+                    onClick = { colorClicked(BlockColor.BLUE) },
+                    isSelected = selectedBlockColor == BlockColor.BLUE
+                )
+            }
+            item {
+                EnemyBlock(
+                    onClick = { colorClicked(BlockColor.RED) },
+                    isSelected = selectedBlockColor == BlockColor.RED
+                )
+            }
+            item {
+                GoalBlock(
+                    onClick = { colorClicked(BlockColor.YELLOW) },
+                    isSelected = selectedBlockColor == BlockColor.YELLOW
+                )
+            }
+            item {
+                MovableBlock(
+                    onClick = { colorClicked(BlockColor.GREEN) },
+                    isSelected = selectedBlockColor == BlockColor.GREEN
+                )
+            }
+            item {
+                UnmovableBlock(
+                    onClick = { colorClicked(BlockColor.BLACK) },
+                    isSelected = selectedBlockColor == BlockColor.BLACK
+                )
+            }
+            item {
+                EmptyBlock(
+                    onClick = { colorClicked(BlockColor.GRAY) },
+                    isSelected = selectedBlockColor == BlockColor.GRAY
+                )
+            }
         }
     }
 }

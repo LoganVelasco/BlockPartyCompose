@@ -47,6 +47,7 @@ fun CustomLevelScreen(
                     },
                     editClicked = {
                         levelsViewModel.tryAgain()
+                        levelBuilderViewModel.setupExistingLevel(levelsViewModel.level)
                         if (id != -1) navigation.navigate("levelBuilder/$id")
                         else navigation.popBackStack("levelBuilder", inclusive = false)
                     },
@@ -61,6 +62,7 @@ fun CustomLevelScreen(
                     restartClicked = { levelsViewModel.tryAgain() },
                     editClicked = {
                         levelsViewModel.tryAgain()
+                        levelBuilderViewModel.setupExistingLevel(levelsViewModel.level)
                         navigation.navigate("levelBuilder")
                     },
                     backClicked = { navigation.navigateUp() },
