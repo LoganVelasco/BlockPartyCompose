@@ -25,14 +25,16 @@ fun BaseHeader(
     firstIcon: ImageVector,
     endIcon: ImageVector,
     modifier: Modifier = Modifier,
+    withBorder: Boolean = true,
     middleContent: @Composable () -> Unit,
     firstIconOnclick: () -> Unit,
     endIconOnclick: () -> Unit
 ) {
+    if (withBorder) modifier.then(Modifier.border(2.dp, Color.DarkGray, RectangleShape))
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxHeight(.07f).fillMaxWidth().border(2.dp, Color.DarkGray, RectangleShape)
+        modifier = modifier.then(Modifier.fillMaxHeight(.07f).fillMaxWidth())
     ) {
         IconButton(
             onClick = firstIconOnclick,

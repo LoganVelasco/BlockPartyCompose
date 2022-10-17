@@ -4,8 +4,6 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.OverscrollEffect
-import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -123,19 +121,6 @@ fun LevelScreen(
 
 @Composable
 fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> Unit) {
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.SpaceBetween,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(end = 10.dp)
-//    ) {
-//        BackIcon(backClicked)
-//        Text(
-//            text = "Moves Used:  $movesUsed",
-//            textAlign = TextAlign.Center,
-//        )
-//    }
     BaseHeader(
         firstIcon = Icons.Filled.ArrowBack,
         firstIconOnclick = backClicked,

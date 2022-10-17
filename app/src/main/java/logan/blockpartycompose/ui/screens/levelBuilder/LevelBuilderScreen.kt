@@ -91,13 +91,16 @@ fun LevelBuilderScreen(
             clearAllClicked = viewModel::clearAllClicked
         )
         if (state?.saved == true) {
-            SaveLevelDialog(
-                context,
-                closeDialog = {
-                    viewModel.hidePopUpDialog()
-                },
-                saveLevel = viewModel::saveClicked
-            )
+            if(state!!.isEdit){
+                SaveExistingLevelDialog(closeDialog = { viewModel.hidePopUpDialog() }, saveLevel =  { viewModel.triggerSaveDialog() })
+            }else
+                SaveLevelDialog(
+                    context,
+                    closeDialog = {
+                        viewModel.hidePopUpDialog()
+                    },
+                    saveLevel = viewModel::saveClicked
+                )
         }
     }
 }
@@ -138,13 +141,10 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
 fun SaveLevelDialog(
     context: Context,
     closeDialog: () -> Unit,
-    saveLevel: KFunction2<Context, String, Unit>
+    saveLevel: KFunction2<Context, String, Unit>,
 ) {
     val levelName = remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
-//    LaunchedEffect(Unit) {
-//        focusRequester.requestFocus()
-//    }
     AlertDialog(
         onDismissRequest = closeDialog,
         title = {
@@ -180,6 +180,41 @@ fun SaveLevelDialog(
                         }
                     ) {
                         Text(stringResource(id = R.string.save))
+                    }
+                }
+            }
+        }
+    )
+}
+
+
+@Composable
+fun SaveExistingLevelDialog(
+    closeDialog: () -> Unit,
+    saveLevel: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = closeDialog,
+        title = {
+            Text(text = "Would you like to override existing save or create a new copy?")
+        },
+        confirmButton =
+        {
+            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)) {
+                Spacer(modifier = Modifier.height(15.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = closeDialog
+                    ) {
+                        Text("Override")
+                    }
+                    Button(
+                        onClick = saveLevel
+                    ) {
+                        Text("Save a Copy")
                     }
                 }
             }

@@ -320,7 +320,7 @@ class LevelViewModel @Inject constructor(
         }
 
 
-        if (level.enemyIndex == level.goalIndex) { // Red moves off of Yellow
+        if (level.enemyIndex == level.goalIndex && isValidEnemyMove(level.blocks[newIndex])) { // Red moves off of Yellow
             moveEnemyOffGoal(newIndex)
             return true
         }

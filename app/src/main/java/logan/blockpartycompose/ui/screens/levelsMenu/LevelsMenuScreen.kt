@@ -4,9 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -14,10 +11,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -35,6 +32,7 @@ import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.components.*
 import java.util.*
+import kotlin.reflect.KFunction2
 
 @Composable
 fun LevelsMenuScreen(
@@ -42,20 +40,68 @@ fun LevelsMenuScreen(
     levelSet: LevelSet,
 ) {
     val viewModel: LevelsMenuViewModel = hiltViewModel()
-    val levels = viewModel.getLevels(levelSet, LocalContext.current)
     val progress = viewModel.getProgress(levelSet)
-    if (levels.isEmpty())
-        CustomLevelEmpty(navController, levelSet, progress)
-    else
-        LevelsMenu(navController, levelSet, levels, progress)
 
+    val state by viewModel.state.observeAsState()
+    val context = LocalContext.current
+    val setup = { viewModel.setupState(levelSet, context) }
+
+    when {
+        (state == null || viewModel.needsRefresh) -> setup()
+        (state!!.levels.isEmpty()) -> CustomLevelEmpty(navController, levelSet, progress, createNewLevel = {
+            navController.navigate("levelBuilder")
+        })
+        (state!!.deleteId != null && state!!.deleteName != null) -> {
+            LevelsMenu(navController, levelSet, state!!.levels, progress)
+            DeletionConfirmationPopup(
+                state!!.deleteName!!,
+                delete = {
+                    viewModel.deleteCustomLevel(state!!.deleteId!!, context)
+                },
+                cancel = setup
+            )
+        }
+        else -> LevelsMenu(navController, levelSet, state!!.levels, progress, deleteLevel = viewModel::deleteCustomLevelTriggered)
+    }
+}
+
+@Composable
+fun DeletionConfirmationPopup(name: String, delete: () -> Unit, cancel: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = { },
+        title = {
+            Text(text = "Are you sure you want to delete Custom Level: $name")
+        },
+        confirmButton =
+        {
+            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)) {
+                Spacer(modifier = Modifier.height(15.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = cancel
+                    ) {
+                        Text("Cancel")
+                    }
+                    Button(
+                        onClick = delete
+                    ) {
+                        Text("Delete")
+                    }
+                }
+            }
+        }
+    )
 }
 
 @Composable
 fun CustomLevelEmpty(
     navController: NavController,
     levelSet: LevelSet,
-    progress: List<Int>
+    progress: List<Int>,
+    createNewLevel: () -> Unit
 ) {
     Column(Modifier.fillMaxSize()) {
         LevelTopBar(navController, levelSet, progress)
@@ -69,7 +115,7 @@ fun CustomLevelEmpty(
                 fontSize = 26.sp,
                 modifier = Modifier.padding(10.dp)
             )
-            Button(onClick = { navController.navigate("levelBuilder") }) {
+            Button(onClick = createNewLevel) {
                 Text(text = stringResource(R.string.create_custom_level))
             }
         }
@@ -81,11 +127,13 @@ fun LevelsMenu(
     navController: NavController,
     levelSet: LevelSet,
     levels: List<Level>,
-    progress: List<Int>
+    progress: List<Int>,
+    editLevel: () -> Unit = {},
+    deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Column(Modifier.fillMaxSize()) {
         LevelTopBar(navController, levelSet, progress)
-        LevelsList(navController, levelSet, levels, progress)
+        LevelsList(navController, levelSet, levels, progress, editLevel, deleteLevel)
     }
 }
 
@@ -129,6 +177,8 @@ fun LevelsList(
     levelSet: LevelSet,
     levels: List<Level>,
     progress: List<Int>,
+    editLevel: () -> Unit = {},
+    deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Column {
         LazyColumn(
@@ -142,7 +192,7 @@ fun LevelsList(
             items(levels.size) { index ->
                 val level = levels[index]
                 val stars = if (progress.isEmpty()) -1 else progress[index]
-                LevelCard(navController, levelSet, level, stars)
+                LevelCard(navController, levelSet, level, stars, editLevel, deleteLevel)
                 Spacer(Modifier.height(25.dp))
             }
         }
@@ -154,7 +204,9 @@ private fun LevelCard(
     navController: NavController,
     levelSet: LevelSet,
     level: Level,
-    stars: Int
+    stars: Int,
+    editLevel: () -> Unit = {},
+    deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Card(
         border = BorderStroke(5.dp, Color.DarkGray),
@@ -174,11 +226,31 @@ private fun LevelCard(
                 .background(shape = RectangleShape, color = Color.White)
                 .fillMaxWidth()
         ) {
-            Text(
-                text = level.name.uppercase(Locale("us")),
-                fontSize = 32.sp,
-                fontStyle = FontStyle.Italic
-            )
+            if (level.levelSet == LevelSet.CUSTOM) {
+                BaseHeader(
+                    firstIcon = Icons.Filled.Edit,
+                    endIcon = Icons.Filled.Delete,
+                    withBorder = false,
+                    middleContent = {
+                        Text(
+                            text = level.name.uppercase(Locale("us")),
+                            fontSize = 32.sp,
+                            fontStyle = FontStyle.Italic
+                        )
+                    },
+                    firstIconOnclick = editLevel,
+                    endIconOnclick = {
+                        if (deleteLevel != null) {
+                            deleteLevel(level.id, level.name)
+                        }
+                    }
+                )
+            } else
+                Text(
+                    text = level.name.uppercase(Locale("us")),
+                    fontSize = 32.sp,
+                    fontStyle = FontStyle.Italic
+                )
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -250,7 +322,6 @@ private fun LevelStars(result: Int, modifier: Modifier) {
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = modifier
-//            .testTag("stars: $result")
             .fillMaxWidth()
             .padding(10.dp)
     ) {
@@ -266,9 +337,9 @@ private fun LevelStars(result: Int, modifier: Modifier) {
     }
 }
 
-enum class LevelSet(string: String) {
-    EASY("Easy"),
-    MEDIUM("Medium"),
-    HARD("Hard"),
-    CUSTOM("Custom")
+enum class LevelSet() {
+    EASY,
+    MEDIUM,
+    HARD,
+    CUSTOM
 }

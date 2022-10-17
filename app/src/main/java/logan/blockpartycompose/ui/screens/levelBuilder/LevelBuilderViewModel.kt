@@ -32,10 +32,13 @@ class LevelBuilderViewModel @Inject constructor(
 
 
     fun isInProgress(): Boolean {
+        if (_state.value!!.isEdit) {
+            return _state.value!!.blocks != level.initialBlocks
+        }
         _state.value!!.blocks.toMutableList().forEach {
             if (it != '.' && !saved) return true
         }
-        return false
+        return  false
     }
 
     fun setupNewLevel(x: Int = 6, y: Int = 8) {
@@ -47,7 +50,7 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun colorSelected(selectedBlockColor: BlockColor) {
         _state.postValue(
-            LevelBuilderState(_state.value!!.blocks, selectedBlockColor)
+            LevelBuilderState(_state.value!!.blocks, selectedBlockColor, isEdit = _state.value!!.isEdit)
         )
     }
 
@@ -58,7 +61,7 @@ class LevelBuilderViewModel @Inject constructor(
             blocks[index] = color.color
             saved = false
             _state.postValue(
-                LevelBuilderState(blocks, color)
+                LevelBuilderState(blocks, color, isEdit =  _state.value!!.isEdit)
             )
         }
     }
@@ -86,13 +89,11 @@ class LevelBuilderViewModel @Inject constructor(
     fun triggerSaveDialog() {
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
-            LevelBuilderState(blocks, selectedBlockColor = null, saved = true)
+            LevelBuilderState(blocks, selectedBlockColor = null, saved = true, isEdit = _state.value!!.isEdit)
         )
     }
 
     fun saveClicked(context: Context, name: String) { // bad logic shouldn't need to pass blocks
-//        level.blocks = _state.value!!.blocks.toMutableList()
-
         val newLevel = Level(
             level.id,
             name,
@@ -110,7 +111,7 @@ class LevelBuilderViewModel @Inject constructor(
     fun showPopUpDialog() { // bad logic shouldn't need to pass blocks
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
-            LevelBuilderState(blocks, null, true)
+            LevelBuilderState(blocks, null, true, isEdit = _state.value!!.isEdit)
         )
     }
 
@@ -118,14 +119,14 @@ class LevelBuilderViewModel @Inject constructor(
     fun hidePopUpDialog() {
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
-            LevelBuilderState(blocks)
+            LevelBuilderState(blocks, isEdit = _state.value!!.isEdit)
         )
     }
 
     fun setupExistingLevel(existingLevel: Level) {
         level = existingLevel
         _state.postValue(
-            LevelBuilderState(blocks = level.blocks, isEdit =  true)
+            LevelBuilderState(blocks = level.blocks, isEdit = true)
         )
     }
 

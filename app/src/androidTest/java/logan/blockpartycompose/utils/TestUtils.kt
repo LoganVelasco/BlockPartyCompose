@@ -34,7 +34,7 @@ fun ComposeContentTestRule.waitUntilDoesNotExist(
 }
 
 fun ComposeContentTestRule.openPlayMenu() {
-    this.onNodeWithText("Play").performClick()
+    this.onNodeWithText("Tap anywhere to start").performClick()
 }
 
 fun ComposeContentTestRule.openLevelMenu(levelSet: LevelSet = LevelSet.EASY) {
