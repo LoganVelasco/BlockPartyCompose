@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -36,7 +37,7 @@ fun LevelController(
     name: Int,
     viewModel: LevelViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.observeAsState()
+    val state by viewModel.state.collectAsState()
 
     if (state != null) {
         Crossfade(

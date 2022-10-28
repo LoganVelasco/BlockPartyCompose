@@ -6,6 +6,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -35,7 +36,7 @@ fun CustomLevelScreen(
     levelsViewModel: LevelViewModel = hiltViewModel()
 ) {
 
-    val state by levelsViewModel.state.observeAsState()
+    val state by levelsViewModel.state.collectAsState()
 
     if (state != null) {
         when (state!!.gameState) {

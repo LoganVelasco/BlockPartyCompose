@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.Level
 import javax.inject.Inject
@@ -16,8 +18,8 @@ class LevelsMenuViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
-    private var _state = MutableLiveData<LevelMenuState>()
-    val state: LiveData<LevelMenuState> = _state
+    private var _state = MutableStateFlow<LevelMenuState?>(null)
+    val state: StateFlow<LevelMenuState?> = _state
 
     var needsRefresh = false
 

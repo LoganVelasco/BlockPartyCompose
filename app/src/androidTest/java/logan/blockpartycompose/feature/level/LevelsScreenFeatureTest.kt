@@ -32,6 +32,7 @@ class LevelsScreenFeatureTest {
         hasText(composeTestRule.activity.getString(resId))
     fun <A: ComponentActivity> hasText(@StringRes resId: Int, activity: A) =
         hasTestTag(activity.getString(resId))
+
     @Test
     fun displaysInitialLevel() {
 

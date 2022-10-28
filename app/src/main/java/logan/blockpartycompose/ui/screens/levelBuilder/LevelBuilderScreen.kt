@@ -49,7 +49,7 @@ fun LevelBuilderScreen(
         }
     }
 
-    val state by viewModel.state.observeAsState()
+    val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     if (state == null){
         viewModel.setupNewLevel()

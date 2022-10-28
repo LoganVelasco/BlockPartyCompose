@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.Level
@@ -28,8 +30,8 @@ class LevelViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
-    private var _state = MutableLiveData<LevelState>()
-    val state: LiveData<LevelState> = _state
+    private var _state = MutableStateFlow<LevelState?>(null)
+    val state: StateFlow<LevelState?> = _state
 
     lateinit var level: Level
 
@@ -42,24 +44,24 @@ class LevelViewModel @Inject constructor(
     fun setupLevel(levelSet: LevelSet, id: Int) {
         level = getLevel(levelSet, id)
         level.resetLevel()
-        _state.postValue(
+        _state.value =
             LevelState(
                 blocks = level.initialBlocks,
                 movesUsed = 0,
                 gameState = GameState.IN_PROGRESS
             )
-        )
+
     }
 
     fun setupLevel(newLevel: Level) {
         level = newLevel
-        _state.postValue(
+        _state.value =
             LevelState(
                 blocks = newLevel.blocks,
                 movesUsed = 0,
                 gameState = GameState.IN_PROGRESS
             )
-        )
+
     }
 
     private fun getLevel(levelSet: LevelSet, id: Int): Level {
@@ -82,76 +84,76 @@ class LevelViewModel @Inject constructor(
         when (block) {
             enemyBlock -> {
                 level.state = GameState.FAILED
-                _state.postValue(
+                _state.value =
                     LevelState(
                         blocks = level.blocks,
                         movesUsed = ++level.movesUsed,
                         gameState = level.state,
                     )
-                )
+
             }
             movableBlock -> {
                 if (handleMovableBlockMove(index)) {
                     val direction = movePlayerBlock(index)
 
-                    _state.postValue(
+                    _state.value =
                         LevelState(
                             blocks = level.blocks,
                             movesUsed = ++level.movesUsed,
                             gameState = level.state,
                             direction = direction
                         )
-                    )
+
                 } else {
                     return
                 }
             }
             goalBlock -> {
                 val direction = movePlayerBlock(index)
-                _state.postValue(
+                _state.value =
                     LevelState(
                         blocks = level.blocks,
                         movesUsed = ++level.movesUsed,
                         gameState = level.state,
                         direction = direction
                     )
-                )
+
                 viewModelScope.launch {
                     delay(200)
                     level.blocks[index] = goalBlock
-                    _state.postValue(
+                    _state.value =
                         LevelState(
                             blocks = level.blocks,
                             movesUsed = level.movesUsed,
                             gameState = level.state,
                             direction = direction
                         )
-                    )
+
                     delay(400)
                     if (level.state != GameState.FAILED)
                         level.state = GameState.SUCCESS
-                    _state.postValue(
+                    _state.value =
                         LevelState(
                             blocks = level.blocks,
                             movesUsed = level.movesUsed,
                             gameState = level.state,
                             direction = direction
                         )
-                    )
+
 
                 }
                 return
             }
             emptyBlock -> {
                 val direction = movePlayerBlock(index)!!
-                _state.postValue(
+                _state.value =
                     LevelState(
                         blocks = level.blocks,
                         movesUsed = ++level.movesUsed,
                         gameState = level.state,
                         direction = direction
                     )
-                )
+
             }
             else -> {
                 return
@@ -169,28 +171,28 @@ class LevelViewModel @Inject constructor(
         if (moveDirection != null && level.state == GameState.IN_PROGRESS) {
             viewModelScope.launch {
                 delay(100)
-                _state.postValue(
+                _state.value =
                     LevelState(
                         blocks = level.blocks.toMutableList(),
                         movesUsed = level.movesUsed,
                         gameState = level.state,
                         direction = moveDirection
                     )
-                )
+
 
                 if (level.state != GameState.IN_PROGRESS) return@launch
 
                 moveDirection = moveEnemyBlock()
                 if (moveDirection != null) {
                     delay(175)
-                    _state.postValue(
+                    _state.value =
                         LevelState(
                             blocks = level.blocks.toMutableList(),
                             movesUsed = level.movesUsed,
                             gameState = level.state,
                             direction = moveDirection
                         )
-                    )
+
                 }
             }
         }
@@ -298,23 +300,23 @@ class LevelViewModel @Inject constructor(
             viewModelScope.launch {
                 moveEnemyToNewIndex(newIndex)
                 delay(250)
-                _state.postValue(
+                _state.value =
                     LevelState(
                         blocks = level.blocks.toMutableList(),
                         movesUsed = level.movesUsed,
                         gameState = level.state,
                         direction = direction
                     )
-                )
+
                 delay(250)
                 level.state = GameState.FAILED
-                _state.postValue(
+                _state.value =
                     LevelState(
                         blocks = level.blocks.toMutableList(),
                         movesUsed = level.movesUsed,
                         gameState = level.state
                     )
-                )
+
             }
             return false
         }
@@ -347,13 +349,13 @@ class LevelViewModel @Inject constructor(
 
     fun tryAgain() {
         level.resetLevel()
-        _state.postValue(
+        _state.value =
             LevelState(
                 blocks = level.blocks,
                 movesUsed = 0,
                 gameState = GameState.IN_PROGRESS
             )
-        )
+
     }
 
     private fun getMinMoves(): Int {

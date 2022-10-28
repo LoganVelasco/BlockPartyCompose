@@ -14,7 +14,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
 
     private val gson = Gson()
     val levelsSets = mutableMapOf<String, List<Level>>()
-    val customFileName = "custom.json"
+    private val customFileName = "custom.json"
 
     fun getNewLevel(x: Int, y: Int): Level {
         return Level(
@@ -124,6 +124,10 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         gameData.updateProgress(difficulty, level, stars)
         val newStars = getDifficultyProgress().sum()
 
+    }
+
+    fun clearAllProgress(){
+        gameData.clearAllProgress()
     }
 
 }

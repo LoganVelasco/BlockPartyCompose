@@ -27,4 +27,3 @@ class MainActivity  @Inject constructor(): ComponentActivity() {
         }
     }
 }
-

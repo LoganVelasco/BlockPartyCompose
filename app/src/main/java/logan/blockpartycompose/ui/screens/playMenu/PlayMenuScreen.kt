@@ -1,16 +1,12 @@
 package logan.blockpartycompose.ui.screens.playMenu
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -27,17 +23,20 @@ import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 @Composable
 fun PlayMenuScreen(navController: NavController) {
     val viewModel: PlayMenuViewModel = hiltViewModel()
-    val progress = viewModel.getProgress()
 
-    PlayMenu(navController, progress)
+    val progress = remember {
+        mutableStateOf(viewModel.getProgress())
+    }
 
+    PlayMenu(navController, progress) { viewModel.tempEdt() }
 
 }
 
 @Composable
 private fun PlayMenu(
     navController: NavController,
-    progress: List<Int>
+    progress: MutableState<List<Int>>,
+    function: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,14 +45,14 @@ private fun PlayMenu(
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        MenuHeader(navController, progress.sum())
-        MenuDifficulties(navController, progress)
+        MenuHeader(navController, progress.value.sum(), function)
+        MenuDifficulties(navController, progress.value)
         MenuFooter(navController)
     }
 }
 
 @Composable
-fun MenuHeader(navController: NavController, totalStars: Int) {
+fun MenuHeader(navController: NavController, totalStars: Int, function: () -> Unit) {
     BaseHeader(
         firstIcon = Icons.Filled.Person,
         endIcon = Icons.Filled.Settings,
@@ -68,7 +67,7 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
             }
         },
         firstIconOnclick = { navController.navigateUp() },
-        endIconOnclick = { navController.navigateUp() }
+        endIconOnclick = function
     )
 }
 
@@ -124,13 +123,11 @@ private fun MenuDifficulties(
             LevelSet.MEDIUM,
             progress[1],
             progress.sum(),
-
             ) { navController.navigate("medium") }
         DifficultyButton(
             LevelSet.HARD,
             progress[2],
             progress.sum(),
-
             ) { navController.navigate("hard") }
     }
 }

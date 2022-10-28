@@ -88,4 +88,8 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
         }
     }
 
+    fun clearAllProgress(){
+        prefs.edit().clear().apply()
+    }
+
 }
