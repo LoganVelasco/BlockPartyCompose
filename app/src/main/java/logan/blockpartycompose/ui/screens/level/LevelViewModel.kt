@@ -1,8 +1,6 @@
 package logan.blockpartycompose.ui.screens.level
 
 import androidx.compose.runtime.Immutable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +32,7 @@ class LevelViewModel @Inject constructor(
     val state: StateFlow<LevelState?> = _state
 
     lateinit var level: Level
+    private val history = mutableListOf<LevelState>()
 
     private val playerBlock = 'p'
     private val enemyBlock = 'e'
@@ -50,7 +49,10 @@ class LevelViewModel @Inject constructor(
                 movesUsed = 0,
                 gameState = GameState.IN_PROGRESS
             )
-
+        history.clear()
+        history.add(LevelState(blocks = level.initialBlocks.toList(),
+            movesUsed = 0,
+            gameState = GameState.IN_PROGRESS))
     }
 
     fun setupLevel(newLevel: Level) {
@@ -61,7 +63,10 @@ class LevelViewModel @Inject constructor(
                 movesUsed = 0,
                 gameState = GameState.IN_PROGRESS
             )
-
+        history.clear()
+        history.add(LevelState(blocks = newLevel.blocks.toList(),
+            movesUsed = 0,
+            gameState = GameState.IN_PROGRESS))
     }
 
     private fun getLevel(levelSet: LevelSet, id: Int): Level {
@@ -164,6 +169,13 @@ class LevelViewModel @Inject constructor(
         if (shouldEnemyAttemptMove(level.enemyIndex, level.state)) {
             handleEnemyTurn()
         }
+        history.add(
+            LevelState(
+                blocks = state.replayCache[0]!!.blocks.toList(),
+                movesUsed = state.replayCache[0]!!.movesUsed,
+                gameState = state.replayCache[0]!!.gameState,
+                direction = state.replayCache[0]!!.direction
+        ))
     }
 
     private fun handleEnemyTurn() {
@@ -199,11 +211,10 @@ class LevelViewModel @Inject constructor(
     }
 
     private fun movePlayerBlock(index: Int): Direction? {
+        val currentIndex = level.playerIndex
         level.blocks[index] = playerBlock
-        level.blocks[level.playerIndex] = emptyBlock
-        val direction = getDirection(level.playerIndex, index, level.x)
-        level.playerIndex = index
-        return direction
+        level.blocks[currentIndex] = emptyBlock
+        return getDirection(currentIndex, index, level.x)
     }
 
     private fun handleMovableBlockMove(index: Int): Boolean {
@@ -337,13 +348,13 @@ class LevelViewModel @Inject constructor(
     private fun moveEnemyOffGoal(newIndex: Int) {
         level.blocks[level.enemyIndex] = goalBlock
         level.blocks[newIndex] = enemyBlock
-        level.enemyIndex = newIndex
+//        level.enemyIndex = newIndex
     }
 
     private fun moveEnemyToNewIndex(newIndex: Int) {
         level.blocks[level.enemyIndex] = emptyBlock
         level.blocks[newIndex] = enemyBlock
-        level.enemyIndex = newIndex
+//        level.enemyIndex = newIndex
     }
 
 
@@ -356,6 +367,14 @@ class LevelViewModel @Inject constructor(
                 gameState = GameState.IN_PROGRESS
             )
 
+    }
+
+    fun undoClicked(){
+        if(history.size >= 2) {
+            level.blocks = history[history.size - 2].blocks.toMutableList()
+            _state.value = history[history.size - 2]
+            history.removeLast()
+        }
     }
 
     private fun getMinMoves(): Int {
