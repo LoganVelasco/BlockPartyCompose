@@ -322,7 +322,6 @@ class LevelViewModel @Inject constructor(
 
 
         if (newIndex == level.playerIndex) { // Red reached Blue
-            history.clear()
             viewModelScope.launch {
                 moveEnemyToNewIndex(newIndex)
                 delay(250)
@@ -387,12 +386,14 @@ class LevelViewModel @Inject constructor(
     fun tryAgain() {
         level.resetLevel()
         history.clear()
+        val newState = LevelState(
+            blocks = level.initialBlocks,
+            movesUsed = 0,
+            gameState = GameState.IN_PROGRESS
+        )
+        history.add(newState)
         _state.postValue(
-            LevelState(
-                blocks = level.initialBlocks,
-                movesUsed = 0,
-                gameState = GameState.IN_PROGRESS
-            )
+            newState
         )
     }
 
