@@ -86,6 +86,8 @@ var enemyIndex: Int = initialBlocks.indexOf('e')
         state = GameState.IN_PROGRESS
         blocks = initialBlocks.toMutableList()
         movesUsed = 0
+        playerIndex = initialBlocks.indexOf('p')
+        enemyIndex = initialBlocks.indexOf('e')
     }
 
 }
