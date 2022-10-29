@@ -82,8 +82,8 @@ fun LevelController(
                         blockClicked = viewModel::blockClicked,
                         backClicked = { navigation.navigateUp() },
                         settingsClicked = { navigation.navigateUp() },
-                        undoClicked = {},
-                        restartClicked = {viewModel.tryAgain()},
+                        undoClicked = { viewModel.undoClicked() },
+                        restartClicked = { viewModel.tryAgain() },
                         infoClicked = {},
                         direction = state!!.direction
                     )
