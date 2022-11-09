@@ -166,6 +166,7 @@ class LevelViewModel @Inject constructor(
 
         if (shouldEnemyAttemptMove(level.enemyIndex, level.state)) {
             val redStates = handleEnemyTurn()
+            if(level.state == GameState.FAILED) return
             if(redStates.isEmpty()){
                 _state.value = newState!!
                 history.add(newState)
@@ -173,18 +174,17 @@ class LevelViewModel @Inject constructor(
             }
             viewModelScope.launch {
                 _state.value = newState!!
-                delay(150)
 
-                _state.value = redStates[0]
+                redStates.forEachIndexed { index, levelState ->
+                    when(index){
+                        0 -> delay(350)
+                        1 -> delay(300)
+                    }
+                    if(levelState.gameState == GameState.FAILED)delay(350)
+                    _state.value = levelState
+                }
+                history.add(redStates.last())
 
-
-                if (redStates.size >1)
-                {
-                    delay(200)
-                    _state.value = redStates[1]
-                    history.add(redStates[1])
-                }else
-                    history.add(redStates[0])
             }
         }else{
             _state.value = newState!!
@@ -206,9 +206,20 @@ class LevelViewModel @Inject constructor(
             ))
 
 
-            if (level.state != GameState.IN_PROGRESS) return emptyList()
+            if (level.blocks.indexOf('p') == -1){
+                states.add( LevelState(
+                    blocks = level.blocks.toMutableList(),
+                    movesUsed = level.movesUsed,
+                    gameState = GameState.FAILED,
+                    direction = moveDirection
+                ))
+                return states
+            }
 
             moveDirection = moveEnemyBlock()
+
+
+
             if (moveDirection != null) {
                 states.add(LevelState(
                     blocks = level.blocks.toMutableList(),
@@ -218,6 +229,15 @@ class LevelViewModel @Inject constructor(
                 ))
 
             }
+            if (level.blocks.indexOf('p') == -1){
+                states.add( LevelState(
+                    blocks = level.blocks.toMutableList(),
+                    movesUsed = level.movesUsed,
+                    gameState = GameState.FAILED,
+                    direction = moveDirection
+                ))
+            }
+
             return states
         }
         return emptyList()
@@ -322,28 +342,29 @@ class LevelViewModel @Inject constructor(
 
 
         if (newIndex == level.playerIndex) { // Red reached Blue
-            viewModelScope.launch {
-                moveEnemyToNewIndex(newIndex)
-                delay(250)
-                _state.postValue(
-                    LevelState(
-                        blocks = level.blocks.toMutableList(),
-                        movesUsed = level.movesUsed,
-                        gameState = level.state,
-                        direction = direction
-                    )
-                )
-                delay(250)
-                level.state = GameState.FAILED
-                _state.postValue(
-                    LevelState(
-                        blocks = level.blocks.toMutableList(),
-                        movesUsed = level.movesUsed,
-                        gameState = level.state
-                    )
-                )
-            }
-            return false
+
+//            viewModelScope.launch {
+//                moveEnemyToNewIndex(newIndex)
+//                delay(500)
+//                _state.postValue(
+//                    LevelState(
+//                        blocks = level.blocks.toMutableList(),
+//                        movesUsed = level.movesUsed,
+//                        gameState = level.state,
+//                        direction = direction
+//                    )
+//                )
+//                delay(500)
+//                level.state = GameState.FAILED
+//                _state.postValue(
+//                    LevelState(
+//                        blocks = level.blocks.toMutableList(),
+//                        movesUsed = level.movesUsed,
+//                        gameState = level.state
+//                    )
+//                )
+//            }
+//            return false
         }
 
 
