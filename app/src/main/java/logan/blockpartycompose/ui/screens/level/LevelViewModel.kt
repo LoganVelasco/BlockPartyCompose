@@ -85,7 +85,7 @@ class LevelViewModel @Inject constructor(
                 level.x
             )
         ) {
-            return
+            return // Invalid block clicked
         }
         var newState: LevelState? = null
         when (block) {
@@ -375,12 +375,23 @@ class LevelViewModel @Inject constructor(
        if(history.size >= 2){
            history.sortBy { it.movesUsed }
            level.blocks = history[history.size-2].blocks.toMutableList() // Code Smell
+           val direction = getUndoDirection(level.playerIndex, level.blocks.indexOf('p'))
            level.playerIndex = level.blocks.indexOf('p')
            level.enemyIndex = level.blocks.indexOf('e')
-           _state.value = history[history.size-2]
+           _state.value = history[history.size-2].copy(direction = direction)
            history.removeLast()
            level.movesUsed--
        }
+    }
+
+    private fun getUndoDirection(currentIndex: Int, newIndex:  Int): Direction {
+        return when{
+            currentIndex == newIndex+1 -> Direction.LEFT
+            currentIndex == newIndex-1 -> Direction.RIGHT
+            currentIndex > newIndex -> Direction.UP
+            currentIndex < newIndex -> Direction.DOWN
+            else -> Direction.UP
+        }
     }
 
     fun tryAgain() {
