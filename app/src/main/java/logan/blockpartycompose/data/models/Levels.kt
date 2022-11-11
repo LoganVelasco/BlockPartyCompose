@@ -77,7 +77,7 @@ data class Level(
     var blocks = initialBlocks.toMutableList()
     var movesUsed = 0
     var playerIndex: Int = initialBlocks.indexOf('p')
-//        get() { return blocks.indexOf('p') }
+//        get() { return blocks.indexOf('p') } <- doesn't work, this needs to be manually updated to avoid new moves effecting ongoing ones
 var enemyIndex: Int = initialBlocks.indexOf('e')
 //        get() { return blocks.indexOf('e') }
     var goalIndex: Int = initialBlocks.indexOf('g')

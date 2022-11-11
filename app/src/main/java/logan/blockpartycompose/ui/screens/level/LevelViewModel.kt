@@ -102,7 +102,7 @@ class LevelViewModel @Inject constructor(
                 if (handleMovableBlockMove(index)) {
                     val direction = movePlayerBlock(index)
                     newState = LevelState(
-                        blocks = level.blocks,
+                        blocks = level.blocks.toList(),
                         movesUsed = ++level.movesUsed,
                         gameState = level.state,
                         direction = direction
@@ -149,7 +149,7 @@ class LevelViewModel @Inject constructor(
                 return
             }
             emptyBlock -> {
-                val direction = movePlayerBlock(index)!!
+                val direction = movePlayerBlock(index)
                 newState = LevelState(
                     blocks = level.blocks.toList(),
                     movesUsed = ++level.movesUsed,
@@ -165,8 +165,7 @@ class LevelViewModel @Inject constructor(
 
 
         if (shouldEnemyAttemptMove(level.enemyIndex, level.state)) {
-            val redStates = handleEnemyTurn()
-            if(level.state == GameState.FAILED) return
+            val redStates = handleEnemyTurn() // gets list of red moves to display
             if(redStates.isEmpty()){
                 _state.value = newState!!
                 history.add(newState)
@@ -178,9 +177,9 @@ class LevelViewModel @Inject constructor(
                 redStates.forEachIndexed { index, levelState ->
                     when(index){
                         0 -> delay(350)
-                        1 -> delay(300)
+                        else -> delay(300)
                     }
-                    if(levelState.gameState == GameState.FAILED)delay(350)
+                    if(levelState.gameState == GameState.FAILED) delay(100)
                     _state.value = levelState
                 }
                 history.add(redStates.last())
@@ -323,7 +322,6 @@ class LevelViewModel @Inject constructor(
 
     }
 
-
     private fun moveEnemyBlock(direction: Direction): Boolean {
         val newIndex = when (direction) {
             Direction.UP -> {
@@ -339,34 +337,6 @@ class LevelViewModel @Inject constructor(
                 level.enemyIndex + 1
             }
         }
-
-
-        if (newIndex == level.playerIndex) { // Red reached Blue
-
-//            viewModelScope.launch {
-//                moveEnemyToNewIndex(newIndex)
-//                delay(500)
-//                _state.postValue(
-//                    LevelState(
-//                        blocks = level.blocks.toMutableList(),
-//                        movesUsed = level.movesUsed,
-//                        gameState = level.state,
-//                        direction = direction
-//                    )
-//                )
-//                delay(500)
-//                level.state = GameState.FAILED
-//                _state.postValue(
-//                    LevelState(
-//                        blocks = level.blocks.toMutableList(),
-//                        movesUsed = level.movesUsed,
-//                        gameState = level.state
-//                    )
-//                )
-//            }
-//            return false
-        }
-
 
         if (level.enemyIndex == level.goalIndex && isValidEnemyMove(level.blocks[newIndex])) { // Red moves off of Yellow
             moveEnemyOffGoal(newIndex)
