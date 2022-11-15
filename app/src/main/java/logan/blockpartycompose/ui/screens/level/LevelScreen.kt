@@ -45,16 +45,17 @@ fun LevelController(
         ) {
             when (it) {
                 GameState.SUCCESS -> {
-                    if(state!!.movesUsed == 0)return@Crossfade // TODO figure out why recomposing here instead of catching
+                    if (state!!.movesUsed == 0) return@Crossfade // TODO figure out why recomposing here instead of catching
                     val nextLevel = viewModel.level.id + 1
-                    val isFinalLevel = (nextLevel == 11 || nextLevel == 21 || nextLevel == 31) // TODO don't hardcode
+                    val isFinalLevel =
+                        (nextLevel == 11 || nextLevel == 21 || nextLevel == 31) // TODO don't hardcode
                     val stars = viewModel.getStars(state!!.movesUsed)
                     viewModel.updateLevel(levelSet, viewModel.level.id, stars)
 
-                    val nextLevelOnClick = if(isFinalLevel){
-                        { navigation.navigate("playMenu")}
+                    val nextLevelOnClick = if (isFinalLevel) {
+                        { navigation.navigate("playMenu") }
                     } else {
-                        {viewModel.setupLevel(levelSet, nextLevel)}
+                        { viewModel.setupLevel(levelSet, nextLevel) }
                     }
                     SuccessScreen(
                         // not great logic tbh the name/levelSet of the parent composable don't change
@@ -68,12 +69,14 @@ fun LevelController(
                         isFinalLevel = isFinalLevel
                     )
                 }
+
                 GameState.FAILED -> {
                     FailureScreen(
                         tryAgainOnClick = viewModel::tryAgain,
                         backClicked = { navigation.navigateUp() }
                     )
                 }
+
                 GameState.IN_PROGRESS -> {
                     LevelScreen(
                         movesUsed = state!!.movesUsed,
@@ -181,22 +184,28 @@ fun LevelGrid(
                         'e' -> {
                             EnemyBlock(onClick = onClick)
                         }
+
                         'p' -> {
                             PlayerBlock(onClick = onClick)
                         }
+
                         'm' -> {
                             MovableBlock(onClick = onClick)
                         }
+
                         'g' -> {
                             GoalBlock(onClick = onClick)
                         }
+
                         '.' -> {
                             EmptyBlock(onClick = onClick)
                         }
+
                         'x' -> {
                             UnmovableBlock(onClick = onClick)
                         }
                     }
+
                 }
             }
         }
@@ -242,7 +251,7 @@ fun SuccessScreen(
     minMoves: Int,
     isFinalLevel: Boolean
 ) {
-    if(movesUsed == 0)return
+    if (movesUsed == 0) return
     Card(
         modifier = Modifier
             .fillMaxHeight()
@@ -258,7 +267,7 @@ fun SuccessScreen(
                     .fillMaxHeight()
             ) {
                 Text(text = stringResource(id = R.string.you_did_it))
-                Text(text = stringResource(id = R.string.level_completed_in,levelName ,movesUsed))
+                Text(text = stringResource(id = R.string.level_completed_in, levelName, movesUsed))
                 if (stars < 3) Text(text = stringResource(id = R.string.complete_in, minMoves))
                 SuccessStars(stars)
                 Row(

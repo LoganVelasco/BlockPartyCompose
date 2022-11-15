@@ -87,17 +87,14 @@ class LevelViewModel @Inject constructor(
         ) {
             return // Invalid block clicked
         }
+        if(level.blocks.indexOf('p') == -1)
+            return // Already dead
         var newState: LevelState? = null
         when (block) {
             enemyBlock -> {
-                level.state = GameState.FAILED
-                newState = LevelState(
-                    blocks = level.blocks,
-                    movesUsed = ++level.movesUsed,
-                    gameState = level.state,
-                )
-                history.clear()
+              return
             }
+
             movableBlock -> {
                 if (handleMovableBlockMove(index)) {
                     val direction = movePlayerBlock(index)
@@ -111,43 +108,41 @@ class LevelViewModel @Inject constructor(
                     return
                 }
             }
+
             goalBlock -> {
                 val direction = movePlayerBlock(index)
-                _state.postValue(
+                _state.value =
                     LevelState(
                         blocks = level.blocks,
                         movesUsed = ++level.movesUsed,
                         gameState = level.state,
                         direction = direction
                     )
-                )
-                history.clear()
+
                 viewModelScope.launch {
                     delay(200)
                     level.blocks[index] = goalBlock
-                    _state.postValue(
-                        LevelState(
+                    _state.value = LevelState(
                             blocks = level.blocks,
                             movesUsed = level.movesUsed,
                             gameState = level.state,
                             direction = direction
                         )
-                    )
+
                     delay(400)
                     if (level.state != GameState.FAILED)
                         level.state = GameState.SUCCESS
-                    _state.postValue(
-                        LevelState(
+                    history.clear()
+                    _state.value = LevelState(
                             blocks = level.blocks,
                             movesUsed = level.movesUsed,
                             gameState = level.state,
                             direction = direction
                         )
-                    )
-
                 }
                 return
             }
+
             emptyBlock -> {
                 val direction = movePlayerBlock(index)
                 newState = LevelState(
@@ -158,15 +153,15 @@ class LevelViewModel @Inject constructor(
                 )
 
             }
+
             else -> {
                 return
             }
         }
 
-
         if (shouldEnemyAttemptMove(level.enemyIndex, level.state)) {
             val redStates = handleEnemyTurn() // gets list of red moves to display
-            if(redStates.isEmpty()){
+            if (redStates.isEmpty()) {
                 _state.value = newState!!
                 history.add(newState)
                 return
@@ -175,68 +170,80 @@ class LevelViewModel @Inject constructor(
                 _state.value = newState!!
 
                 redStates.forEachIndexed { index, levelState ->
-                    when(index){
+                    when (index) {
                         0 -> delay(350)
                         else -> delay(300)
                     }
-                    if(levelState.gameState == GameState.FAILED) delay(100)
+                    if (levelState.gameState == GameState.FAILED) {
+                        _state.value = levelState
+                    }
+                    // TODO: refactor this
+                    else if ((redStates.size == 1 && redStates[0].blocks.indexOf('e') == level.enemyIndex) ||
+                        (redStates.size >= 2 && (redStates[0].blocks.indexOf('e') == level.enemyIndex ||
+                                redStates[1].blocks.indexOf('e') == level.enemyIndex))
+                    ) // if red move is stale (new red move occurred) don't post it
                     _state.value = levelState
                 }
                 history.add(redStates.last())
-
             }
-        }else{
+        } else {
             _state.value = newState!!
             history.add(newState)
         }
     }
 
-    private fun handleEnemyTurn():List<LevelState> {
+    private fun handleEnemyTurn(): List<LevelState> {
         val states = mutableListOf<LevelState>()
         var moveDirection = moveEnemyBlock()
-        if (moveDirection != null && level.state == GameState.IN_PROGRESS) {
+        if (moveDirection != null) {
 
 
-            states.add( LevelState(
-                blocks = level.blocks.toMutableList(),
-                movesUsed = level.movesUsed,
-                gameState = level.state,
-                direction = moveDirection
-            ))
-
-
-            if (level.blocks.indexOf('p') == -1){
-                states.add( LevelState(
-                    blocks = level.blocks.toMutableList(),
-                    movesUsed = level.movesUsed,
-                    gameState = GameState.FAILED,
-                    direction = moveDirection
-                ))
-                return states
-            }
-
-            moveDirection = moveEnemyBlock()
-
-
-
-            if (moveDirection != null) {
-                states.add(LevelState(
+            states.add(
+                LevelState(
                     blocks = level.blocks.toMutableList(),
                     movesUsed = level.movesUsed,
                     gameState = level.state,
                     direction = moveDirection
-                ))
+                )
+            )
 
-            }
-            if (level.blocks.indexOf('p') == -1){
-                states.add( LevelState(
-                    blocks = level.blocks.toMutableList(),
-                    movesUsed = level.movesUsed,
-                    gameState = GameState.FAILED,
-                    direction = moveDirection
-                ))
+
+            if (level.blocks.indexOf('p') == -1) {
+                states.add(
+                    LevelState(
+                        blocks = level.blocks.toMutableList(),
+                        movesUsed = level.movesUsed,
+                        gameState = GameState.FAILED,
+                        direction = moveDirection
+                    )
+                )
+                return states
             }
 
+            moveDirection = moveEnemyBlock() // attempt second move, return null if no valid move
+
+            if (moveDirection != null) {
+                states.add(
+                    LevelState(
+                        blocks = level.blocks.toMutableList(),
+                        movesUsed = level.movesUsed,
+                        gameState = level.state,
+                        direction = moveDirection
+                    )
+                )
+
+
+                if (level.blocks.indexOf('p') == -1) {
+                    states.add(
+                        LevelState(
+                            blocks = level.blocks.toMutableList(),
+                            movesUsed = level.movesUsed,
+                            gameState = GameState.FAILED,
+                            direction = moveDirection
+                        )
+                    )
+                }
+            }
             return states
         }
         return emptyList()
@@ -267,10 +274,12 @@ class LevelViewModel @Inject constructor(
                 level.blocks[newIndex] = movableBlock
                 true
             }
+
             movableBlock -> {
                 level.blocks[newIndex] = emptyBlock
                 true
             }
+
             else -> {
                 false
             }
@@ -327,24 +336,33 @@ class LevelViewModel @Inject constructor(
             Direction.UP -> {
                 level.enemyIndex - level.x
             }
+
             Direction.DOWN -> {
                 level.enemyIndex + level.x
             }
+
             Direction.LEFT -> {
                 level.enemyIndex - 1
             }
+
             Direction.RIGHT -> {
                 level.enemyIndex + 1
             }
         }
+
 
         if (level.enemyIndex == level.goalIndex && isValidEnemyMove(level.blocks[newIndex])) { // Red moves off of Yellow
             moveEnemyOffGoal(newIndex)
             return true
         }
 
+        if (level.playerIndex == newIndex){
+            level.state = GameState.FAILED
+        }
+
         if (isValidEnemyMove(level.blocks[newIndex])) {
             moveEnemyToNewIndex(newIndex)
+
             return true
         }
         return false
@@ -362,23 +380,23 @@ class LevelViewModel @Inject constructor(
         level.enemyIndex = newIndex
     }
 
-    fun undoClicked(){
-       if(history.size >= 2){
-           history.sortBy { it.movesUsed }
-           level.blocks = history[history.size-2].blocks.toMutableList() // Code Smell
-           val direction = getUndoDirection(level.playerIndex, level.blocks.indexOf('p'))
-           level.playerIndex = level.blocks.indexOf('p')
-           level.enemyIndex = level.blocks.indexOf('e')
-           _state.value = history[history.size-2].copy(direction = direction)
-           history.removeLast()
-           level.movesUsed--
-       }
+    fun undoClicked() {
+        if (history.size >= 2) {
+            history.sortBy { it.movesUsed }
+            level.blocks = history[history.size - 2].blocks.toMutableList() // Code Smell
+            val direction = getUndoDirection(level.playerIndex, level.blocks.indexOf('p'))
+            level.playerIndex = level.blocks.indexOf('p')
+            level.enemyIndex = level.blocks.indexOf('e')
+            _state.value = history[history.size - 2].copy(direction = direction)
+            history.removeLast()
+            level.movesUsed--
+        }
     }
 
-    private fun getUndoDirection(currentIndex: Int, newIndex:  Int): Direction {
-        return when{
-            currentIndex == newIndex+1 -> Direction.LEFT
-            currentIndex == newIndex-1 -> Direction.RIGHT
+    private fun getUndoDirection(currentIndex: Int, newIndex: Int): Direction {
+        return when {
+            currentIndex == newIndex + 1 -> Direction.LEFT
+            currentIndex == newIndex - 1 -> Direction.RIGHT
             currentIndex > newIndex -> Direction.UP
             currentIndex < newIndex -> Direction.DOWN
             else -> Direction.UP
