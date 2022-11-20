@@ -18,7 +18,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
 
     fun getNewLevel(x: Int, y: Int): Level {
         return Level(
-            id = 0,
+            id = -1,
             name = "",
             levelSet = LevelSet.CUSTOM,
             x = x,
@@ -69,8 +69,9 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         val levels = getCustomLevels(context)
         val newLevels = mutableListOf<Level>()
         newLevels.addAll(levels)
-        level.id = (newLevels.size) *-1
+        newLevels.removeIf { it.id == level.id }
         newLevels.add(level)
+
         val data = gson.toJson(LevelsDTO.getDTO(newLevels))
         val fileOutputStream: FileOutputStream
         return try {
@@ -124,6 +125,16 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         gameData.updateProgress(difficulty, level, stars)
         val newStars = getDifficultyProgress().sum()
 
+    }
+
+    fun generateId(context: Context): Int {
+        val highestCurrentID = getCustomLevels(context).maxByOrNull { it.id }?.id?: 0
+
+        return highestCurrentID + 1
+    }
+
+    fun getEmptyLayout(x: Int = 6, y: Int = 8): List<Char> {
+        return getBlankLayout(x, y)
     }
 
 }

@@ -67,8 +67,8 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
                 )
             }
         },
-        firstIconOnclick = { navController.navigateUp() },
-        endIconOnclick = { navController.navigateUp() }
+        firstIconOnclick = { navController.popBackStack() },
+        endIconOnclick = { navController.popBackStack() }
     )
 }
 

@@ -19,7 +19,6 @@ class LevelsMenuViewModel @Inject constructor(
     private var _state = MutableLiveData<LevelMenuState>()
     val state: LiveData<LevelMenuState> = _state
 
-    var needsRefresh = false
 
     private fun getLevels(levelSet: LevelSet, context: Context): List<Level> {
         if(levelSet == LevelSet.CUSTOM)return repo.getCustomLevels(context)
@@ -42,11 +41,6 @@ class LevelsMenuViewModel @Inject constructor(
 
     fun setupState(levelSet: LevelSet, context: Context) {
         _state.value = LevelMenuState(getLevels(levelSet, context))
-        needsRefresh = false
-    }
-
-    fun forceUpdate() {
-        needsRefresh = true
     }
 
     @Immutable

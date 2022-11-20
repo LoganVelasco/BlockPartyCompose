@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,13 +28,10 @@ import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 fun CustomLevelScreen(
     navigation: NavController,
     id: Int,
-    levelBuilderViewModel: LevelBuilderViewModel = hiltViewModel(
-        navigation.getViewModelStoreOwner(
-            navigation.graph.id
-        )
-    ),
     levelsViewModel: LevelViewModel = hiltViewModel()
 ) {
+    val backEntry = remember { navigation.previousBackStackEntry!! }
+    val levelBuilderViewModel: LevelBuilderViewModel = hiltViewModel(backEntry)
 
     val state by levelsViewModel.state.observeAsState()
 

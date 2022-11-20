@@ -47,21 +47,24 @@ fun LevelsMenuScreen(
     val setup = { viewModel.setupState(levelSet, context) }
 
     when {
-        (state == null || viewModel.needsRefresh) -> setup()
+        (state == null) -> setup()
         (state!!.levels.isEmpty()) -> CustomLevelEmpty(navController, levelSet, progress, createNewLevel = {
             navController.navigate("levelBuilder")
         })
-        (state!!.deleteId != null && state!!.deleteName != null) -> {
-            LevelsMenu(navController, levelSet, state!!.levels, progress)
-            DeletionConfirmationPopup(
-                state!!.deleteName!!,
-                delete = {
-                    viewModel.deleteCustomLevel(state!!.deleteId!!, context)
-                },
-                cancel = setup
-            )
+        else -> {
+            LevelsMenu(navController, levelSet, state!!.levels, progress, deleteLevel = viewModel::deleteCustomLevelTriggered, editLevel = { id ->
+                navController.navigate("levelBuilder/$id")
+            })
+            if(state!!.deleteId != null && state!!.deleteName != null) {
+                DeletionConfirmationPopup(
+                    state!!.deleteName!!,
+                    delete = {
+                        viewModel.deleteCustomLevel(state!!.deleteId!!, context)
+                    },
+                    cancel = setup
+                )
+            }
         }
-        else -> LevelsMenu(navController, levelSet, state!!.levels, progress, deleteLevel = viewModel::deleteCustomLevelTriggered)
     }
 }
 
@@ -128,7 +131,7 @@ fun LevelsMenu(
     levelSet: LevelSet,
     levels: List<Level>,
     progress: List<Int>,
-    editLevel: () -> Unit = {},
+    editLevel: (Int?) -> Unit = {},
     deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Column(Modifier.fillMaxSize()) {
@@ -177,7 +180,7 @@ fun LevelsList(
     levelSet: LevelSet,
     levels: List<Level>,
     progress: List<Int>,
-    editLevel: () -> Unit = {},
+    editLevel: (Int?) -> Unit = {},
     deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Column {
@@ -205,7 +208,7 @@ private fun LevelCard(
     levelSet: LevelSet,
     level: Level,
     stars: Int,
-    editLevel: () -> Unit = {},
+    editLevel: (Int?) -> Unit = {},
     deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Card(
@@ -238,7 +241,9 @@ private fun LevelCard(
                             fontStyle = FontStyle.Italic
                         )
                     },
-                    firstIconOnclick = editLevel,
+                    firstIconOnclick = {
+                        editLevel(level.id)
+                    },
                     endIconOnclick = {
                         if (deleteLevel != null) {
                             deleteLevel(level.id, level.name)
