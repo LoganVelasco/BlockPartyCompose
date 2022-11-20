@@ -238,7 +238,9 @@ private fun LevelCard(
                             fontStyle = FontStyle.Italic
                         )
                     },
-                    firstIconOnclick = editLevel,
+                    firstIconOnclick = {
+                        navController.navigate("levelBuilder/${level.id}")
+                    },
                     endIconOnclick = {
                         if (deleteLevel != null) {
                             deleteLevel(level.id, level.name)

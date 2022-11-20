@@ -28,7 +28,8 @@ import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 fun PlayMenuScreen(navController: NavController) {
     val viewModel: PlayMenuViewModel = hiltViewModel()
     val progress = viewModel.getProgress()
-
+    println("TESTLOG")
+    navController.backQueue.forEach{ println( it.id)}
     PlayMenu(navController, progress)
 
 
@@ -67,8 +68,8 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
                 )
             }
         },
-        firstIconOnclick = { navController.navigateUp() },
-        endIconOnclick = { navController.navigateUp() }
+        firstIconOnclick = { navController.popBackStack() },
+        endIconOnclick = { navController.popBackStack() }
     )
 }
 

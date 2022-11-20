@@ -232,7 +232,6 @@ class LevelViewModel @Inject constructor(
                     )
                 )
 
-
                 if (level.blocks.indexOf('p') == -1) {
                     states.add(
                         LevelState(
@@ -244,8 +243,10 @@ class LevelViewModel @Inject constructor(
                     )
                 }
             }
+
             return states
         }
+
         return emptyList()
     }
 

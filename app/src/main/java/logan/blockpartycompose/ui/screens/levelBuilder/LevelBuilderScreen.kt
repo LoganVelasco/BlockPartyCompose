@@ -44,17 +44,20 @@ fun LevelBuilderScreen(
         if (viewModel.isInProgress()) {
             viewModel.showPopUpDialog()
         } else {
-            viewModel.clearAllClicked()
-            navigation.navigateUp()
+//            viewModel.setupNewLevel()
+            navigation.getViewModelStoreOwner(navigation.graph.id).viewModelStore
+            navigation.popBackStack("playMenu", false)
         }
     }
 
     val state by viewModel.state.observeAsState()
     val context = LocalContext.current
-    if (state == null){
-        viewModel.setupNewLevel()
-    }
-    else if (state?.showDialog == true) {
+    if (state == null) {
+        if (id == -1) viewModel.setupNewLevel()
+        else viewModel.setupExistingLevel(id, context)
+    } else if (id != -1 && viewModel.level.name == "") {
+        viewModel.setupExistingLevel(id, context)
+    } else if (state?.showDialog == true) {
         UnsavedLevelDialog(
             dismissLevel = {
                 viewModel.clearAllClicked()
@@ -71,8 +74,8 @@ fun LevelBuilderScreen(
                 if (viewModel.isInProgress()) {
                     viewModel.showPopUpDialog()
                 } else {
-                    viewModel.clearAllClicked()
-                    navigation.navigateUp()
+                    viewModel.setupNewLevel()
+                    navigation.popBackStack("playMenu", false)
                 }
             },
             blockClicked = viewModel::blockClicked,
@@ -82,18 +85,26 @@ fun LevelBuilderScreen(
                 viewModel.playClicked()
                 navigation.navigate("customLevelPlayer")
             },
-            saveClicked = {
-                if (viewModel.isInProgress()) { // disable save when not valid and when = to previous save
-                    viewModel.playClicked() // Refactor this
+            saveClicked = { // disable save when not valid and when = to previous save
+                if (viewModel.isInProgress()) {
+                    viewModel.playClicked() // TODO: Refactor this
                     viewModel.triggerSaveDialog()
                 }
             },
             clearAllClicked = viewModel::clearAllClicked
         )
         if (state?.saved == true) {
-            if(state!!.isEdit){
-                SaveExistingLevelDialog(closeDialog = { viewModel.hidePopUpDialog() }, saveLevel =  { viewModel.triggerSaveDialog() })
-            }else
+            if (state?.isEdit == true) {
+                SaveExistingLevelDialog(name = viewModel.level.name,
+                    closeDialog = { viewModel.hidePopUpDialog() },
+                    saveNewLevel = {
+                        viewModel.saveNewLevel()
+                    },
+                    saveLevel = {
+                        viewModel.saveClicked(context)
+                        viewModel.hidePopUpDialog()
+                    })
+            } else
                 SaveLevelDialog(
                     context,
                     closeDialog = {
@@ -174,6 +185,7 @@ fun SaveLevelDialog(
                         Text(stringResource(R.string.cancel))
                     }
                     Button(
+                        enabled = levelName.value.isNotEmpty(),
                         onClick = {
                             saveLevel(context, levelName.value)
                             closeDialog()
@@ -190,13 +202,15 @@ fun SaveLevelDialog(
 
 @Composable
 fun SaveExistingLevelDialog(
+    name: String,
     closeDialog: () -> Unit,
+    saveNewLevel: () -> Unit,
     saveLevel: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = closeDialog,
         title = {
-            Text(text = "Would you like to override existing save or create a new copy?")
+            Text(text = "Would you like to override existing level: $name or create a new copy?")
         },
         confirmButton =
         {
@@ -207,14 +221,19 @@ fun SaveExistingLevelDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(
-                        onClick = closeDialog
+                        onClick = saveLevel
                     ) {
                         Text("Override")
                     }
                     Button(
-                        onClick = saveLevel
+                        onClick = saveNewLevel
                     ) {
-                        Text("Save a Copy")
+                        Text("Save")
+                    }
+                    Button(
+                        onClick = closeDialog
+                    ) {
+                        Text("Cancel")
                     }
                 }
             }
@@ -246,7 +265,10 @@ fun LevelBuilder(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            BackIcon(backClicked = { backClicked() }, modifier = Modifier.testTag(stringResource(R.string.back_button)))
+            BackIcon(
+                backClicked = { backClicked() },
+                modifier = Modifier.testTag(stringResource(R.string.back_button))
+            )
             Button(onClick = { clearAllClicked() }, Modifier.padding(15.dp)) {
                 Text(text = stringResource(R.string.clear_all))
             }

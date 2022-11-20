@@ -16,6 +16,13 @@ class PlayMenuViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
+    override fun onCleared() {
+        super.onCleared()
+    }
+
+    init {
+        val i= 0
+    }
     private var _flags = MutableLiveData<List<Boolean>>()
     val flags: LiveData<List<Boolean>> = _flags
 

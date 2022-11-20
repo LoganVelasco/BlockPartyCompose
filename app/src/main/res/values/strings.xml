@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BlockPartyCompose</string>
+    <string name="app_name">BlockParty</string>
     <string name="star">star</string>
     <string name="empty_star">empty star</string>
     <string name="level">level</string>

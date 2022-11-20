@@ -1,16 +1,11 @@
 package logan.blockpartycompose.ui.screens.levelBuilder
 
 import android.content.Context
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.data.models.Level
@@ -23,12 +18,22 @@ class LevelBuilderViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
-    private var _state = MutableLiveData<LevelBuilderState>()
-    val state: LiveData<LevelBuilderState> = _state
+    private var _state = MutableLiveData<LevelBuilderState?>()
+    val state: LiveData<LevelBuilderState?> = _state
 
     lateinit var level: Level
 
     var saved = false
+
+init {
+    val test= 0
+}
+
+
+    override fun onCleared() {
+        super.onCleared()
+    }
+
 
 
     fun isInProgress(): Boolean {
@@ -50,7 +55,7 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun colorSelected(selectedBlockColor: BlockColor) {
         _state.postValue(
-            LevelBuilderState(_state.value!!.blocks, selectedBlockColor, isEdit = _state.value!!.isEdit)
+            LevelBuilderState(_state.value!!.blocks, selectedBlockColor, isEdit = level.id != -1)
         )
     }
 
@@ -61,23 +66,29 @@ class LevelBuilderViewModel @Inject constructor(
             blocks[index] = color.color
             saved = false
             _state.postValue(
-                LevelBuilderState(blocks, color, isEdit =  _state.value!!.isEdit)
+                LevelBuilderState(blocks, color, isEdit =  level.id != -1)
             )
         }
     }
 
     fun clearAllClicked() {
-        setupNewLevel()
+        level.blocks = repo.getEmptyLayout().toMutableList()
+        _state.postValue(
+            LevelBuilderState(level.blocks)
+        )
     }
 
+    fun clearHistory(){
+        _state.value = null
+    }
     fun menuClicked() {
 
     }
 
     fun playClicked() {
         level = Level(
-            id = 0,
-            name = "",
+            id = level.id,
+            name = level.name,
             levelSet = LevelSet.CUSTOM,
             x = 6,
             y = 8,
@@ -89,29 +100,38 @@ class LevelBuilderViewModel @Inject constructor(
     fun triggerSaveDialog() {
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
-            LevelBuilderState(blocks, selectedBlockColor = null, saved = true, isEdit = _state.value!!.isEdit)
+            LevelBuilderState(blocks, selectedBlockColor = null, saved = true, isEdit = level.id != -1)
         )
     }
 
-    fun saveClicked(context: Context, name: String) { // bad logic shouldn't need to pass blocks
+    fun saveClicked(context: Context, name: String = level.name) { // bad logic shouldn't need to pass blocks
+        if (level.id == -1)
+            level.id = repo.generateId(context)
+
+        level.name = name
         val newLevel = Level(
-            level.id,
-            name,
-            level.levelSet,
-            level.x,
-            level.y,
-            _state.value!!.blocks.toMutableList(),
-            level.minMoves,
+            id = level.id,
+            name = name,
+            levelSet = level.levelSet,
+            x = level.x,
+            y = level.y,
+            initialBlocks = _state.value!!.blocks.toMutableList(),
+            minMoves = level.minMoves,
         )
 
         repo.addCustomLevel(newLevel, context)
         saved = true
     }
 
+    fun saveNewLevel() {
+        level.id = -1
+        triggerSaveDialog()
+    }
+
     fun showPopUpDialog() { // bad logic shouldn't need to pass blocks
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
-            LevelBuilderState(blocks, null, true, isEdit = _state.value!!.isEdit)
+            LevelBuilderState(blocks, null, true, isEdit = level.id != -1)
         )
     }
 
@@ -119,7 +139,7 @@ class LevelBuilderViewModel @Inject constructor(
     fun hidePopUpDialog() {
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
-            LevelBuilderState(blocks, isEdit = _state.value!!.isEdit)
+            LevelBuilderState(blocks, isEdit = level.id != -1)
         )
     }
 
@@ -128,6 +148,11 @@ class LevelBuilderViewModel @Inject constructor(
         _state.postValue(
             LevelBuilderState(blocks = level.blocks, isEdit = true)
         )
+    }
+
+    fun setupExistingLevel(id: Int, context:Context) {
+        repo.getCustomLevels(context).find { level -> level.id == id }
+            ?.let { setupExistingLevel(it) }
     }
 
     @Immutable

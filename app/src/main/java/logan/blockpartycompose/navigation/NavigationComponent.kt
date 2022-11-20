@@ -23,7 +23,9 @@ fun Navigation() {
         composable("welcome") { WelcomeScreen(navController) }
         composable("playMenu") { PlayMenuScreen(navController) }
         composable("levelBuilder") { LevelBuilderScreen(navController) }
-        composable("levelBuilder/{id}") { LevelBuilderScreen(navController,  it.arguments?.getString("id")!!.toInt()) }
+        composable("levelBuilder/{id}") {
+            LevelBuilderScreen(navController,  it.arguments?.getString("id")!!.toInt())
+        }
         composable("easy") { LevelsMenuScreen(navController, EASY) }
         composable("medium") { LevelsMenuScreen(navController, MEDIUM) }
         composable("hard") { LevelsMenuScreen(navController, HARD) }
