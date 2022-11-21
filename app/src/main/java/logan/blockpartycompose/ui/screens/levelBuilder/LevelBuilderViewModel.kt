@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.data.models.Level
+import logan.blockpartycompose.ui.screens.level.LevelState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ class LevelBuilderViewModel @Inject constructor(
     val state: LiveData<LevelBuilderState> = _state
 
     lateinit var level: Level
+    private val history = mutableListOf<List<Char>>()
 
     var saved = false
 
@@ -37,6 +39,8 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun setupNewLevel(x: Int = 6, y: Int = 8) {
         level = repo.getNewLevel(x, y)
+        history.clear()
+        history.add(level.blocks.toList())
         _state.postValue(
             LevelBuilderState(level.blocks)
         )
@@ -54,6 +58,7 @@ class LevelBuilderViewModel @Inject constructor(
             val blocks = _state.value!!.blocks.toMutableList()
             blocks[index] = color.color
             saved = false
+            history.add(blocks.toList())
             _state.postValue(
                 LevelBuilderState(blocks, color, isEdit =  level.id != -1)
             )
@@ -62,13 +67,19 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun clearAllClicked() {
         level.blocks = repo.getEmptyLayout().toMutableList()
+        history.add(level.blocks.toList())
         _state.postValue(
             LevelBuilderState(level.blocks)
         )
     }
 
-    fun menuClicked() {
-
+    fun undoClicked() {
+        if(history.size < 2) return
+        history.removeLast()
+        level.blocks = history.last().toMutableList()
+        _state.postValue(
+            LevelBuilderState(history.last(), _state.value?.selectedBlockColor, isEdit =  level.id != -1)
+        )
     }
 
     fun playClicked() {
@@ -131,6 +142,8 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun setupExistingLevel(existingLevel: Level) {
         level = existingLevel
+        history.clear()
+        history.add(level.blocks.toList())
         _state.postValue(
             LevelBuilderState(blocks = level.blocks, isEdit = true)
         )

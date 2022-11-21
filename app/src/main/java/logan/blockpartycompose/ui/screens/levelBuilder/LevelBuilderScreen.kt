@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,6 +53,7 @@ fun LevelBuilderScreen(
 
     val state by viewModel.state.observeAsState()
     val context = LocalContext.current
+
     if (state == null) {
         if (id == -1) viewModel.setupNewLevel()
         else viewModel.setupExistingLevel(id, context)
@@ -77,16 +80,14 @@ fun LevelBuilderScreen(
             },
             blockClicked = viewModel::blockClicked,
             colorClicked = viewModel::colorSelected,
-            menuClicked = viewModel::menuClicked,
+            undoClicked = viewModel::undoClicked,
             playClicked = {
                 viewModel.playClicked()
                 navigation.navigate("customLevelPlayer")
             },
             saveClicked = {
-                if (viewModel.isInProgress()) { // disable save when not valid and when = to previous save
                     viewModel.playClicked() // Refactor this
                     viewModel.triggerSaveDialog()
-                }
             },
             clearAllClicked = viewModel::clearAllClicked
         )
@@ -247,7 +248,7 @@ fun LevelBuilder(
     blockClicked: (Char, Int) -> Unit,
     colorClicked: (BlockColor) -> Unit,
     backClicked: () -> Unit,
-    menuClicked: () -> Unit,
+    undoClicked: () -> Unit,
     playClicked: () -> Unit,
     saveClicked: () -> Unit,
     clearAllClicked: () -> Unit,
@@ -272,7 +273,7 @@ fun LevelBuilder(
         }
         LevelGrid(blockClicked = blockClicked, x = x, blocks = blocks)
         BlockPalette(selectedBlockColor, colorClicked)
-        LevelBuilderFooter(menuClicked, playClicked, saveClicked)
+        LevelBuilderFooter(undoClicked, playClicked, saveClicked)
     }
 }
 
@@ -335,15 +336,18 @@ fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> 
 }
 
 @Composable
-fun LevelBuilderFooter(menuClicked: () -> Unit, playClicked: () -> Unit, saveClicked: () -> Unit) {
+fun LevelBuilderFooter(undoClicked: () -> Unit, playClicked: () -> Unit, saveClicked: () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
         IconButton(
-            onClick = { menuClicked() },
+            onClick = { undoClicked() },
         ) {
-            Icon(Icons.Filled.Menu, contentDescription = "Menu")
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_undo_24),
+                contentDescription = "Undo",
+            )
         }
         IconButton(
             onClick = { playClicked() },
@@ -353,7 +357,10 @@ fun LevelBuilderFooter(menuClicked: () -> Unit, playClicked: () -> Unit, saveCli
         IconButton(
             onClick = { saveClicked() },
         ) {
-            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Save")
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_save_24),
+                contentDescription = "Save",
+            )
         }
     }
 }

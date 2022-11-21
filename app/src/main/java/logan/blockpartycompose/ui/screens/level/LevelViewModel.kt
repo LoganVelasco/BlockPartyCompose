@@ -87,12 +87,12 @@ class LevelViewModel @Inject constructor(
         ) {
             return // Invalid block clicked
         }
-        if(level.blocks.indexOf('p') == -1)
+        if (level.blocks.indexOf('p') == -1)
             return // Already dead
         var newState: LevelState? = null
         when (block) {
             enemyBlock -> {
-              return
+                return
             }
 
             movableBlock -> {
@@ -123,22 +123,22 @@ class LevelViewModel @Inject constructor(
                     delay(200)
                     level.blocks[index] = goalBlock
                     _state.value = LevelState(
-                            blocks = level.blocks,
-                            movesUsed = level.movesUsed,
-                            gameState = level.state,
-                            direction = direction
-                        )
+                        blocks = level.blocks,
+                        movesUsed = level.movesUsed,
+                        gameState = level.state,
+                        direction = direction
+                    )
 
                     delay(400)
                     if (level.state != GameState.FAILED)
                         level.state = GameState.SUCCESS
                     history.clear()
                     _state.value = LevelState(
-                            blocks = level.blocks,
-                            movesUsed = level.movesUsed,
-                            gameState = level.state,
-                            direction = direction
-                        )
+                        blocks = level.blocks,
+                        movesUsed = level.movesUsed,
+                        gameState = level.state,
+                        direction = direction
+                    )
                 }
                 return
             }
@@ -161,9 +161,12 @@ class LevelViewModel @Inject constructor(
 
         if (shouldEnemyAttemptMove(level.enemyIndex, level.state)) {
             val redStates = handleEnemyTurn() // gets list of red moves to display
-            if (redStates.isEmpty()) {
-                _state.value = newState!!
-                history.add(newState)
+            if (redStates.isEmpty()) { // red block trapped
+                viewModelScope.launch {
+                    delay(100)
+                    _state.value = newState!!
+                    history.add(newState)
+                }
                 return
             }
             viewModelScope.launch {
@@ -177,12 +180,16 @@ class LevelViewModel @Inject constructor(
                     if (levelState.gameState == GameState.FAILED) {
                         _state.value = levelState
                     }
-                    // TODO: refactor this
-                    else if ((redStates.size == 1 && redStates[0].blocks.indexOf('e') == level.enemyIndex) ||
+                    else if ((redStates.size == 1 && redStates[0].blocks.indexOf('e') == level.enemyIndex) ||    // TODO: refactor this
                         (redStates.size >= 2 && (redStates[0].blocks.indexOf('e') == level.enemyIndex ||
                                 redStates[1].blocks.indexOf('e') == level.enemyIndex))
-                    ) // if red move is stale (new red move occurred) don't post it
-                    _state.value = levelState
+                    ) { // if red move is stale (new red move occurred) don't post it
+                        if (level.blocks.indexOf('p') == level.goalIndex) {   // don't post red move if valid win happens
+                            return@launch
+                        }
+                        if(history.size < 2 || history.last().blocks.indexOf('e') != level.enemyIndex)
+                            _state.value = levelState
+                    }
                 }
                 history.add(redStates.last())
             }
@@ -356,7 +363,7 @@ class LevelViewModel @Inject constructor(
             return true
         }
 
-        if (level.playerIndex == newIndex){
+        if (level.playerIndex == newIndex) {
             level.state = GameState.FAILED
         }
 

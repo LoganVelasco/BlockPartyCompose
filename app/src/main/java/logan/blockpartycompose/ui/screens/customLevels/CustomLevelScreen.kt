@@ -75,7 +75,7 @@ fun CustomLevelScreen(
                     blockClicked = levelsViewModel::blockClicked,
                     backClicked = { navigation.navigateUp() },
                     settingsClicked = { navigation.navigateUp() },
-                    undoClicked = {},
+                    undoClicked = { levelsViewModel.undoClicked() },
                     restartClicked = { levelsViewModel.tryAgain() },
                     infoClicked = {},
                     direction = state!!.direction
