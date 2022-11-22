@@ -1,7 +1,5 @@
 package logan.blockpartycompose.ui.screens.playMenu
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
@@ -9,8 +7,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -55,8 +51,8 @@ private fun PlayMenu(
 @Composable
 fun MenuHeader(navController: NavController, totalStars: Int) {
     BaseHeader(
-        firstIcon = Icons.Filled.Person,
-        endIcon = Icons.Filled.Settings,
+//        firstIcon = Icons.Filled.Person,
+//        endIcon = Icons.Filled.Settings,
         middleContent = {
             Row(Modifier.padding(10.dp)) {
                 Text(text = stringResource(id = R.string.total_star_progress, totalStars), fontSize = 18.sp)

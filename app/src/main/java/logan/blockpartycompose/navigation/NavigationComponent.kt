@@ -28,7 +28,8 @@ fun Navigation() {
         composable("medium") { LevelsMenuScreen(navController, MEDIUM) }
         composable("hard") { LevelsMenuScreen(navController, HARD) }
         composable("custom") { LevelsMenuScreen(navController, CUSTOM) }
-        composable("customLevelPlayer") { CustomLevelScreen(navController, -1) }
+        composable("customLevelPlayer") { CustomLevelScreen(navController) }
+        composable("customLevelPlayer/{id}") { CustomLevelScreen(navController, it.arguments?.getString("id")!!.toInt()) }
         composable("levels/{levelSet}") {
             LevelsMenuScreen(
                 navController,

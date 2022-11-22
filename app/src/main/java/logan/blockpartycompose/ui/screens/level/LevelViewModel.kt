@@ -59,7 +59,7 @@ class LevelViewModel @Inject constructor(
     fun setupLevel(newLevel: Level) {
         level = newLevel
         val newState = LevelState(
-            blocks = newLevel.blocks,
+            blocks = newLevel.blocks.toList(),
             movesUsed = 0,
             gameState = GameState.IN_PROGRESS
         )

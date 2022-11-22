@@ -27,7 +27,7 @@ import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 @Composable
 fun CustomLevelScreen(
     navigation: NavController,
-    id: Int,
+    id: Int = -1,
     levelsViewModel: LevelViewModel = hiltViewModel()
 ) {
     val backEntry = remember { navigation.previousBackStackEntry!! }
@@ -35,58 +35,71 @@ fun CustomLevelScreen(
 
     val state by levelsViewModel.state.observeAsState()
 
-    if (state != null) {
-        when (state!!.gameState) {
-            GameState.SUCCESS -> {
-                CustomLevelEnd(
-                    restartClicked = {
-                        levelsViewModel.tryAgain()
-                        navigation.popBackStack("level/{levelSet}/{name}", inclusive = false)
-                    },
-                    editClicked = {
-                        levelsViewModel.tryAgain()
-                        levelBuilderViewModel.setupExistingLevel(levelsViewModel.level)
-                        if (id != -1) navigation.navigate("levelBuilder/$id")
-                        else navigation.popBackStack("levelBuilder", inclusive = false)
-                    },
-                    backClicked = {
-                        navigation.navigateUp()
-                    },
-                    message = stringResource(R.string.you_did_it)
-                )
-            }
-            GameState.FAILED -> {
-                CustomLevelEnd(
-                    restartClicked = { levelsViewModel.tryAgain() },
-                    editClicked = {
-                        levelsViewModel.tryAgain()
-                        levelBuilderViewModel.setupExistingLevel(levelsViewModel.level)
-                        navigation.navigate("levelBuilder")
-                    },
-                    backClicked = { navigation.navigateUp() },
-                    message = stringResource(R.string.level_failed)
-                )
-            }
-            GameState.IN_PROGRESS -> {
-                LevelScreen(
-                    movesUsed = state!!.movesUsed,
-                    x = levelsViewModel.level.x,
-                    blocks = state!!.blocks,
-                    blockClicked = levelsViewModel::blockClicked,
-                    backClicked = { navigation.navigateUp() },
-                    settingsClicked = { navigation.navigateUp() },
-                    undoClicked = { levelsViewModel.undoClicked() },
-                    restartClicked = { levelsViewModel.tryAgain() },
-                    infoClicked = {},
-                    direction = state!!.direction
-                )
-            }
-        }
-    } else {
+    if (state == null) {
         if (id != -1) levelsViewModel.setupLevel(LevelSet.CUSTOM, id)
         else
             levelsViewModel.setupLevel(levelBuilderViewModel.level)
+        return
     }
+
+    val restartClicked = {
+        levelsViewModel.tryAgain()
+    }
+    val editClicked = {
+        goToLevelBuilder(id, levelBuilderViewModel, levelsViewModel, navigation)
+    }
+    val backClicked: () -> Unit = {
+        navigation.navigateUp()
+    }
+
+    when (state!!.gameState) {
+        GameState.SUCCESS -> {
+            CustomLevelEnd(
+                restartClicked = restartClicked,
+                editClicked = editClicked,
+                backClicked = backClicked,
+                message = stringResource(R.string.you_did_it)
+            )
+        }
+
+        GameState.FAILED -> {
+            CustomLevelEnd(
+                restartClicked = restartClicked,
+                editClicked = editClicked,
+                backClicked = backClicked,
+                message = stringResource(R.string.level_failed)
+            )
+        }
+
+        GameState.IN_PROGRESS -> {
+            LevelScreen(
+                movesUsed = state!!.movesUsed,
+                x = levelsViewModel.level.x,
+                blocks = state!!.blocks,
+                blockClicked = levelsViewModel::blockClicked,
+                backClicked = backClicked,
+                settingsClicked = { },
+                undoClicked = { levelsViewModel.undoClicked() },
+                restartClicked = restartClicked,
+                infoClicked = { },
+                direction = state!!.direction
+            )
+        }
+    }
+
+}
+
+
+private fun goToLevelBuilder(
+    id: Int,
+    levelBuilderViewModel: LevelBuilderViewModel,
+    levelsViewModel: LevelViewModel,
+    navigation: NavController
+) {
+    if (id != -1) {
+        levelBuilderViewModel.setupExistingLevel(levelsViewModel.level)
+        navigation.navigate("levelBuilder/$id")
+    } else navigation.popBackStack("levelBuilder", inclusive = false)
 }
 
 

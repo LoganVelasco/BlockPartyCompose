@@ -149,8 +149,8 @@ fun LevelTopBar(
     BaseHeader(
         firstIcon = Icons.Filled.ArrowBack,
         firstIconOnclick = { navController.navigateUp() },
-        endIcon = Icons.Filled.Settings,
-        endIconOnclick = { navController.navigateUp() },
+//        endIcon = Icons.Filled.Settings,
+//        endIconOnclick = { navController.navigateUp() },
         middleContent = {
             Row(Modifier.padding(10.dp)) {
                 val count = if (progress.isEmpty()) 0 else progress.sum()
@@ -218,7 +218,8 @@ private fun LevelCard(
             .testTag(stringResource(id = R.string.level_card))
             .padding(15.dp)
             .clickable {
-                navController.navigate("level/${levelSet.name}/${level.id}")
+                if(levelSet == LevelSet.CUSTOM) navController.navigate("customLevelPlayer/${level.id}")
+                else navController.navigate("level/${levelSet.name}/${level.id}")
             }
     ) {
         Column(
