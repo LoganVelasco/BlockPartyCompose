@@ -46,26 +46,37 @@ fun LevelsMenuScreen(
     val context = LocalContext.current
     val setup = { viewModel.setupState(levelSet, context) }
 
-    when {
-        (state == null) -> setup()
-        (state!!.levels.isEmpty()) -> CustomLevelEmpty(navController, levelSet, progress, createNewLevel = {
+    if (state == null) {
+        setup()
+        return
+    }
+
+    if (state!!.levels.isEmpty()) {
+        CustomLevelEmpty(navController, levelSet, progress, createNewLevel = {
             navController.navigate("levelBuilder")
         })
-        else -> {
-            LevelsMenu(navController, levelSet, state!!.levels, progress, deleteLevel = viewModel::deleteCustomLevelTriggered, editLevel = { id ->
-                navController.navigate("levelBuilder/$id")
-            })
-            if(state!!.deleteId != null && state!!.deleteName != null) {
-                DeletionConfirmationPopup(
-                    state!!.deleteName!!,
-                    delete = {
-                        viewModel.deleteCustomLevel(state!!.deleteId!!, context)
-                    },
-                    cancel = setup
-                )
-            }
-        }
+        return
     }
+
+    LevelsMenu(
+        navController,
+        levelSet,
+        state!!.levels,
+        progress,
+        deleteLevel = viewModel::deleteCustomLevelTriggered,
+        editLevel = { id -> navController.navigate("levelBuilder/$id") }
+    )
+
+    if (state!!.deleteId != null && state!!.deleteName != null) {
+        DeletionConfirmationPopup(
+            state!!.deleteName!!,
+            delete = {
+                viewModel.deleteCustomLevel(state!!.deleteId!!, context)
+            },
+            cancel = setup
+        )
+    }
+
 }
 
 @Composable
@@ -218,7 +229,7 @@ private fun LevelCard(
             .testTag(stringResource(id = R.string.level_card))
             .padding(15.dp)
             .clickable {
-                if(levelSet == LevelSet.CUSTOM) navController.navigate("customLevelPlayer/${level.id}")
+                if (levelSet == LevelSet.CUSTOM) navController.navigate("customLevelPlayer/${level.id}")
                 else navController.navigate("level/${levelSet.name}/${level.id}")
             }
     ) {
@@ -301,18 +312,23 @@ fun LevelPicture(
                 'e' -> {
                     EnemyBlock(size = scale)
                 }
+
                 'p' -> {
                     PlayerBlock(size = scale)
                 }
+
                 'm' -> {
                     MovableBlock(size = scale)
                 }
+
                 'g' -> {
                     GoalBlock(size = scale)
                 }
+
                 '.' -> {
                     EmptyBlock(size = scale)
                 }
+
                 'x' -> {
                     UnmovableBlock(size = scale)
                 }

@@ -42,76 +42,79 @@ fun LevelBuilderScreen(
     id: Int = -1,
     viewModel: LevelBuilderViewModel = hiltViewModel()
 ) {
-    BackHandler {
-        if (viewModel.isInProgress()) {
-            viewModel.showPopUpDialog()
-        } else {
-            viewModel.clearAllClicked()
-            navigation.popBackStack("playMenu", false)
-        }
-    }
 
     val state by viewModel.state.observeAsState()
     val context = LocalContext.current
 
+    val dismissLevel = {
+        viewModel.clearAllClicked()
+        navigation.popBackStack(route = "playMenu", inclusive = false)
+    }
+
+    val backClicked = {
+        if (viewModel.isInProgress()) {
+            viewModel.showPopUpDialog()
+        } else {
+            dismissLevel()
+        }
+    }
+
+    BackHandler {
+        backClicked()
+    }
+
     if (state == null) {
         if (id == -1) viewModel.setupNewLevel()
         else viewModel.setupExistingLevel(id, context)
-    }else if (state?.showDialog == true) {
+        return
+    }
+
+    LevelBuilder(
+        x = viewModel.level.x,
+        blocks = state!!.blocks,
+        selectedBlockColor = state!!.selectedBlockColor,
+        backClicked = { backClicked() },
+        blockClicked = viewModel::blockClicked,
+        colorClicked = viewModel::colorSelected,
+        undoClicked = viewModel::undoClicked,
+        playClicked = {
+            viewModel.playClicked()
+            navigation.navigate("customLevelPlayer")
+        },
+        saveClicked = {
+            viewModel.playClicked() // Refactor this
+            viewModel.triggerSaveDialog()
+        },
+        clearAllClicked = viewModel::clearAllClicked
+    )
+
+    if (state?.showDialog == true) {
         UnsavedLevelDialog(
-            dismissLevel = {
-                viewModel.clearAllClicked()
-                navigation.popBackStack(route = "playMenu", inclusive = false)
-            },
+            dismissLevel = { dismissLevel() },
             saveLevel = { viewModel.triggerSaveDialog() }
         )
-    } else {
-        LevelBuilder(
-            x = viewModel.level.x,
-            blocks = state!!.blocks,
-            selectedBlockColor = state!!.selectedBlockColor,
-            backClicked = {
-                if (viewModel.isInProgress()) {
-                    viewModel.showPopUpDialog()
-                } else {
-                    viewModel.clearAllClicked()
-                    navigation.popBackStack("playMenu", false)
-                }
-            },
-            blockClicked = viewModel::blockClicked,
-            colorClicked = viewModel::colorSelected,
-            undoClicked = viewModel::undoClicked,
-            playClicked = {
-                viewModel.playClicked()
-                navigation.navigate("customLevelPlayer")
-            },
-            saveClicked = {
-                    viewModel.playClicked() // Refactor this
-                    viewModel.triggerSaveDialog()
-            },
-            clearAllClicked = viewModel::clearAllClicked
-        )
-        if (state?.saved == true) {
-            if (state?.isEdit == true) {
-                SaveExistingLevelDialog(name = viewModel.level.name,
-                    closeDialog = { viewModel.hidePopUpDialog() },
-                    saveNewLevel = {
-                        viewModel.saveNewLevel()
-                    },
-                    saveLevel = {
-                        viewModel.saveClicked(context)
-                        viewModel.hidePopUpDialog()
-                    })
-            } else
-                SaveLevelDialog(
-                    context,
-                    closeDialog = {
-                        viewModel.hidePopUpDialog()
-                    },
-                    saveLevel = viewModel::saveClicked
-                )
-        }
+        return
     }
+
+    if (state?.saved == true) {
+        if (state?.isEdit == true) {
+            SaveExistingLevelDialog(
+                name = viewModel.level.name,
+                closeDialog = { viewModel.hidePopUpDialog() },
+                saveNewLevel = { viewModel.saveNewLevel() },
+                saveLevel = {
+                    viewModel.saveClicked(context)
+                    viewModel.hidePopUpDialog()
+                }
+            )
+        } else
+            SaveLevelDialog(
+                context,
+                closeDialog = { viewModel.hidePopUpDialog() },
+                saveLevel = viewModel::saveClicked
+            )
+    }
+
 }
 
 

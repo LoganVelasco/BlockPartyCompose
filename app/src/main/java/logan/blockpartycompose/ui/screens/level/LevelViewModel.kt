@@ -130,8 +130,10 @@ class LevelViewModel @Inject constructor(
                     )
 
                     delay(400)
-                    if (level.state != GameState.FAILED)
+                    if (level.state != GameState.FAILED) {
                         level.state = GameState.SUCCESS
+                        updateLevel(level.levelSet, level.id, getStars(level.movesUsed))
+                    }
                     history.clear()
                     _state.value = LevelState(
                         blocks = level.blocks,
@@ -198,6 +200,8 @@ class LevelViewModel @Inject constructor(
             history.add(newState)
         }
     }
+
+
 
     private fun handleEnemyTurn(): List<LevelState> {
         val states = mutableListOf<LevelState>()
@@ -431,6 +435,8 @@ class LevelViewModel @Inject constructor(
     fun getStars(movesUsed: Int): Int {
         return if (movesUsed <= getMinMoves()) 3 else if (movesUsed - 2 <= getMinMoves()) 2 else 1
     }
+
+    fun isFinalLevel():Boolean = (level.id+1 == 11 || level.id+1 == 21 || level.id+1 == 31)
 }
 
 @Immutable
@@ -443,7 +449,7 @@ data class LevelState(
 
 enum class GameState {
     FAILED,
-    SUCCESS,
+    SUCCESS(),
     IN_PROGRESS
 }
 

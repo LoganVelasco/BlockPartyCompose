@@ -39,63 +39,65 @@ fun LevelController(
 ) {
     val state by viewModel.state.observeAsState()
 
-    if (state != null) {
-        Crossfade(
-            targetState = state!!.gameState,
-            animationSpec = tween(750, delayMillis = 100)
-        ) {
-            when (it) {
-                GameState.SUCCESS -> {
-                    if (state!!.movesUsed == 0) return@Crossfade // TODO figure out why recomposing here instead of catching
-                    val nextLevel = viewModel.level.id + 1
-                    val isFinalLevel =
-                        (nextLevel == 11 || nextLevel == 21 || nextLevel == 31) // TODO don't hardcode
-                    val stars = viewModel.getStars(state!!.movesUsed)
-                    viewModel.updateLevel(levelSet, viewModel.level.id, stars)
+    if (state == null) {
+        viewModel.setupLevel(levelSet, name)
+        return
+    }
 
-                    val nextLevelOnClick = if (isFinalLevel) {
-                        { navigation.navigate("playMenu") }
-                    } else {
-                        { viewModel.setupLevel(levelSet, nextLevel) }
-                    }
-                    SuccessScreen(
-                        // not great logic tbh the name/levelSet of the parent composable don't change
-                        nextLevelOnClick = nextLevelOnClick,
-                        tryAgainOnClick = viewModel::tryAgain,
-                        backClicked = { navigation.navigateUp() },
-                        movesUsed = state!!.movesUsed,
-                        stars = stars,
-                        levelName = viewModel.level.name,
-                        minMoves = viewModel.level.minMoves,
-                        isFinalLevel = isFinalLevel
-                    )
+    Crossfade(
+        targetState = state!!.gameState,
+        animationSpec = tween(750, delayMillis = 100)
+    ) { gameState ->
+        when (gameState) {
+            GameState.SUCCESS -> {
+                if (state!!.movesUsed == 0) return@Crossfade // TODO figure out why recomposing here instead of catching
+
+                val nextLevel = viewModel.level.id + 1
+                val isFinalLevel = viewModel.isFinalLevel()
+                val stars = viewModel.getStars(state!!.movesUsed)
+
+                val nextLevelOnClick = if (isFinalLevel) {
+                    { navigation.navigate("playMenu") }
+                } else {
+                    { viewModel.setupLevel(levelSet, nextLevel) }
                 }
 
-                GameState.FAILED -> {
-                    FailureScreen(
-                        tryAgainOnClick = viewModel::tryAgain,
-                        backClicked = { navigation.navigateUp() }
-                    )
-                }
+                SuccessScreen(
+                    // not great logic tbh the name/levelSet of the parent composable don't change
+                    nextLevelOnClick = nextLevelOnClick,
+                    tryAgainOnClick = viewModel::tryAgain,
+                    backClicked = { navigation.navigateUp() },
+                    movesUsed = state!!.movesUsed,
+                    stars = stars,
+                    levelName = viewModel.level.name,
+                    minMoves = viewModel.level.minMoves,
+                    isFinalLevel = isFinalLevel
+                )
+            }
 
-                GameState.IN_PROGRESS -> {
-                    LevelScreen(
-                        movesUsed = state!!.movesUsed,
-                        x = viewModel.level.x,
-                        blocks = state!!.blocks,
-                        blockClicked = viewModel::blockClicked,
-                        backClicked = { navigation.navigateUp() },
-                        settingsClicked = { navigation.navigateUp() },
-                        undoClicked = { viewModel.undoClicked() },
-                        restartClicked = { viewModel.tryAgain() },
-                        infoClicked = {},
-                        direction = state!!.direction
-                    )
-                }
+            GameState.FAILED -> {
+                FailureScreen(
+                    tryAgainOnClick = viewModel::tryAgain,
+                    backClicked = { navigation.navigateUp() }
+                )
+            }
+
+            GameState.IN_PROGRESS -> {
+                LevelScreen(
+                    movesUsed = state!!.movesUsed,
+                    x = viewModel.level.x,
+                    blocks = state!!.blocks,
+                    blockClicked = viewModel::blockClicked,
+                    backClicked = { navigation.navigateUp() },
+                    settingsClicked = { navigation.navigateUp() },
+                    undoClicked = { viewModel.undoClicked() },
+                    restartClicked = { viewModel.tryAgain() },
+                    infoClicked = {},
+                    direction = state!!.direction
+                )
             }
         }
-    } else {
-        viewModel.setupLevel(levelSet, name)
+
     }
 }
 
