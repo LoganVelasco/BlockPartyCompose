@@ -186,10 +186,10 @@ class LevelViewModel @Inject constructor(
                         (redStates.size >= 2 && (redStates[0].blocks.indexOf('e') == level.enemyIndex ||
                                 redStates[1].blocks.indexOf('e') == level.enemyIndex))
                     ) { // if red move is stale (new red move occurred) don't post it
-                        if (level.blocks.indexOf('p') == level.goalIndex) {   // don't post red move if valid win happens
+                        if (level.goalIndex != -1 && (level.blocks.indexOf('p') == level.goalIndex)) {   // don't post red move if valid win happens
                             return@launch
                         }
-                        if(history.size < 2 || history.last().blocks.indexOf('e') != level.enemyIndex)
+                        if(history.size < 2 || history.last().blocks.indexOf('e') != level.enemyIndex) // don't post red move if red stuck
                             _state.value = levelState
                     }
                 }

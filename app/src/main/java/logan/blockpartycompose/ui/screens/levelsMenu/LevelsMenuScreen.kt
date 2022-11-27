@@ -158,7 +158,7 @@ fun LevelTopBar(
     progress: List<Int>
 ) {
     BaseHeader(
-        firstIcon = Icons.Filled.ArrowBack,
+        startIcon = Icons.Filled.ArrowBack,
         firstIconOnclick = { navController.navigateUp() },
 //        endIcon = Icons.Filled.Settings,
 //        endIconOnclick = { navController.navigateUp() },
@@ -243,7 +243,7 @@ private fun LevelCard(
         ) {
             if (level.levelSet == LevelSet.CUSTOM) {
                 BaseHeader(
-                    firstIcon = Icons.Filled.Edit,
+                    startIcon = Icons.Filled.Edit,
                     endIcon = Icons.Filled.Delete,
                     withBorder = false,
                     middleContent = {

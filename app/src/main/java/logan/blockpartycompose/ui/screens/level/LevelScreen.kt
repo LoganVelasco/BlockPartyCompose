@@ -128,9 +128,9 @@ fun LevelScreen(
 @Composable
 fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> Unit) {
     BaseHeader(
-        firstIcon = Icons.Filled.ArrowBack,
+        startIcon = Icons.Filled.ArrowBack,
         firstIconOnclick = backClicked,
-        endIcon = Icons.Filled.Settings,
+//        endIcon = Icons.Filled.Settings,
         endIconOnclick = settingsClicked,
         middleContent = {
             Text(
@@ -142,15 +142,7 @@ fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> 
         })
 }
 
-@Composable
-fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
-    IconButton(
-        onClick = backClicked,
-        modifier = modifier
-    ) {
-        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.back_to_menu))
-    }
-}
+
 
 @OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.R
-import logan.blockpartycompose.ui.screens.level.BackIcon
+import logan.blockpartycompose.ui.components.BackIcon
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.level.LevelScreen
 import logan.blockpartycompose.ui.screens.level.LevelViewModel
