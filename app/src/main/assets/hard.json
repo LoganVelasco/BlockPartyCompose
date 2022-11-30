@@ -7,88 +7,43 @@
       "minMoves": "23",
       "x": "6",
       "y": "8",
-      "initialBlocks": ".........p........g....."
+      "initialBlocks": ".........p....x.....m....mx................eg..."
     },
     {
       "id": "22",
       "name": "Level 2",
       "levelSet": "Hard",
-      "minMoves": "3",
+      "minMoves": "28",
       "x": "6",
       "y": "8",
-      "initialBlocks": "e............p.....g...."
+      "initialBlocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
     },
     {
       "id": "23",
       "name": "Level 3",
       "levelSet": "Hard",
-      "minMoves": "4",
+      "minMoves": "17",
       "x": "6",
       "y": "8",
-      "initialBlocks": ".e...x...p............g."
+      "initialBlocks": "........m.....m.....m.....m......mx.....xpe..gx."
     },
     {
       "id": "24",
       "name": "Level 4",
       "levelSet": "Hard",
-      "minMoves": "17",
+      "minMoves": "4",
       "x": "6",
       "y": "8",
-      "initialBlocks": "...e.g.............xx....x.....xx............p.."
+      "initialBlocks": "p........m...m..x...m....m....m...m.....m....exg"
     },
     {
       "id": "25",
-      "name": "Level 5",
+      "name": "Level 15",
       "levelSet": "Hard",
-      "minMoves": "14",
+      "minMoves": "38",
       "x": "6",
       "y": "8",
-      "initialBlocks": ".....g.........e.........x.x..p...x....x........"
-    },
-    {
-      "id": "26",
-      "name": "Level 6",
-      "levelSet": "Hard",
-      "minMoves": "8",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": ".............e....g..x......x...p..............."
-    },
-    {
-      "id": "27",
-      "name": "Level 7",
-      "levelSet": "Hard",
-      "minMoves": "15",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": ".p.........x....x....................e....g....."
-    },
-    {
-      "id": "28",
-      "name": "Level 8",
-      "levelSet": "Hard",
-      "minMoves": "21",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": "....ge.......x..............x......x......p....."
-    },
-    {
-      "id": "29",
-      "name": "Level 9",
-      "levelSet": "Hard",
-      "minMoves": "14",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": ".......e...g..............x.......mp............"
-    },
-    {
-      "id": "30",
-      "name": "Level 10",
-      "levelSet": "Hard",
-      "minMoves": "28",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
+      "initialBlocks": "mm..m.mp..m.....m.m......m.............xx....xeg"
     }
   ]
 }

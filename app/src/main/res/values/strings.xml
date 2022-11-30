@@ -41,7 +41,7 @@
     <string name="level_card">%1$s card</string>
     <string name="level_stars">%1$s stars</string>
     <string name="total_star_progress">%1$d/90 Total</string>
-    <string name="difficulty_star_progress">%1$d/30 Stars Collected</string>
+    <string name="difficulty_star_progress">%1$d/%2$d Stars Collected</string>
     <string name="difficulty_text">%1$s text</string>
     <string name="total_star_count">Total Star Count</string>
     <string name="level_builder">Level Builder</string>

@@ -5,10 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -160,8 +161,6 @@ fun LevelTopBar(
     BaseHeader(
         startIcon = Icons.Filled.ArrowBack,
         firstIconOnclick = { navController.navigateUp() },
-//        endIcon = Icons.Filled.Settings,
-//        endIconOnclick = { navController.navigateUp() },
         middleContent = {
             Row(Modifier.padding(10.dp)) {
                 val count = if (progress.isEmpty()) 0 else progress.sum()
@@ -194,21 +193,18 @@ fun LevelsList(
     editLevel: (Int?) -> Unit = {},
     deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
-    Column {
-        LazyColumn(
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding()
-                .fillMaxSize()
-                .testTag(stringResource(R.string.levels))
-        ) {
-            items(levels.size) { index ->
-                val level = levels[index]
-                val stars = if (progress.isEmpty()) -1 else progress[index]
-                LevelCard(navController, levelSet, level, stars, editLevel, deleteLevel)
-                Spacer(Modifier.height(25.dp))
-            }
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .padding()
+            .verticalScroll(rememberScrollState())
+            .testTag(stringResource(R.string.levels))
+    ) {
+        levels.forEachIndexed { index, level ->
+            val stars = if (progress.isEmpty()) -1 else progress[index]
+            LevelCard(navController, levelSet, level, stars, editLevel, deleteLevel)
+            Spacer(Modifier.height(25.dp))
         }
     }
 }

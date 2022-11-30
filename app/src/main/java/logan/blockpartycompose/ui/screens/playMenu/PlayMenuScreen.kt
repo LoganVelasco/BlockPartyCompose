@@ -27,7 +27,6 @@ fun PlayMenuScreen(navController: NavController) {
 
     PlayMenu(navController, progress)
 
-
 }
 
 @Composable
@@ -51,8 +50,6 @@ private fun PlayMenu(
 @Composable
 fun MenuHeader(navController: NavController, totalStars: Int) {
     BaseHeader(
-//        firstIcon = Icons.Filled.Person,
-//        endIcon = Icons.Filled.Settings,
         middleContent = {
             Row(Modifier.padding(10.dp)) {
                 Text(text = stringResource(id = R.string.total_star_progress, totalStars), fontSize = 18.sp)
@@ -151,7 +148,7 @@ private fun DifficultyButton(
                 else DisabledDifficulty(requirement = 15, difficulty.name)
             }
             LevelSet.HARD -> {
-                if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name)
+                if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name, 15)
                 else DisabledDifficulty(requirement = 30, difficulty.name)
             }
             LevelSet.CUSTOM -> {
@@ -165,14 +162,15 @@ private fun DifficultyButton(
 private fun EnabledDifficulty(
     progress: Int,
     onClick: () -> Unit,
-    difficulty: String
+    difficulty: String,
+    maxStarCount: Int = 30
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = stringResource(id = R.string.difficulty_star_progress, progress),
+            text = stringResource(id = R.string.difficulty_star_progress, progress, maxStarCount),
             modifier = Modifier.testTag(stringResource(id = R.string.difficulty_text, difficulty))
         )
         Spacer(modifier = Modifier.height(5.dp))
