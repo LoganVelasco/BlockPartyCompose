@@ -6,13 +6,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import logan.blockpartycompose.ui.screens.playMenu.PlayMenuScreen
-import logan.blockpartycompose.ui.screens.welcomeScreen.WelcomeScreen
+import logan.blockpartycompose.ui.screens.splash.WelcomeScreen
 import logan.blockpartycompose.ui.screens.customLevels.CustomLevelScreen
 import logan.blockpartycompose.ui.screens.level.LevelController
 import logan.blockpartycompose.ui.screens.levelBuilder.LevelBuilderScreen
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet.*
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelsMenuScreen
+import logan.blockpartycompose.ui.screens.tutorialMode.TutorialModeScreen
 
 
 @ExperimentalFoundationApi
@@ -21,6 +22,7 @@ fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "welcome") {
         composable("welcome") { WelcomeScreen(navController) }
+        composable("tutorialMode") { TutorialModeScreen(navController) }
         composable("playMenu") { PlayMenuScreen(navController) }
         composable("levelBuilder") { LevelBuilderScreen(navController) }
         composable("levelBuilder/{id}") { LevelBuilderScreen(navController,  it.arguments?.getString("id")!!.toInt()) }

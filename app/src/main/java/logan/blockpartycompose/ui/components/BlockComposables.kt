@@ -21,7 +21,7 @@ import logan.blockpartycompose.R
 fun BaseBlock(size: Dp = 50.dp, modifier: Modifier) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .width(IntrinsicSize.Min)
             .wrapContentSize(Alignment.Center)
     ) {
         Box(

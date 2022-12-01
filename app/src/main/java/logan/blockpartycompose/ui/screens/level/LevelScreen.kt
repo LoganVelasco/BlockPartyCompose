@@ -39,6 +39,8 @@ fun LevelController(
 ) {
     val state by viewModel.state.observeAsState()
 
+    val infoState by viewModel.isInfoClicked.observeAsState()
+
     if (state == null) {
         viewModel.setupLevel(levelSet, name)
         return
@@ -87,12 +89,14 @@ fun LevelController(
                     movesUsed = state!!.movesUsed,
                     x = viewModel.level.x,
                     blocks = state!!.blocks,
+                    isHelpEnabled = infoState?: false,
+                    infoProgress = viewModel.getInfoProgress(),
                     blockClicked = viewModel::blockClicked,
                     backClicked = { navigation.navigateUp() },
                     settingsClicked = { navigation.navigateUp() },
                     undoClicked = { viewModel.undoClicked() },
                     restartClicked = { viewModel.tryAgain() },
-                    infoClicked = {},
+                    infoClicked = { viewModel.infoClicked() },
                     direction = state!!.direction
                 )
             }
@@ -107,6 +111,8 @@ fun LevelScreen(
     movesUsed: Int,
     x: Int,
     blocks: List<Char>,
+    isHelpEnabled: Boolean = false,
+    infoProgress: Int = 0,
     blockClicked: (Char, Int) -> Unit,
     backClicked: () -> Unit,
     settingsClicked: () -> Unit,
@@ -120,7 +126,15 @@ fun LevelScreen(
         modifier = Modifier.fillMaxHeight()
     ) {
         LevelHeader(movesUsed, backClicked, settingsClicked)
-        LevelGrid(blockClicked, x, blocks, direction ?: Direction.DOWN)
+        Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.padding(top = 75.dp)) {
+            LevelGrid(blockClicked, x, blocks, direction ?: Direction.DOWN)
+            Spacer(modifier = Modifier.height(20.dp))
+            Crossfade(targetState = isHelpEnabled, animationSpec = tween(300)) { isHelpEnabled ->
+                if (isHelpEnabled) {
+                    HelpCard(infoProgress)
+                } else Spacer(modifier = Modifier.height(200.dp))
+            }
+        }
         LevelFooter(undoClicked, restartClicked, infoClicked)
     }
 }

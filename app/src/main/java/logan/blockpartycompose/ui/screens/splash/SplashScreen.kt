@@ -1,4 +1,4 @@
-package logan.blockpartycompose.ui.screens.welcomeScreen
+package logan.blockpartycompose.ui.screens.splash
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -21,18 +21,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.R
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
+    val viewModel: SplashViewModel = hiltViewModel()
+    val isTutorialMode = viewModel.isTutorialMode()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
-            .clickable { navController.navigate("playMenu") }
+            .clickable {
+                if(isTutorialMode)
+                    navController.navigate("playMenu")
+                else
+                    navController.navigate("playMenu")
+            }
     ) {
 
         val infiniteTransition = rememberInfiniteTransition()

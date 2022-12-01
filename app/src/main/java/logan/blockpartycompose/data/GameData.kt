@@ -48,6 +48,15 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
             }
         }
 
+
+    val tutorialProgress: Int
+        get() {
+            return prefs.getInt("TUTORIAL", 0)
+        }
+
+    fun updateTutorialProgress(progress: Int){
+        prefs.edit().putInt("TUTORIAL", progress).apply()
+    }
     private fun updateLevel(
         difficulty: LevelSet,
         currentProgress: String,

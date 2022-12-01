@@ -13,19 +13,19 @@
       "id": "12",
       "name": "Level 2",
       "levelSet": "Medium",
-      "minMoves": "10",
+      "minMoves": "8",
       "x": "6",
       "y": "8",
-      "initialBlocks": "......g....e........mm.....p...................."
+      "initialBlocks": "............e.........xg..px.m....m............."
     },
     {
       "id": "13",
       "name": "Level 3",
       "levelSet": "Medium",
-      "minMoves": "8",
+      "minMoves": "10",
       "x": "6",
       "y": "8",
-      "initialBlocks": "............e.........xg..px.m....m............."
+      "initialBlocks": "......g....e........mm.....p...................."
     },
     {
       "id": "14",

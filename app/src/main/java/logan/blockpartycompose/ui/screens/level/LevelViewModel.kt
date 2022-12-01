@@ -35,6 +35,9 @@ class LevelViewModel @Inject constructor(
 
     lateinit var level: Level
 
+    private var _isInfoClicked = MutableLiveData<Boolean>()
+    val isInfoClicked: LiveData<Boolean> = _isInfoClicked
+
     private val playerBlock = 'p'
     private val enemyBlock = 'e'
     private val movableBlock = 'm'
@@ -437,6 +440,16 @@ class LevelViewModel @Inject constructor(
     }
 
     fun isFinalLevel():Boolean = (level.id+1 == 11 || level.id+1 == 21 || level.id+1 == 31)
+
+    fun infoClicked() {
+        val currentState = isInfoClicked.value?: false
+        _isInfoClicked.value = !currentState
+    }
+
+    fun getInfoProgress(): Int{
+        return if (repo.getDifficultyProgress()[0] >= 15) 5 else 4
+    }
+
 }
 
 @Immutable

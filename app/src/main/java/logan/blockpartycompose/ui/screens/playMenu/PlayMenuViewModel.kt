@@ -23,4 +23,10 @@ class PlayMenuViewModel @Inject constructor(
         return repo.getDifficultyProgress()
     }
 
+    fun isTutorialMode():Boolean {
+        return getTutorialProgress() == 0
+    }
+    fun getTutorialProgress():Int {
+        return repo.getTutorialProgress()
+    }
 }

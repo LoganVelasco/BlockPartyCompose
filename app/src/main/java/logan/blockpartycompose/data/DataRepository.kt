@@ -120,6 +120,14 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         }
     }
 
+    fun getTutorialProgress():Int {
+        return gameData.tutorialProgress
+    }
+
+    fun updateTutorialProgress(progress: Int) {
+        gameData.updateTutorialProgress(progress)
+    }
+
     fun updateLevelProgress(difficulty: LevelSet, level: Int, stars: Int) {
         val currentStars = getDifficultyProgress().sum()
         gameData.updateProgress(difficulty, level, stars)

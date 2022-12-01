@@ -49,19 +49,19 @@
       "id": "6",
       "name": "Level 6",
       "levelSet": "Easy",
-      "minMoves": "14",
+      "minMoves": "8",
       "x": "6",
       "y": "8",
-      "initialBlocks": ".....g.........e.........x.x..p...x....x........"
+      "initialBlocks": ".............e....g..x......x...p..............."
     },
     {
       "id": "7",
       "name": "Level 7",
       "levelSet": "Easy",
-      "minMoves": "8",
+      "minMoves": "14",
       "x": "6",
       "y": "8",
-      "initialBlocks": ".............e....g..x......x...p..............."
+      "initialBlocks": ".....g.........e.........x.x..p...x....x........"
     },
     {
       "id": "8",
