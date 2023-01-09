@@ -49,13 +49,13 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
         }
 
 
-    val tutorialProgress: Int
+    val tutorialStage: Int
         get() {
-            return prefs.getInt("TUTORIAL", 0)
+            return prefs.getInt("TUTORIAL_STAGE", 0)
         }
 
-    fun updateTutorialProgress(progress: Int){
-        prefs.edit().putInt("TUTORIAL", progress).apply()
+    fun updateTutorialStage(stage: Int){
+        prefs.edit().putInt("TUTORIAL_STAGE", stage).apply()
     }
     private fun updateLevel(
         difficulty: LevelSet,
@@ -63,11 +63,11 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
         level: Int,
         stars: Int
     ): Boolean {
-        if (currentProgress[level - 1].code - 48 < stars) {
+        if (currentProgress[level].code - 48 < stars) {
             val newProgress =
                 StringBuilder(currentProgress).also {
                     it.setCharAt(
-                        level - 1,
+                        level,
                         Character.forDigit(stars, 10)
                     )
                 }.toString()

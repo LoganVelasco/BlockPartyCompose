@@ -38,7 +38,7 @@ fun WelcomeScreen(navController: NavController) {
             .fillMaxWidth()
             .clickable {
                 if(isTutorialMode)
-                    navController.navigate("playMenu")
+                    navController.navigate("tutorialMode")
                 else
                     navController.navigate("playMenu")
             }

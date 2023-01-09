@@ -89,7 +89,7 @@ fun LevelController(
                     movesUsed = state!!.movesUsed,
                     x = viewModel.level.x,
                     blocks = state!!.blocks,
-                    isHelpEnabled = infoState?: false,
+                    isHelpEnabled = infoState ?: false,
                     infoProgress = viewModel.getInfoProgress(),
                     blockClicked = viewModel::blockClicked,
                     backClicked = { navigation.navigateUp() },
@@ -126,7 +126,10 @@ fun LevelScreen(
         modifier = Modifier.fillMaxHeight()
     ) {
         LevelHeader(movesUsed, backClicked, settingsClicked)
-        Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.padding(top = 75.dp)) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(top = 75.dp)
+        ) {
             LevelGrid(blockClicked, x, blocks, direction ?: Direction.DOWN)
             Spacer(modifier = Modifier.height(20.dp))
             Crossfade(targetState = isHelpEnabled, animationSpec = tween(300)) { isHelpEnabled ->
@@ -157,7 +160,6 @@ fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> 
 }
 
 
-
 @OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
@@ -165,7 +167,8 @@ fun LevelGrid(
     blockClicked: (Char, Int) -> Unit,
     x: Int,
     blocks: List<Char>,
-    direction: Direction = Direction.DOWN
+    direction: Direction = Direction.DOWN,
+    glowList: List<Int> = emptyList()
 ) {
     CompositionLocalProvider(
         LocalOverscrollConfiguration provides null
@@ -191,27 +194,27 @@ fun LevelGrid(
                 ) { type ->
                     when (type) {
                         'e' -> {
-                            EnemyBlock(onClick = onClick)
+                            EnemyBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
                         'p' -> {
-                            PlayerBlock(onClick = onClick)
+                            PlayerBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
                         'm' -> {
-                            MovableBlock(onClick = onClick)
+                            MovableBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
                         'g' -> {
-                            GoalBlock(onClick = onClick)
+                            GoalBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
                         '.' -> {
-                            EmptyBlock(onClick = onClick)
+                            EmptyBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
                         'x' -> {
-                            UnmovableBlock(onClick = onClick)
+                            UnmovableBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
                     }
 
@@ -264,13 +267,49 @@ fun SuccessScreen(
     isFinalLevel: Boolean
 ) {
     if (movesUsed == 0) return
+    PostLevelScreen(backClicked = backClicked) {
+        Text(text = stringResource(id = R.string.you_did_it))
+        Text(text = stringResource(id = R.string.level_completed_in, levelName, movesUsed))
+        if (stars < 3) Text(text = stringResource(id = R.string.complete_in, minMoves))
+        SuccessStars(stars)
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(onClick = { tryAgainOnClick() }) {
+                Text(text = stringResource(R.string.try_again))
+            }
+            Button(onClick = { nextLevelOnClick() }) {
+                Text(text = stringResource(R.string.next_level))
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit) {
+    PostLevelScreen(backClicked = backClicked) {
+        Text(text = stringResource(R.string.you_died))
+        Button(onClick = { tryAgainOnClick() }) {
+            Text(text = stringResource(id = R.string.try_again))
+        }
+    }
+}
+
+@Composable
+fun PostLevelScreen(
+    backClicked: (() -> Unit)? = null,
+    content: @Composable() () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
         Column {
-            BackIcon(backClicked, Modifier.padding(10.dp))
+            if(backClicked != null){  BackIcon(backClicked, Modifier.padding(10.dp)) }
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -278,28 +317,14 @@ fun SuccessScreen(
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                Text(text = stringResource(id = R.string.you_did_it))
-                Text(text = stringResource(id = R.string.level_completed_in, levelName, movesUsed))
-                if (stars < 3) Text(text = stringResource(id = R.string.complete_in, minMoves))
-                SuccessStars(stars)
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Button(onClick = { tryAgainOnClick() }) {
-                        Text(text = stringResource(R.string.try_again))
-                    }
-                    Button(onClick = { nextLevelOnClick() }) {
-                        Text(text = stringResource(R.string.next_level))
-                    }
-                }
+                content()
             }
         }
     }
 }
 
 @Composable
-private fun SuccessStars(result: Int) {
+fun SuccessStars(result: Int) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -317,30 +342,5 @@ private fun SuccessStars(result: Int) {
         if (result >= 3) {
             FilledStar()
         } else EmptyStar()
-    }
-}
-
-@Composable
-fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-    ) {
-        Column {
-            BackIcon(backClicked, Modifier.padding(10.dp))
-            Column(
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Text(text = stringResource(R.string.you_died))
-                Button(onClick = { tryAgainOnClick() }) {
-                    Text(text = stringResource(id = R.string.try_again))
-                }
-            }
-        }
     }
 }

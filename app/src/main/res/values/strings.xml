@@ -12,6 +12,7 @@
     <string name="back_to_menu">back to menu</string>
     <string name="try_again">Try Again</string>
     <string name="next_level">Next Level</string>
+    <string name="continue_tutorial">Continue</string>
     <string name="stars">stars</string>
     <string name="you_died">You Died!</string>
     <string name="enemy">enemy</string>
@@ -33,6 +34,7 @@
     <string name="edit_level">Edit Level</string>
     <string name="moves_used">Moves Used: %1$d</string>
     <string name="level_completed_in">%1$s Completed in %2$d moves!</string>
+    <string name="tutorial_level_completed_in">Completed in %1$d moves!</string>
     <string name="complete_in">Complete in %1$d moves for 3 stars</string>
     <string name="back_button">back button</string>
     <string name="clear_all">Clear All</string>

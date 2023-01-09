@@ -120,12 +120,12 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         }
     }
 
-    fun getTutorialProgress():Int {
-        return gameData.tutorialProgress
+    fun getTutorialStage():Int {
+        return gameData.tutorialStage
     }
 
-    fun updateTutorialProgress(progress: Int) {
-        gameData.updateTutorialProgress(progress)
+    fun updateTutorialStage(stage: Int) {
+        gameData.updateTutorialStage(stage)
     }
 
     fun updateLevelProgress(difficulty: LevelSet, level: Int, stars: Int) {

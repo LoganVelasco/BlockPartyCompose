@@ -1,10 +1,18 @@
 package logan.blockpartycompose.ui.components
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +51,7 @@ fun Block(
     modifier: Modifier = Modifier,
     size: Dp = 50.dp,
     isSelected: Boolean = false,
+    isPulsing: Boolean = false,
     onClick: (() -> Unit)?,
 ) {
     val defaultModifier = if (onClick != null) {
@@ -54,7 +63,7 @@ fun Block(
             .background(backgroundColor)
     }
 
-    val selectedModifier = if (isSelected) {
+    var selectedModifier = if (isSelected) {
         Modifier
             .border(4.dp, selectedColor)
             .testTag(stringResource(id = R.string.selected_block, testTag))
@@ -63,6 +72,34 @@ fun Block(
             .border(1.dp, defaultColor)
             .testTag(testTag)
     }
+
+    if(isPulsing){
+        val infiniteTransition = rememberInfiniteTransition()
+        val targetColor = when(backgroundColor){
+            Color.Yellow -> Color.Black
+            else -> Color.White
+        }
+        val color by infiniteTransition.animateColor(
+            initialValue = defaultColor,
+            targetValue = targetColor,
+            animationSpec = infiniteRepeatable(
+                animation = tween(delayMillis = 200, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+        val borderSize by infiniteTransition.animateFloat(
+            initialValue = 1f,
+            targetValue = 2f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(delayMillis = 200, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+        val pulseModifier = Modifier
+            .border(borderSize.dp, color)
+        selectedModifier = selectedModifier.then(pulseModifier)
+    }
+
 
     BaseBlock(
         size = size,
@@ -75,11 +112,13 @@ fun EnemyBlock(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
+    isPulsing: Boolean = false,
     size: Dp = 50.dp,
 ) {
     Block(
         onClick = onClick,
         isSelected = isSelected,
+        isPulsing = isPulsing,
         size = size,
         modifier = modifier,
         backgroundColor = Color.Red,
@@ -95,11 +134,13 @@ fun PlayerBlock(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
+    isPulsing: Boolean = false,
     size: Dp = 50.dp,
 ) {
     Block(
         onClick = onClick,
         isSelected = isSelected,
+        isPulsing = isPulsing,
         size = size,
         modifier = modifier,
         backgroundColor = Color.Blue,
@@ -115,11 +156,13 @@ fun GoalBlock(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
+    isPulsing: Boolean = false,
     size: Dp = 50.dp,
 ) {
     Block(
         onClick = onClick,
         isSelected = isSelected,
+        isPulsing = isPulsing,
         size = size,
         modifier = modifier,
         backgroundColor = Color.Yellow,
@@ -134,11 +177,13 @@ fun EmptyBlock(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
+    isPulsing: Boolean = false,
     size: Dp = 50.dp,
 ) {
     Block(
         onClick = onClick,
         isSelected = isSelected,
+        isPulsing = isPulsing,
         size = size,
         modifier = modifier,
         backgroundColor = Color.Gray,
@@ -153,11 +198,13 @@ fun UnmovableBlock(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
+    isPulsing: Boolean = false,
     size: Dp = 50.dp,
 ) {
     Block(
         onClick = onClick,
         isSelected = isSelected,
+        isPulsing = isPulsing,
         size = size,
         modifier = modifier,
         backgroundColor = Color.Black,
@@ -172,11 +219,13 @@ fun MovableBlock(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
+    isPulsing: Boolean = false,
     size: Dp = 50.dp,
 ) {
     Block(
         onClick = onClick,
         isSelected = isSelected,
+        isPulsing = isPulsing,
         size = size,
         modifier = modifier,
         backgroundColor = Color.Green,

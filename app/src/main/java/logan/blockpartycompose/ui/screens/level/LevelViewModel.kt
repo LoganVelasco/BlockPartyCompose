@@ -82,7 +82,7 @@ class LevelViewModel @Inject constructor(
     }
 
     fun blockClicked(block: Char, index: Int) {
-        if (!GameUtils.isTouchingPlayer(
+        if (!GameUtils.isTouching(
                 index,
                 level.playerIndex,
                 level.x
@@ -204,13 +204,10 @@ class LevelViewModel @Inject constructor(
         }
     }
 
-
-
     private fun handleEnemyTurn(): List<LevelState> {
         val states = mutableListOf<LevelState>()
         var moveDirection = moveEnemyBlock()
         if (moveDirection != null) {
-
 
             states.add(
                 LevelState(
@@ -220,7 +217,6 @@ class LevelViewModel @Inject constructor(
                     direction = moveDirection
                 )
             )
-
 
             if (level.blocks.indexOf('p') == -1) {
                 states.add(
@@ -245,7 +241,6 @@ class LevelViewModel @Inject constructor(
                         direction = moveDirection
                     )
                 )
-
 
                 if (level.blocks.indexOf('p') == -1) {
                     states.add(
@@ -342,7 +337,6 @@ class LevelViewModel @Inject constructor(
                     }
             } else Direction.RIGHT
         }
-
     }
 
     private fun moveEnemyBlock(direction: Direction): Boolean {
@@ -363,7 +357,6 @@ class LevelViewModel @Inject constructor(
                 level.enemyIndex + 1
             }
         }
-
 
         if (level.enemyIndex == level.goalIndex && isValidEnemyMove(level.blocks[newIndex])) { // Red moves off of Yellow
             moveEnemyOffGoal(newIndex)
@@ -462,7 +455,7 @@ data class LevelState(
 
 enum class GameState {
     FAILED,
-    SUCCESS(),
+    SUCCESS,
     IN_PROGRESS
 }
 

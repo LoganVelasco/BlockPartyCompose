@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,21 +20,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.BaseHeader
+import logan.blockpartycompose.ui.components.TutorialPlayMenuWindow
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
 @Composable
 fun PlayMenuScreen(navController: NavController) {
     val viewModel: PlayMenuViewModel = hiltViewModel()
     val progress = viewModel.getProgress()
+    val tutorialProgress = viewModel.getTutorialProgress()
 
-    PlayMenu(navController, progress)
+    PlayMenu(navController, progress, tutorialProgress)
 
 }
 
 @Composable
 private fun PlayMenu(
     navController: NavController,
-    progress: List<Int>
+    progress: List<Int>,
+    tutorialProgress: Int = 0
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,6 +48,7 @@ private fun PlayMenu(
     ) {
         MenuHeader(navController, progress.sum())
         MenuDifficulties(navController, progress)
+        if (tutorialProgress <= 4) TutorialPlayMenuWindow()
         MenuFooter(navController)
     }
 }
@@ -52,11 +58,18 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
     BaseHeader(
         middleContent = {
             Row(Modifier.padding(10.dp)) {
-                Text(text = stringResource(id = R.string.total_star_progress, totalStars), fontSize = 18.sp)
+                Text(
+                    text = stringResource(id = R.string.total_star_progress, totalStars),
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
                 Icon(
-                    Icons.Filled.Star, contentDescription = stringResource(R.string.total_star_count), modifier = Modifier
-                        .scale(1.25f)
-                        .padding(start = 5.dp)
+                    painter = painterResource(id = R.drawable.star),
+                    contentDescription = stringResource(R.string.total_star_count),
+                    tint= Color.Unspecified,
+                    modifier = Modifier
+                        .scale(.5f)
+//                        .padding(start = 5.dp)
                 )
             }
         },
@@ -102,7 +115,7 @@ private fun MenuDifficulties(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(.6f)
@@ -117,14 +130,12 @@ private fun MenuDifficulties(
             LevelSet.MEDIUM,
             progress[1],
             progress.sum(),
-
-            ) { navController.navigate("medium") }
+        ) { navController.navigate("medium") }
         DifficultyButton(
             LevelSet.HARD,
             progress[2],
             progress.sum(),
-
-            ) { navController.navigate("hard") }
+        ) { navController.navigate("hard") }
     }
 }
 
@@ -143,17 +154,18 @@ private fun DifficultyButton(
             LevelSet.EASY -> {
                 EnabledDifficulty(progress, onClick, difficulty.name)
             }
+
             LevelSet.MEDIUM -> {
                 if (totalStars >= 15) EnabledDifficulty(progress, onClick, difficulty.name)
                 else DisabledDifficulty(requirement = 15, difficulty.name)
             }
+
             LevelSet.HARD -> {
                 if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name, 15)
                 else DisabledDifficulty(requirement = 30, difficulty.name)
             }
-            LevelSet.CUSTOM -> {
 
-            }
+            LevelSet.CUSTOM -> {}
         }
     }
 }

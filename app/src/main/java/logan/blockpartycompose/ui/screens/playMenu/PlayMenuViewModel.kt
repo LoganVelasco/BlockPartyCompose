@@ -3,18 +3,20 @@ package logan.blockpartycompose.ui.screens.playMenu
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import logan.blockpartycompose.data.DataRepository
-import logan.blockpartycompose.ui.screens.level.LevelState
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 @HiltViewModel
 class PlayMenuViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
+    var state by Delegates.notNull<Int>()
+
+    init {
+        state = repo.getTutorialStage()
+    }
 
     private var _flags = MutableLiveData<List<Boolean>>()
     val flags: LiveData<List<Boolean>> = _flags
@@ -23,10 +25,17 @@ class PlayMenuViewModel @Inject constructor(
         return repo.getDifficultyProgress()
     }
 
-    fun isTutorialMode():Boolean {
-        return getTutorialProgress() == 0
+//    fun isTutorialMode():Boolean {
+//        return getTutorialProgress() == 0
+//    }
+
+    fun getTutorialProgress(): Int {
+        return state
     }
-    fun getTutorialProgress():Int {
-        return repo.getTutorialProgress()
+
+    fun updateTutorialProgress(progress: Int) {
+        repo.updateTutorialStage(progress)
     }
+
+
 }

@@ -19,11 +19,11 @@ class GameUtils {
         private const val enemySpeed = 250
         private const val enemyDelay = 100
 
-        fun isTouchingPlayer(index: Int, playerIndex: Int, x: Int): Boolean {
-            if (isEdge(playerIndex, x))
-                return isValidEdgeMove(index, playerIndex, x)
+        fun isTouching(index: Int, index2: Int, x: Int): Boolean {
+            if (isEdge(index2, x))
+                return isValidEdgeMove(index, index2, x)
 
-            if (playerIndex + 1 == index || playerIndex - 1 == index || playerIndex + x == index || playerIndex - x == index)
+            if (index2 + 1 == index || index2 - 1 == index || index2 + x == index || index2 - x == index)
                 return true
 
             return false

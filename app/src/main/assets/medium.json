@@ -1,7 +1,7 @@
 {
   "levels": [
     {
-      "id": "11",
+      "id": "10",
       "name": "Level 1",
       "levelSet": "Medium",
       "minMoves": "14",
@@ -10,7 +10,7 @@
       "initialBlocks": ".......e...g..............x.......mp............"
     },
     {
-      "id": "12",
+      "id": "11",
       "name": "Level 2",
       "levelSet": "Medium",
       "minMoves": "8",
@@ -19,7 +19,7 @@
       "initialBlocks": "............e.........xg..px.m....m............."
     },
     {
-      "id": "13",
+      "id": "12",
       "name": "Level 3",
       "levelSet": "Medium",
       "minMoves": "10",
@@ -28,7 +28,7 @@
       "initialBlocks": "......g....e........mm.....p...................."
     },
     {
-      "id": "14",
+      "id": "13",
       "name": "Level 4",
       "levelSet": "Medium",
       "minMoves": "11",
@@ -37,7 +37,7 @@
       "initialBlocks": "g.........m..........mp......................e.."
     },
     {
-      "id": "15",
+      "id": "14",
       "name": "Level 5",
       "levelSet": "Medium",
       "minMoves": "17",
@@ -46,7 +46,7 @@
       "initialBlocks": "ge................xxp.x....m.m.................."
     },
     {
-      "id": "16",
+      "id": "15",
       "name": "Level 6",
       "levelSet": "Medium",
       "minMoves": "28",
@@ -55,7 +55,7 @@
       "initialBlocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
     },
     {
-      "id": "17",
+      "id": "16",
       "name": "Level 7",
       "levelSet": "Medium",
       "minMoves": "23",
@@ -64,7 +64,7 @@
       "initialBlocks": ".........p....x.....m....mx................eg..."
     },
     {
-      "id": "18",
+      "id": "17",
       "name": "Level 8",
       "levelSet": "Medium",
       "minMoves": "17",
@@ -73,7 +73,7 @@
       "initialBlocks": "........m.....m.....m.....m......mx.....xpe..gx."
     },
     {
-      "id": "19",
+      "id": "18",
       "name": "Level 9",
       "levelSet": "Medium",
       "minMoves": "4",
@@ -82,7 +82,7 @@
       "initialBlocks": "p........m...m..x...m....m....m...m.....m....exg"
     },
     {
-      "id": "20",
+      "id": "19",
       "name": "Level 10",
       "levelSet": "Medium",
       "minMoves": "38",
