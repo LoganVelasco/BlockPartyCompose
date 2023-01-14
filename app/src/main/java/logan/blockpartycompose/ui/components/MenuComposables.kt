@@ -2,10 +2,11 @@ package logan.blockpartycompose.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +28,7 @@ fun BaseHeader(
     firstIconOnclick: () -> Unit = { },
     endIconOnclick: () -> Unit = { }
 ) {
-    if (withBorder) modifier.then(Modifier.border(2.dp, Color.DarkGray, RectangleShape))
+    if (withBorder) modifier.then(Modifier.border(2.dp, Color.DarkGray, RectangleShape))// TODO: Make dynamic
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -42,7 +43,7 @@ fun BaseHeader(
                 onClick = firstIconOnclick,
             ) {
                 Icon(
-                    startIcon, contentDescription = "Undo", modifier = Modifier
+                    startIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "Undo", modifier = Modifier
                         .scale(1.5f)
                         .padding(10.dp)
                 )
@@ -59,7 +60,7 @@ fun BaseHeader(
             ) {
 
                 Icon(
-                    endIcon, contentDescription = "Hint", modifier = Modifier
+                    endIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "Hint", modifier = Modifier
                         .scale(1.5f)
                         .padding(10.dp)
                 )
@@ -77,6 +78,6 @@ fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
         onClick = backClicked,
         modifier = modifier
     ) {
-        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.back_to_menu))
+        Icon(Icons.Filled.ArrowBack, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = stringResource(R.string.back_to_menu))
     }
 }

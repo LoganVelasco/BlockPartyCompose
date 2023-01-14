@@ -10,7 +10,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
@@ -219,7 +220,7 @@ private fun LevelCard(
     deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Card(
-        border = BorderStroke(5.dp, Color.DarkGray),
+        border = BorderStroke(5.dp, Color.DarkGray),// TODO: make dynamic
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .testTag(stringResource(id = R.string.level_card))
@@ -234,7 +235,7 @@ private fun LevelCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(15.dp)
-                .background(shape = RectangleShape, color = Color.White)
+                .background(shape = RectangleShape, color = MaterialTheme.colorScheme.surfaceVariant)
                 .fillMaxWidth()
         ) {
             if (level.levelSet == LevelSet.CUSTOM) {
@@ -293,7 +294,7 @@ fun LevelPicture(
         userScrollEnabled = false,
         modifier = Modifier
             .height(335.dp)
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .border(
                 width = 1.dp,
                 color = Color.Black,

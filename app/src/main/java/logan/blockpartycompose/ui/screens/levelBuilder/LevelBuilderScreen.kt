@@ -10,7 +10,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
@@ -31,6 +31,7 @@ import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.level.LevelGrid
 import kotlin.reflect.KFunction2
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalFoundationApi
 @Composable
 fun LevelBuilderScreen(
@@ -145,6 +146,7 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
     )
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun SaveLevelDialog(
     context: Context,

@@ -7,9 +7,11 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -239,18 +241,19 @@ fun LevelFooter(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_undo_24),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 contentDescription = "Undo",
             )
         }
         IconButton(
             onClick = restartClicked,
         ) {
-            Icon(Icons.Filled.Refresh, contentDescription = "Restart")
+            Icon(Icons.Filled.Refresh, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "Restart")
         }
         IconButton(
             onClick = infoClicked,
         ) {
-            Icon(Icons.Filled.Info, contentDescription = "Info")
+            Icon(Icons.Filled.Info, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "Info")
         }
     }
 }
