@@ -432,7 +432,7 @@ class LevelViewModel @Inject constructor(
         return if (movesUsed <= getMinMoves()) 3 else if (movesUsed - 2 <= getMinMoves()) 2 else 1
     }
 
-    fun isFinalLevel():Boolean = (level.id+1 == 11 || level.id+1 == 21 || level.id+1 == 31)
+    fun isFinalLevel():Boolean = (level.id+1 == 10 || level.id+1 == 20 || level.id+1 == 30)
 
     fun infoClicked() {
         val currentState = isInfoClicked.value?: false
@@ -440,7 +440,7 @@ class LevelViewModel @Inject constructor(
     }
 
     fun getInfoProgress(): Int{
-        return if (repo.getDifficultyProgress()[0] >= 15) 5 else 4
+        return if (repo.getDifficultyProgress()[0] >= 15) 6 else 5
     }
 
 }

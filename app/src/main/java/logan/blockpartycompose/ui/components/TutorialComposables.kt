@@ -20,6 +20,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,7 +42,6 @@ import kotlinx.coroutines.delay
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.screens.level.PostLevelScreen
 import logan.blockpartycompose.ui.screens.level.SuccessStars
-import kotlin.reflect.KFunction1
 
 
 @Composable
@@ -60,18 +62,21 @@ fun BaseTutorial(
             .height(200.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.SpaceAround,
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
-//            if (forwardOnClick != null || backOnClick != null) Spacer(modifier = Modifier.height(20.dp))
+            if (forwardOnClick != null || backOnClick != null)Spacer(modifier = Modifier.height(25.dp))
+                else Spacer(modifier = Modifier.height(1.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
-                    .padding(10.dp)
+                    .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
             ) {
                 if (content != null) {
                     Spacer(modifier = Modifier.width(20.dp))
@@ -79,54 +84,54 @@ fun BaseTutorial(
                     Spacer(modifier = Modifier.width(20.dp))
                 }
                 Text(
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
-                    text = description
+                    textAlign = TextAlign.Center, fontSize = 18.sp, text = description
                 )
             }
-//            if (forwardOnClick != null || backOnClick != null) {
-//                Row(
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    if (backOnClick != null) {
-//                        IconButton(
-//                            onClick = backOnClick,
-//                        ) {
-//                            Icon(
-//                                Icons.Filled.ArrowBack,
-//                                contentDescription = "Undo",
-//                                modifier = Modifier
-//                                    .scale(1.5f)
-//                                    .padding(10.dp)
-//                            )
-//                        }
-//                    } else Spacer(modifier = Modifier.width(1.dp))
-//
-//                    if (forwardOnClick != null) {
-//                        IconButton(
-//                            onClick = forwardOnClick,
-//                        ) {
-//                            Icon(
-//                                Icons.Filled.ArrowForward,
-//                                contentDescription = "Undo",
-//                                modifier = Modifier
-//                                    .scale(1.5f)
-//                                    .padding(10.dp)
-//                            )
-//                        }
-//                    } else Spacer(modifier = Modifier.width(1.dp))
-//                }
-//            }
-//            else Spacer(modifier = Modifier.width(2.dp))
+            if (forwardOnClick != null || backOnClick != null) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    if (backOnClick != null) {
+                        IconButton(
+                            onClick = backOnClick,
+                        ) {
+                            Icon(
+                                Icons.Filled.ArrowBack,
+                                contentDescription = "Undo",
+                                modifier = Modifier
+                                    .scale(1.5f)
+                                    .padding(10.dp)
+                            )
+                        }
+                    } else Spacer(modifier = Modifier.width(1.dp))
+
+                    if (forwardOnClick != null) {
+                        IconButton(
+                            onClick = forwardOnClick,
+                        ) {
+                            Icon(
+                                Icons.Filled.ArrowForward,
+                                contentDescription = "Undo",
+                                modifier = Modifier
+                                    .scale(1.5f)
+                                    .padding(10.dp)
+                            )
+                        }
+                    } else Spacer(modifier = Modifier.width(1.dp))
+                }
+            }
+            else Spacer(modifier = Modifier.width(1.dp))
         }
     }
 }
 
 @Composable
-fun TutorialWindow(tutorialStage: Int, infoProgress: Int,backOnClick: (() -> Unit)? = null,
-                   forwardOnClick: (() -> Unit)? = null,) {
+fun TutorialWindow(
+    tutorialStage: Int, infoProgress: Int, backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
     when (tutorialStage) {
         0 -> {
             TutorialStageOne(infoProgress, backOnClick, forwardOnClick)
@@ -134,11 +139,54 @@ fun TutorialWindow(tutorialStage: Int, infoProgress: Int,backOnClick: (() -> Uni
         }
 
         1 -> {
-            TutorialStageTwo()
+            TutorialStageTwo(infoProgress, backOnClick, forwardOnClick)
         }
 
         2 -> {
-            TutorialStageThree(infoProgress)
+            TutorialStageThree()
+        }
+
+        3 -> {
+            TutorialStageFour(infoProgress)
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun TutorialStageFour(infoProgress: Int) {
+    if(infoProgress == 3)return
+    val state = rememberPagerState()
+    LaunchedEffect(key1 = infoProgress) {
+        delay(175)
+        state.animateScrollToPage(page = infoProgress)
+    }
+    HorizontalPager(
+        count = 3, state = state, modifier = Modifier
+            .fillMaxWidth()
+            .height(175.dp)
+    ) {
+        when (it) {
+            0 -> {
+                BaseTutorial("Press the undo button to go back one move") {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_undo_24),
+                        contentDescription = "Undo",
+                    )
+                }
+            }
+
+            1 -> {
+                BaseTutorial("Press the restart button to start the level over") {
+                    Icon(Icons.Filled.Refresh, contentDescription = "Restart")
+                }
+            }
+
+            2 -> {
+                BaseTutorial("Press the info button to see how each block functions") {
+                    Icon(Icons.Filled.Info, contentDescription = "Info")
+                }
+            }
         }
     }
 }
@@ -147,18 +195,17 @@ fun TutorialWindow(tutorialStage: Int, infoProgress: Int,backOnClick: (() -> Uni
 @Composable
 fun TutorialPlayMenuWindow() {
     HorizontalPager(
-        count = 2,
-        modifier = Modifier
+        count = 2, modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(175.dp)
     ) {
         when (it) {
             0 -> {
-                BaseTutorial("Earn more stars to unlock harder difficulties")
+                BaseTutorial("Tap Level builder to build a custom level of your own!")
             }
 
             1 -> {
-                BaseTutorial("Tap Level builder to build a custom level of your own!")
+                BaseTutorial("Earn more stars to unlock harder difficulties")
             }
         }
     }
@@ -177,11 +224,9 @@ fun TutorialStageOne(
         state.animateScrollToPage(page = progress)
     }
     HorizontalPager(
-        count = progress + 1,
-        state = state,
-        modifier = Modifier
+        count = progress + 1, state = state, modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(175.dp)
     ) {
         when (it) {
             0 -> {
@@ -191,12 +236,6 @@ fun TutorialStageOne(
             }
 
             1 -> {
-                BaseTutorial("Tap a surround block to move closer to the Gold Block") {
-                    PlayerBlock()
-                }
-            }
-
-            2 -> {
                 BaseTutorial("Tap the gold block to beat the level") {
                     GoalBlock()
                 }
@@ -207,18 +246,28 @@ fun TutorialStageOne(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TutorialStageTwo() {
+fun TutorialStageTwo(progress: Int, backOnClick: (() -> Unit)?, forwardOnClick: (() -> Unit)?) {
+    val state = rememberPagerState()
+    LaunchedEffect(key1 = progress) {
+        delay(175)
+        state.animateScrollToPage(page = progress)
+    }
     HorizontalPager(
-        count = 1,
-        modifier = Modifier
+        count = 3, state = state, modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(175.dp)
     ) {
         when (it) {
             0 -> {
-                BaseTutorial("This is the Enemy block. It moves twice after ever player move. It chases you always moving to the same row before moving up or down. Don't let it catch you or its game over!") {
+                BaseTutorial("This is the Enemy block. It moves twice after ever player move.", forwardOnClick = forwardOnClick) {
                     EnemyBlock()
                 }
+            }
+            1 -> {
+                BaseTutorial("It can only move closer to the Blue block and always tries to move horizontally first if possible.", forwardOnClick = forwardOnClick, backOnClick = backOnClick)
+            }
+            2 -> {
+                BaseTutorial("Don't let it catch you or its game over!", backOnClick = backOnClick)
             }
         }
     }
@@ -226,12 +275,11 @@ fun TutorialStageTwo() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TutorialStageThree(infoProgress: Int) {
+fun TutorialStageThree() {
     HorizontalPager(
-        count = 2,
-        modifier = Modifier
+        count = 2, modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(175.dp)
     ) {
         when (it) {
             0 -> {
@@ -253,22 +301,38 @@ fun TutorialStageThree(infoProgress: Int) {
 @Composable
 fun FirstWinTutorialWindow() {
     HorizontalPager(
-        count = 2,
-        modifier = Modifier
+        count = 2, modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
         when (it) {
             0 -> {
-                BaseTutorial(description = "Complete levels in as few moves as possible to earn all 3 stars") {
-                    FilledStar()
-                }
+                BaseTutorial(description = "Complete levels in as few moves as possible to earn all 3 stars")
             }
 
             1 -> {
-                BaseTutorial(description = "Earning stars will let you unlock harder levels") {
-                    FilledStar()
-                }
+                BaseTutorial(description = "Earning stars will let you unlock harder levels")
+            }
+
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun SecondWinTutorialWindow() {
+    HorizontalPager(
+        count = 2, modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+    ) {
+        when (it) {
+            0 -> {
+                BaseTutorial(description = "Earning stars will let you unlock harder levels")
+            }
+
+            1 -> {
+                BaseTutorial(description = "Complete levels in as few moves as possible to earn all 3 stars")
             }
 
         }
@@ -279,17 +343,13 @@ fun FirstWinTutorialWindow() {
 @Composable
 fun FirstLossTutorialWindow() {
     HorizontalPager(
-        count = 2,
-        modifier = Modifier
+        count = 1, modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
         when (it) {
             0 -> {
-                BaseTutorial(description = "You Suck!")
-            }
-            1 -> {
-                BaseTutorial(description = "Get Good")
+                BaseTutorial(description = "Don't let the red block catch you!")
             }
         }
     }
@@ -297,24 +357,29 @@ fun FirstLossTutorialWindow() {
 
 @Composable
 fun TutorialSuccessScreen(
-    nextLevelOnClick: () -> Unit,
-    movesUsed: Int,
-    tutorialState: Int
+    nextLevelOnClick: () -> Unit, movesUsed: Int, tutorialState: Int
 ) {
     if (movesUsed == 0) return
     PostLevelScreen() {
         Text(text = stringResource(id = R.string.you_did_it))
         Text(text = stringResource(id = R.string.tutorial_level_completed_in, movesUsed))
         SuccessStars(3)
-        FirstWinTutorialWindow()
+        when (tutorialState) {
+            0 -> {
+                FirstWinTutorialWindow()
+            }
+            1 -> {
+                SecondWinTutorialWindow()
+            }
+        }
         Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
+            horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()
         ) {
             Button(onClick = { nextLevelOnClick() }) {
                 Text(text = stringResource(R.string.continue_tutorial))
             }
         }
+
     }
 }
 
@@ -323,11 +388,10 @@ fun TutorialFailureScreen(
     tryAgainOnClick: () -> Unit,
 ) {
     PostLevelScreen() {
-        Text(text = stringResource(id = R.string.you_died))
+        Text(text = stringResource(id = R.string.you_died), fontSize = 36.sp)
         FirstLossTutorialWindow()
         Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
+            horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()
         ) {
             Button(onClick = { tryAgainOnClick() }) {
                 Text(text = stringResource(R.string.try_again))
@@ -346,28 +410,36 @@ fun PlayerInfo(modifier: Modifier = Modifier) {
 @Composable
 fun GoalInfo(modifier: Modifier = Modifier) {
     BaseTutorial(
-        "This is the goal block.\nMove the Player Block here\n to complete the level.",
-        modifier
+        "This is the goal block.\nMove the Player Block here\n to complete the level.", modifier
     ) {
         GoalBlock()
     }
 }
 
 @Composable
-fun EnemyInfo(modifier: Modifier = Modifier) {
+fun EnemyInfo1(modifier: Modifier = Modifier) {
     BaseTutorial(
-        "This is the Enemy block. It moves twice after ever player move. It chases you always moving to the same row before moving up or down. Don't let it catch you or its game over!",
+        "This is the Enemy block. It moves twice after ever player move.",
         modifier
     ) {
         EnemyBlock()
     }
 }
+@Composable
+fun EnemyInfo2(modifier: Modifier = Modifier) {
+    BaseTutorial(
+        "It can only move closer to the Blue block and always tries to move horizontally first if possible. Don't let it catch you or it's game over!",
+        modifier
+    ) {
+        EnemyBlock()
+    }
+
+}
 
 @Composable
 fun UnmovableInfo(modifier: Modifier = Modifier) {
     BaseTutorial(
-        "This an obstacle. It cannot be moved and blocks both the player and enemy.",
-        modifier
+        "This an obstacle. It cannot be moved and blocks both the player and enemy.", modifier
     ) {
         UnmovableBlock()
     }
@@ -387,17 +459,17 @@ fun MovableInfo(modifier: Modifier = Modifier) {
 @Composable
 fun HelpCard(count: Int, modifier: Modifier = Modifier) {
     HorizontalPager(
-        count,
-        modifier = modifier
+        count, modifier = modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(175.dp)
     ) {
         when (it) {
             0 -> PlayerInfo()
             1 -> GoalInfo()
-            2 -> EnemyInfo()
-            3 -> UnmovableInfo()
-            4 -> MovableInfo()
+            2 -> EnemyInfo1()
+            3 -> EnemyInfo2()
+            4 -> UnmovableInfo()
+            5 -> MovableInfo()
         }
     }
 }
@@ -406,5 +478,5 @@ fun HelpCard(count: Int, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun Preview() {
-    HelpCard(5)
+    HelpCard(6)
 }

@@ -135,7 +135,7 @@ fun LevelScreen(
             Crossfade(targetState = isHelpEnabled, animationSpec = tween(300)) { isHelpEnabled ->
                 if (isHelpEnabled) {
                     HelpCard(infoProgress)
-                } else Spacer(modifier = Modifier.height(200.dp))
+                } else Spacer(modifier = Modifier.height(175.dp))
             }
         }
         LevelFooter(undoClicked, restartClicked, infoClicked)

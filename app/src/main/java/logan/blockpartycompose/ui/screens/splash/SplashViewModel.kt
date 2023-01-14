@@ -12,7 +12,7 @@ class SplashViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun isTutorialMode(): Boolean {
-        return getTutorialProgress() == 0
+        return getTutorialProgress() <= 3
     }
 
     private fun getTutorialProgress(): Int {

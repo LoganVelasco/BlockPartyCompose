@@ -23,8 +23,8 @@ class TutorialModeViewModel @Inject constructor(
     private val repo: DataRepository
 ) : ViewModel() {
 
-    private var _tutorialState = MutableLiveData<Pair<Int,Int>>() // stage, progress
-    val tutorialState: LiveData<Pair<Int,Int>> = _tutorialState
+    private var _tutorialState = MutableLiveData<Pair<Int, Int>>() // stage, progress
+    val tutorialState: LiveData<Pair<Int, Int>> = _tutorialState
 
     private var _state = MutableLiveData<GamePlayState>()
     val state: LiveData<GamePlayState> = _state
@@ -63,29 +63,38 @@ class TutorialModeViewModel @Inject constructor(
                 setupLevel(0)
                 _tutorialState.value = 0 to 0
             }
+
             1 -> {
                 setupLevel(1)
                 _tutorialState.value = 1 to 0
             }
+
             2 -> {
                 setupLevel(2)
                 _tutorialState.value = 2 to 0
             }
+
+            3 -> {
+                setupLevel(3)
+                _tutorialState.value = 3 to 0
+            }
         }
     }
 
-    fun nextLevelOnClick(navigateToMenu: (() -> Unit)){
+    fun nextLevelOnClick(navigateToMenu: (() -> Unit)) {
         _tutorialState.value = _tutorialState.value!!.first + 1 to 0
-        updateTutorialProgress(_tutorialState.value!!.first + 1)
-        if(level.id+1 >= 3) navigateToMenu()
-            else setupTutorialStage(level.id + 1)
+        updateTutorialProgress(_tutorialState.value!!.first)
+        if (level.id + 1 >= 4) navigateToMenu()
+        else setupTutorialStage(level.id + 1)
     }
 
     private fun setupLevel(id: Int) {
         level = getLevel(id)
         level.resetLevel()
+        val blocks = if (id == 0) getSurroundingBlocks() else emptyList()
         val newState = GamePlayState(
             blocks = level.initialBlocks,
+            glowingBlocks = blocks,
             movesUsed = 0,
             gameState = GameState.IN_PROGRESS
         )
@@ -134,11 +143,11 @@ class TutorialModeViewModel @Inject constructor(
     }
 
     private fun getLevels(context: Context) {
-        tutorialLevels = repo.getLevels(LevelSet.EASY, context).subList(0, 3)
+        tutorialLevels = repo.getLevels(LevelSet.EASY, context).subList(0, 4)
     }
 
     private fun getLevel(id: Int): Level {
-        return tutorialLevels.find { it.id == id }?: tutorialLevels[0]
+        return tutorialLevels.find { it.id == id } ?: tutorialLevels[0]
     }
 
     fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
@@ -164,7 +173,7 @@ class TutorialModeViewModel @Inject constructor(
                 )
             ) {
                 glow = listOf(level.goalIndex)
-                _tutorialState.value = 0 to 2
+                _tutorialState.value = 0 to 1
             }
 
             _state.value = GamePlayState(
@@ -216,7 +225,7 @@ class TutorialModeViewModel @Inject constructor(
                 _state.value = GamePlayState(
                     blocks = level.blocks,
                     movesUsed = level.movesUsed,
-                    gameState =  GameState.IN_PROGRESS,
+                    gameState = GameState.IN_PROGRESS,
                     direction = direction
                 )
 
@@ -242,35 +251,51 @@ class TutorialModeViewModel @Inject constructor(
                 stageOneOnCLick(block, index)
             }
             1 -> stageTwoOnCLick(block, index)
-            2 -> stageTwoOnCLick(block, index)
+            2 -> stageThreeOnCLick(block, index)
+            3 -> regularOnClick(block, index)
         }
     }
 
     private fun stageOneOnCLick(block: Char, index: Int) {
         when (tutorialState.value!!.second) {
-            0 -> {
-                _state.value = GamePlayState(
-                    blocks = level.blocks.toList(),
-                    glowingBlocks = getSurroundingBlocks(),
-                    movesUsed = 0,
-                    gameState = GameState.IN_PROGRESS,
-                )
-                _tutorialState.value = 0 to 1
-            }
-            1 -> stageOnePartOne(block, index)
-            2 -> stageOnePartTwo(block, index)
+            0 -> stageOnePartOne(block, index)
+            1 -> stageOnePartTwo(block, index)
         }
     }
+
 
     private fun stageTwoOnCLick(block: Char, index: Int) {
         when (tutorialState.value!!.second) {
             0 -> {
-                stageThreeOnCLick(block, index)
+                progressForward()
+                regularOnClick(block, index)
+            }
+
+            1 -> {
+                progressForward()
+                regularOnClick(block, index)
+            }
+
+            2 -> {
+                regularOnClick(block, index)
             }
         }
     }
 
-    fun stageThreeOnCLick(block: Char, index: Int) {
+    private fun stageThreeOnCLick(block: Char, index: Int) {
+        when (tutorialState.value!!.second) {
+            0 -> {
+                progressForward()
+                regularOnClick(block, index)
+            }
+
+            1 -> {
+                regularOnClick(block, index)
+            }
+        }
+    }
+
+    private fun regularOnClick(block: Char, index: Int) {
         if (!GameUtils.isTouching(
                 index,
                 level.playerIndex,
@@ -286,6 +311,7 @@ class TutorialModeViewModel @Inject constructor(
             enemyBlock -> {
                 return
             }
+
             goalBlock -> {
                 val direction = movePlayerBlock(index)
                 _state.value =
@@ -560,6 +586,7 @@ class TutorialModeViewModel @Inject constructor(
     }
 
     fun undoClicked() {
+        if((tutorialState.value?.second ?: 0) == 0)progressForward()
         if (history.size >= 2) {
             history.sortBy { it.movesUsed }
             level.blocks = history[history.size - 2].blocks.toMutableList() // Code Smell
@@ -583,6 +610,7 @@ class TutorialModeViewModel @Inject constructor(
     }
 
     fun tryAgain() {
+        if((tutorialState.value?.second ?: 0) == 1)progressForward()
         level.resetLevel()
         history.clear()
         val newState = GamePlayState(
@@ -606,6 +634,7 @@ class TutorialModeViewModel @Inject constructor(
 
 
     fun infoClicked() {
+        if((tutorialState.value?.second ?: 0) == 2)progressForward()
         val currentState = isInfoClicked.value ?: false
         _isInfoClicked.value = !currentState
     }

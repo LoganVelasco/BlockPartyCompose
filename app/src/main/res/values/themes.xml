@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.BlockPartyCompose" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.BlockParty" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/charcoal</item>
         <item name="colorPrimaryVariant">@color/dark_charcoal</item>
@@ -10,11 +10,11 @@
         <item name="colorSecondaryVariant">@color/dark_charcoal</item>
         <item name="colorOnSecondary">@color/beu_blue</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.BlockPartyCompose.NoActionBar">
+    <style name="Theme.BlockParty.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
