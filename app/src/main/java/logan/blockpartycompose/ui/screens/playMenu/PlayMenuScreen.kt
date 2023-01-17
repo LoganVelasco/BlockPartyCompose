@@ -1,6 +1,8 @@
 package logan.blockpartycompose.ui.screens.playMenu
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -26,7 +28,6 @@ fun PlayMenuScreen(navController: NavController) {
     val viewModel: PlayMenuViewModel = hiltViewModel()
     val progress = viewModel.getProgress()
     val tutorialProgress = viewModel.getTutorialProgress()
-
     PlayMenu(navController, progress, tutorialProgress)
 
 }
@@ -71,8 +72,9 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
                 )
             }
         },
+        endIcon = Icons.Filled.Settings,
         firstIconOnclick = { navController.popBackStack() },
-        endIconOnclick = { navController.popBackStack() }
+        endIconOnclick = { navController.navigate("settings") }
     )
 }
 

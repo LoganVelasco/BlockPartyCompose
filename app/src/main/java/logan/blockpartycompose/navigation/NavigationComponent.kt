@@ -13,17 +13,28 @@ import logan.blockpartycompose.ui.screens.levelBuilder.LevelBuilderScreen
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet.*
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelsMenuScreen
+import logan.blockpartycompose.ui.screens.settings.SettingsScreen
 import logan.blockpartycompose.ui.screens.tutorialMode.TutorialModeScreen
 
 
 @ExperimentalFoundationApi
 @Composable
-fun Navigation() {
+fun Navigation(isUpdated: Boolean, resetApp: () -> Unit, closeApp:() -> Unit) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "welcome") {
-        composable("welcome") { WelcomeScreen(navController) }
+    val start = if(isUpdated) "refreshedSettings" else "welcome"
+    NavHost(navController = navController, startDestination = start) {
+        composable("welcome") { WelcomeScreen(navController, closeApp) }
         composable("tutorialMode") { TutorialModeScreen(navController) }
         composable("playMenu") { PlayMenuScreen(navController) }
+        composable("settings") { SettingsScreen(navController) }
+        composable("updatedSettings") {
+            resetApp()
+        }
+        composable("refreshedSettings") {
+            navController.navigate("welcome")
+            navController.navigate("playMenu")
+            navController.navigate("settings")
+        }
         composable("levelBuilder") { LevelBuilderScreen(navController) }
         composable("levelBuilder/{id}") { LevelBuilderScreen(navController,  it.arguments?.getString("id")!!.toInt()) }
         composable("easy") { LevelsMenuScreen(navController, EASY) }
@@ -52,4 +63,5 @@ fun Navigation() {
                 )
         }
     }
+
 }

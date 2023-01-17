@@ -14,6 +14,8 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences(context.getString(R.string.levels), Context.MODE_PRIVATE)
 
+    val colorPrefs: SharedPreferences =
+        context.getSharedPreferences("COLORS", Context.MODE_PRIVATE)
 
     val easyLevelProgress: MutableList<Int>
         get() {
@@ -95,6 +97,14 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
             }
             LevelSet.CUSTOM -> {}
         }
+    }
+
+    fun getColorScheme():Int{
+        return colorPrefs.getInt("COLORS", 0)
+    }
+
+    fun updateColorScheme(colorScheme: Int){
+        colorPrefs.edit().putInt("COLORS", colorScheme).apply()
     }
 
 }

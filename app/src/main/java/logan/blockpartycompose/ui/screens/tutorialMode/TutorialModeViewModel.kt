@@ -610,7 +610,7 @@ class TutorialModeViewModel @Inject constructor(
     }
 
     fun tryAgain() {
-        if((tutorialState.value?.second ?: 0) == 1)progressForward()
+        if((tutorialState.value?.first ?: 0) == 3 && (tutorialState.value?.second ?: 0) == 1)progressForward()
         level.resetLevel()
         history.clear()
         val newState = GamePlayState(

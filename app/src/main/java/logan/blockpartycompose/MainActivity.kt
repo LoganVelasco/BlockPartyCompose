@@ -1,12 +1,16 @@
 package logan.blockpartycompose
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.navigation.Navigation
 import logan.blockpartycompose.ui.theme.BlockPartyTheme
 import javax.inject.Inject
@@ -17,11 +21,28 @@ class MainActivity  @Inject constructor(): ComponentActivity() {
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val prefs: SharedPreferences =
+            this.getSharedPreferences("COLORS", Context.MODE_PRIVATE)
+
+        val colors = prefs.getInt("COLORS", 0)
+
+        val restartApp = {
+            val mIntent = intent
+            mIntent.putExtra("UPDATED", true)
+            finish()
+           startActivity(mIntent)
+        }
+
+        val isUpdated = intent.getBooleanExtra("UPDATED", false)
+
+        installSplashScreen()
+
         setContent {
-            BlockPartyTheme {
+            BlockPartyTheme(colors = colors) {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    Navigation()
+                    Navigation(isUpdated = isUpdated, resetApp = restartApp, closeApp = { finish() })
                 }
             }
         }

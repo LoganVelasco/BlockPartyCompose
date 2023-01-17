@@ -14,6 +14,14 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.BlockPartySplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_round</item>
+        <item name="windowSplashScreenAnimationDuration">6000</item>
+        <item name="postSplashScreenTheme">@style/Theme.BlockParty</item>
+    </style>
+
+
     <style name="Theme.BlockParty.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

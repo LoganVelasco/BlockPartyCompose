@@ -84,6 +84,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         }
     }
 
+
     fun deleteCustomLevel(id: Int, context: Context) {
         val newLevels = getCustomLevels(context).filter { it.id != id }
         val data = gson.toJson(LevelsDTO.getDTO(newLevels))
@@ -132,8 +133,8 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         val currentStars = getDifficultyProgress().sum()
         gameData.updateProgress(difficulty, level, stars)
         val newStars = getDifficultyProgress().sum()
-
     }
+
 
     fun generateId(context: Context): Int {
         val highestCurrentID = getCustomLevels(context).maxByOrNull { it.id }?.id?: 0
@@ -144,5 +145,11 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     fun getEmptyLayout(x: Int = 6, y: Int = 8): List<Char> {
         return getBlankLayout(x, y)
     }
+    fun getColorScheme():Int{
+        return gameData.getColorScheme()
+    }
 
+    fun updateColorScheme(colorScheme: Int){
+        gameData.updateColorScheme(colorScheme)
+    }
 }

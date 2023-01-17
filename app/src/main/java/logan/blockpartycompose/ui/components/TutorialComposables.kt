@@ -1,6 +1,7 @@
 package logan.blockpartycompose.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -54,7 +56,7 @@ fun BaseTutorial(
 ) {
     val configuration = LocalConfiguration.current
     Card(
-        border = BorderStroke(5.dp, Color.DarkGray),
+//        border = BorderStroke(5.dp, Color.DarkGray),
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
             .width(configuration.screenWidthDp.dp)
@@ -65,7 +67,7 @@ fun BaseTutorial(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth().background(MaterialTheme.colorScheme.tertiaryContainer)
                 .fillMaxHeight()
         ) {
             if (forwardOnClick != null || backOnClick != null)Spacer(modifier = Modifier.height(25.dp))
@@ -74,7 +76,7 @@ fun BaseTutorial(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().background(MaterialTheme.colorScheme.tertiaryContainer)
                     .height(IntrinsicSize.Min)
                     .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
             ) {
@@ -84,7 +86,7 @@ fun BaseTutorial(
                     Spacer(modifier = Modifier.width(20.dp))
                 }
                 Text(
-                    textAlign = TextAlign.Center, fontSize = 18.sp, text = description
+                    textAlign = TextAlign.Center, fontSize = 18.sp, text = description, color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             }
             if (forwardOnClick != null || backOnClick != null) {
