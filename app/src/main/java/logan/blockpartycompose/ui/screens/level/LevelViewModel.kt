@@ -35,8 +35,8 @@ class LevelViewModel @Inject constructor(
 
     lateinit var level: Level
 
-    private var _isInfoClicked = MutableLiveData<Boolean>()
-    val isInfoClicked: LiveData<Boolean> = _isInfoClicked
+    private var _infoState = MutableLiveData(-1)
+    val infoState: LiveData<Int> = _infoState
 
     private val playerBlock = 'p'
     private val enemyBlock = 'e'
@@ -47,6 +47,8 @@ class LevelViewModel @Inject constructor(
     fun setupLevel(levelSet: LevelSet, id: Int) {
         level = getLevel(levelSet, id)
         level.resetLevel()
+
+
         val newState = LevelState(
             blocks = level.initialBlocks,
             movesUsed = 0,
@@ -57,6 +59,15 @@ class LevelViewModel @Inject constructor(
         )
         history.clear()
         history.add(newState)
+
+        if (levelSet == LevelSet.MEDIUM ){
+            val cardToDisplay = cardToDisplay()
+            if(cardToDisplay != 0)
+                _infoState.value = cardToDisplay
+            else if(_infoState.value != -1)
+                _infoState.value = -1
+        }
+
     }
 
     fun setupLevel(newLevel: Level) {
@@ -77,7 +88,10 @@ class LevelViewModel @Inject constructor(
         return repo.levelsSets[levelSet.name]!!.first { it.id == id }
     }
 
-    fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
+    private fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
+        if(difficulty == LevelSet.MEDIUM && name == 10)repo.updateTutorialStage(5)
+            else if(difficulty == LevelSet.MEDIUM && name == 11)repo.updateTutorialStage(6)
+
         repo.updateLevelProgress(difficulty, name, stars)
     }
 
@@ -184,15 +198,14 @@ class LevelViewModel @Inject constructor(
                     }
                     if (levelState.gameState == GameState.FAILED) {
                         _state.value = levelState
-                    }
-                    else if ((redStates.size == 1 && redStates[0].blocks.indexOf('e') == level.enemyIndex) ||    // TODO: refactor this
+                    } else if ((redStates.size == 1 && redStates[0].blocks.indexOf('e') == level.enemyIndex) ||    // TODO: refactor this
                         (redStates.size >= 2 && (redStates[0].blocks.indexOf('e') == level.enemyIndex ||
                                 redStates[1].blocks.indexOf('e') == level.enemyIndex))
                     ) { // if red move is stale (new red move occurred) don't post it
                         if (level.goalIndex != -1 && (level.blocks.indexOf('p') == level.goalIndex)) {   // don't post red move if valid win happens
                             return@launch
                         }
-                        if(history.size < 2 || history.last().blocks.indexOf('e') != level.enemyIndex) // don't post red move if red stuck
+                        if (history.size < 2 || history.last().blocks.indexOf('e') != level.enemyIndex) // don't post red move if red stuck
                             _state.value = levelState
                     }
                 }
@@ -432,15 +445,36 @@ class LevelViewModel @Inject constructor(
         return if (movesUsed <= getMinMoves()) 3 else if (movesUsed - 2 <= getMinMoves()) 2 else 1
     }
 
-    fun isFinalLevel():Boolean = (level.id+1 == 10 || level.id+1 == 20 || level.id+1 == 30)
+    fun isFinalLevel(): Boolean = (level.id + 1 == 10 || level.id + 1 == 20 || level.id + 1 == 30)
 
     fun infoClicked() {
-        val currentState = isInfoClicked.value?: false
-        _isInfoClicked.value = !currentState
+        if (_infoState.value != -1) {
+            _infoState.value = -1
+            return
+        }
+        var cardShown = 0
+        if (level.levelSet == LevelSet.MEDIUM) cardShown = cardToDisplay()
+        _infoState.value = cardShown
     }
 
-    fun getInfoProgress(): Int{
-        return if (repo.getDifficultyProgress()[0] >= 15) 6 else 5
+    fun getInfoProgress(): Int {
+        return if (repo.getDifficultyProgress()[0] >= 15) 8 else 6
+    }
+
+    fun updateTutorialProgress(progress: Int) {
+        repo.updateTutorialStage(progress)
+    }
+
+    private fun cardToDisplay(): Int {
+        return when(repo.getTutorialStage()) {
+            4 -> 6
+            5 -> 7
+            else -> 0
+        }
+    }
+
+    fun getTutorialProgress(): Int {
+        return repo.getTutorialStage()
     }
 
 }

@@ -32,7 +32,7 @@ fun CustomLevelScreen(
 ) {
     val backEntry = remember { navigation.previousBackStackEntry!! }
     val levelBuilderViewModel: LevelBuilderViewModel = hiltViewModel(backEntry)
-    val infoState by levelsViewModel.isInfoClicked.observeAsState()
+    val infoState by levelsViewModel.infoState.observeAsState()
 
     val state by levelsViewModel.state.observeAsState()
 
@@ -77,7 +77,7 @@ fun CustomLevelScreen(
                 movesUsed = state!!.movesUsed,
                 x = levelsViewModel.level.x,
                 blocks = state!!.blocks,
-                isHelpEnabled = infoState?: false,
+                infoState = infoState?: -1,
                 infoProgress = 6,
                 blockClicked = levelsViewModel::blockClicked,
                 backClicked = backClicked,

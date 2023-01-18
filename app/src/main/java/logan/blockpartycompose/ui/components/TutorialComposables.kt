@@ -1,6 +1,11 @@
 package logan.blockpartycompose.ui.components
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,23 +18,25 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,6 +48,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.screens.level.PostLevelScreen
 import logan.blockpartycompose.ui.screens.level.SuccessStars
@@ -52,8 +60,10 @@ fun BaseTutorial(
     modifier: Modifier = Modifier,
     backOnClick: (() -> Unit)? = null,
     forwardOnClick: (() -> Unit)? = null,
-    content: @Composable() (() -> Unit)? = null
+    animateForward: Boolean = false,
+    content: @Composable (() -> Unit)? = null
 ) {
+
     val configuration = LocalConfiguration.current
     Card(
 //        border = BorderStroke(5.dp, Color.DarkGray),
@@ -67,16 +77,18 @@ fun BaseTutorial(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth().background(MaterialTheme.colorScheme.tertiaryContainer)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.tertiaryContainer)
                 .fillMaxHeight()
         ) {
-            if (forwardOnClick != null || backOnClick != null)Spacer(modifier = Modifier.height(25.dp))
-                else Spacer(modifier = Modifier.height(1.dp))
+            if (forwardOnClick != null || backOnClick != null) Spacer(modifier = Modifier.height(25.dp))
+            else Spacer(modifier = Modifier.height(1.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
-                    .fillMaxWidth().background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.tertiaryContainer)
                     .height(IntrinsicSize.Min)
                     .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
             ) {
@@ -86,10 +98,26 @@ fun BaseTutorial(
                     Spacer(modifier = Modifier.width(20.dp))
                 }
                 Text(
-                    textAlign = TextAlign.Center, fontSize = 18.sp, text = description, color = MaterialTheme.colorScheme.onTertiaryContainer
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp,
+                    text = description,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             }
             if (forwardOnClick != null || backOnClick != null) {
+                var alpha = 1.5f
+                if (animateForward) {
+                    val infiniteTransition = rememberInfiniteTransition()
+                    val animatedAlpha by infiniteTransition.animateFloat(
+                        initialValue = 1.5f,
+                        targetValue = 2f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+                            repeatMode = RepeatMode.Reverse
+                        )
+                    )
+                    alpha = animatedAlpha
+                }
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -117,31 +145,30 @@ fun BaseTutorial(
                                 Icons.Filled.ArrowForward,
                                 contentDescription = "Undo",
                                 modifier = Modifier
-                                    .scale(1.5f)
+                                    .scale(alpha)
                                     .padding(10.dp)
                             )
                         }
                     } else Spacer(modifier = Modifier.width(1.dp))
                 }
-            }
-            else Spacer(modifier = Modifier.width(1.dp))
+            } else Spacer(modifier = Modifier.width(1.dp))
         }
     }
 }
 
 @Composable
 fun TutorialWindow(
-    tutorialStage: Int, infoProgress: Int, backOnClick: (() -> Unit)? = null,
+    tutorialStage: Int, tutorialProgress: Int,
     forwardOnClick: (() -> Unit)? = null,
 ) {
     when (tutorialStage) {
         0 -> {
-            TutorialStageOne(infoProgress, backOnClick, forwardOnClick)
+            TutorialStageOne(tutorialProgress)
             return
         }
 
         1 -> {
-            TutorialStageTwo(infoProgress, backOnClick, forwardOnClick)
+            TutorialStageTwo(tutorialProgress, forwardOnClick)
         }
 
         2 -> {
@@ -149,7 +176,7 @@ fun TutorialWindow(
         }
 
         3 -> {
-            TutorialStageFour(infoProgress)
+            TutorialStageFour(tutorialProgress)
         }
     }
 }
@@ -157,7 +184,8 @@ fun TutorialWindow(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialStageFour(infoProgress: Int) {
-    if(infoProgress == 3)return
+    if (infoProgress == 3) return
+    val scope = rememberCoroutineScope()
     val state = rememberPagerState()
     LaunchedEffect(key1 = infoProgress) {
         delay(175)
@@ -170,7 +198,11 @@ fun TutorialStageFour(infoProgress: Int) {
     ) {
         when (it) {
             0 -> {
-                BaseTutorial("Press the undo button to go back one move") {
+                BaseTutorial(
+                    "This button will undo your last move",
+                    forwardOnClick = { scope.launch { state.scrollToPage(1) } },
+                    animateForward = true
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_undo_24),
                         contentDescription = "Undo",
@@ -179,13 +211,20 @@ fun TutorialStageFour(infoProgress: Int) {
             }
 
             1 -> {
-                BaseTutorial("Press the restart button to start the level over") {
+                BaseTutorial(
+                    "This button will restart the level",
+                    forwardOnClick = { scope.launch { state.scrollToPage(2) } },
+                    backOnClick = { scope.launch { state.scrollToPage(0) } },
+                    animateForward = true
+                ) {
                     Icon(Icons.Filled.Refresh, contentDescription = "Restart")
                 }
             }
 
             2 -> {
-                BaseTutorial("Press the info button to see how each block functions") {
+                BaseTutorial("This button will show how each block functions",
+                    backOnClick = { scope.launch { state.scrollToPage(0) } }
+                ) {
                     Icon(Icons.Filled.Info, contentDescription = "Info")
                 }
             }
@@ -209,6 +248,10 @@ fun TutorialPlayMenuWindow() {
             1 -> {
                 BaseTutorial("Earn more stars to unlock harder difficulties")
             }
+
+            2 -> {
+                BaseTutorial("Tap the gear icon to apply a custom theme")
+            }
         }
     }
 }
@@ -217,8 +260,6 @@ fun TutorialPlayMenuWindow() {
 @Composable
 fun TutorialStageOne(
     progress: Int = 0,
-    backOnClick: (() -> Unit)? = null,
-    forwardOnClick: (() -> Unit)? = null,
 ) {
     val state = rememberPagerState()
     LaunchedEffect(key1 = progress) {
@@ -248,12 +289,17 @@ fun TutorialStageOne(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TutorialStageTwo(progress: Int, backOnClick: (() -> Unit)?, forwardOnClick: (() -> Unit)?) {
+fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
     val state = rememberPagerState()
-    LaunchedEffect(key1 = progress) {
-        delay(175)
-        state.animateScrollToPage(page = progress)
+    LaunchedEffect(state) {
+        // Collect from the pager state a snapshotFlow reading the currentPage
+        snapshotFlow { state.currentPage }.collect { page ->
+           if(page == 2 && progress == 0 && forwardOnClick != null) {
+               forwardOnClick()
+           }
+        }
     }
+    val scope = rememberCoroutineScope()
     HorizontalPager(
         count = 3, state = state, modifier = Modifier
             .fillMaxWidth()
@@ -261,15 +307,31 @@ fun TutorialStageTwo(progress: Int, backOnClick: (() -> Unit)?, forwardOnClick: 
     ) {
         when (it) {
             0 -> {
-                BaseTutorial("This is the Enemy block. It moves twice after ever player move.", forwardOnClick = forwardOnClick) {
+                BaseTutorial(
+                    "This is the Enemy block. It moves twice after ever player move.",
+                    forwardOnClick = { scope.launch { state.scrollToPage(1) } },
+                    animateForward = true
+                ) {
                     EnemyBlock()
                 }
             }
+
             1 -> {
-                BaseTutorial("It can only move closer to the Blue block and always tries to move horizontally first if possible.", forwardOnClick = forwardOnClick, backOnClick = backOnClick)
+                BaseTutorial(
+                    "It can only move closer to the Blue block and always tries to move horizontally first if possible.",
+                    forwardOnClick = {
+                        scope.launch { state.scrollToPage(2) }
+                    },
+                    backOnClick = { scope.launch { state.scrollToPage(0) } },
+                    animateForward = true
+                )
             }
+
             2 -> {
-                BaseTutorial("Don't let it catch you or its game over!", backOnClick = backOnClick)
+                BaseTutorial(
+                    "Don't let it catch you or its game over!",
+                    backOnClick = { scope.launch { state.scrollToPage(1) } }
+                )
             }
         }
     }
@@ -362,7 +424,7 @@ fun TutorialSuccessScreen(
     nextLevelOnClick: () -> Unit, movesUsed: Int, tutorialState: Int
 ) {
     if (movesUsed == 0) return
-    PostLevelScreen() {
+    PostLevelScreen {
         Text(text = stringResource(id = R.string.you_did_it))
         Text(text = stringResource(id = R.string.tutorial_level_completed_in, movesUsed))
         SuccessStars(3)
@@ -370,6 +432,7 @@ fun TutorialSuccessScreen(
             0 -> {
                 FirstWinTutorialWindow()
             }
+
             1 -> {
                 SecondWinTutorialWindow()
             }
@@ -389,7 +452,7 @@ fun TutorialSuccessScreen(
 fun TutorialFailureScreen(
     tryAgainOnClick: () -> Unit,
 ) {
-    PostLevelScreen() {
+    PostLevelScreen {
         Text(text = stringResource(id = R.string.you_died), fontSize = 36.sp)
         FirstLossTutorialWindow()
         Row(
@@ -403,35 +466,64 @@ fun TutorialFailureScreen(
 }
 
 @Composable
-fun PlayerInfo(modifier: Modifier = Modifier) {
-    BaseTutorial("Tap a surrounding square to move", modifier) {
+fun PlayerInfo(
+    modifier: Modifier = Modifier,
+    backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
+    BaseTutorial(
+        "Tap a surrounding square to move",
+        forwardOnClick = forwardOnClick,
+        backOnClick = backOnClick,
+        modifier = modifier
+    ) {
         PlayerBlock()
     }
 }
 
 @Composable
-fun GoalInfo(modifier: Modifier = Modifier) {
+fun GoalInfo(
+    modifier: Modifier = Modifier,
+    backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
     BaseTutorial(
-        "This is the goal block.\nMove the Player Block here\n to complete the level.", modifier
+        "This is the goal block.\nMove the Player Block here\n to complete the level.",
+        forwardOnClick = forwardOnClick,
+        backOnClick = backOnClick,
+        modifier = modifier
     ) {
         GoalBlock()
     }
 }
 
 @Composable
-fun EnemyInfo1(modifier: Modifier = Modifier) {
+fun EnemyInfo1(
+    modifier: Modifier = Modifier,
+    backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
     BaseTutorial(
         "This is the Enemy block. It moves twice after ever player move.",
-        modifier
+        forwardOnClick = forwardOnClick,
+        backOnClick = backOnClick,
+        modifier = modifier
     ) {
         EnemyBlock()
     }
 }
+
 @Composable
-fun EnemyInfo2(modifier: Modifier = Modifier) {
+fun EnemyInfo2(
+    modifier: Modifier = Modifier,
+    backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
     BaseTutorial(
-        "It can only move closer to the Blue block and always tries to move horizontally first if possible. Don't let it catch you or it's game over!",
-        modifier
+        "It can only move closer to you and tries to move horizontally first if possible.",
+        forwardOnClick = forwardOnClick,
+        backOnClick = backOnClick,
+        modifier = modifier
     ) {
         EnemyBlock()
     }
@@ -439,19 +531,64 @@ fun EnemyInfo2(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun UnmovableInfo(modifier: Modifier = Modifier) {
+fun EnemyInfo3(
+    modifier: Modifier = Modifier,
+    backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
     BaseTutorial(
-        "This an obstacle. It cannot be moved and blocks both the player and enemy.", modifier
+        "Don't let it catch you or it's game over!",
+        forwardOnClick = forwardOnClick,
+        backOnClick = backOnClick,
+        modifier = modifier
+    ) {
+        EnemyBlock()
+    }
+
+}
+
+@Composable
+fun UnmovableInfo(
+    modifier: Modifier = Modifier,
+    backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
+    BaseTutorial(
+        "This an obstacle. It cannot be moved and blocks both the player and enemy.",
+        forwardOnClick = forwardOnClick,
+        backOnClick = backOnClick,
+        modifier = modifier
     ) {
         UnmovableBlock()
     }
 }
 
 @Composable
-fun MovableInfo(modifier: Modifier = Modifier) {
+fun MovableInfo1(
+    modifier: Modifier = Modifier,
+    backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
     BaseTutorial(
-        "This is the Movable block.\nIt can be pushed only by the player.\nPush 2 Movable blocks together\nand they both disappear!",
-        modifier
+        "This is the Movable block.\nIt can be pushed only by the player.",
+        forwardOnClick = forwardOnClick,
+        backOnClick = backOnClick,
+        modifier = modifier
+    ) {
+        MovableBlock()
+    }
+}
+@Composable
+fun MovableInfo2(
+    modifier: Modifier = Modifier,
+    backOnClick: (() -> Unit)? = null,
+    forwardOnClick: (() -> Unit)? = null,
+) {
+    BaseTutorial(
+        "Push two Movable blocks together and they both disappear!",
+        forwardOnClick = forwardOnClick,
+        backOnClick = backOnClick,
+        modifier = modifier
     ) {
         MovableBlock()
     }
@@ -459,19 +596,36 @@ fun MovableInfo(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HelpCard(count: Int, modifier: Modifier = Modifier) {
+fun HelpCard(count: Int, currentCard: Int = 0, modifier: Modifier = Modifier) {
+    val scope = rememberCoroutineScope()
+    val state = rememberPagerState()
+
+    LaunchedEffect(key1 = currentCard) {
+        if(currentCard > 0) state.animateScrollToPage(page = currentCard)
+    }
+
     HorizontalPager(
-        count, modifier = modifier
+        count,
+        state = state,
+        modifier = modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
+        var forwardOnClick: (() -> Unit)? = { scope.launch { state.scrollToPage(it + 1) } }
+        val backOnClick: (() -> Unit) = { scope.launch { state.scrollToPage(it - 1) } }
         when (it) {
-            0 -> PlayerInfo()
-            1 -> GoalInfo()
-            2 -> EnemyInfo1()
-            3 -> EnemyInfo2()
-            4 -> UnmovableInfo()
-            5 -> MovableInfo()
+            0 -> PlayerInfo(forwardOnClick = forwardOnClick)
+            1 -> GoalInfo(forwardOnClick = forwardOnClick, backOnClick = backOnClick)
+            2 -> EnemyInfo1(forwardOnClick = forwardOnClick, backOnClick = backOnClick)
+            3 -> EnemyInfo2(forwardOnClick = forwardOnClick, backOnClick = backOnClick)
+            4 -> EnemyInfo3(forwardOnClick = forwardOnClick, backOnClick = backOnClick)
+            5 -> {
+                if (count <= 6) forwardOnClick = null
+                UnmovableInfo(forwardOnClick = forwardOnClick, backOnClick = backOnClick)
+            }
+
+            6 -> MovableInfo1(backOnClick = backOnClick, forwardOnClick = forwardOnClick)
+            7 -> MovableInfo2(backOnClick = backOnClick)
         }
     }
 }

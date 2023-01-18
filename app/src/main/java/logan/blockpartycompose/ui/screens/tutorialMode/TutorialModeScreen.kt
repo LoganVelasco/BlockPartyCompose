@@ -60,7 +60,7 @@ fun TutorialModeScreen(navController: NavController) {
         if (gameState == GameState.SUCCESS) {
             TutorialSuccessScreen(
                 nextLevelOnClick = {
-                    if(tutorialState!!.first == 4)
+                    if (tutorialState!!.first == 4)
                         navController.popBackStack("welcome", false)
                     tutorialViewModel.nextLevelOnClick { navController.navigate("playMenu") }
                 },
@@ -80,7 +80,7 @@ fun TutorialModeScreen(navController: NavController) {
             movesUsed = gamePlayState!!.movesUsed,
             x = tutorialViewModel.level.x,
             blocks = gamePlayState!!.blocks,
-            isHelpEnabled = infoState?: false,
+            isHelpEnabled = infoState ?: false,
             surroundingBlocks = gamePlayState!!.glowingBlocks,
             tutorialStage = tutorialState!!.first,
             tutorialProgress = tutorialState!!.second,
@@ -123,10 +123,12 @@ fun TutorialMode(
         modifier = Modifier.fillMaxHeight()
     ) {
         TutorialHeader(movesUsed)
-        val padding = if(tutorialStage >= 3) 20.dp else 60.dp
+        val padding = if (tutorialStage >= 3) 20.dp else 60.dp
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(top = padding).fillMaxHeight(.85f)
+            modifier = Modifier
+                .padding(top = padding)
+                .fillMaxHeight(.85f)
         ) {
             TutorialSectionOne(
                 blockClicked = blockClicked,
@@ -135,18 +137,21 @@ fun TutorialMode(
                 surroundingBlocks = surroundingBlocks,
                 direction = direction
             )
-            if(tutorialStage >= 3){
-                Crossfade(targetState = isHelpEnabled, animationSpec = tween(300)) { isHelpEnabled ->
+            if (tutorialStage >= 3) {
+                Crossfade(
+                    targetState = isHelpEnabled,
+                    animationSpec = tween(300)
+                ) { isHelpEnabled ->
                     if (isHelpEnabled) {
-                        HelpCard(5)
+                        HelpCard(6)
                     } else
-                        TutorialWindow(tutorialStage, tutorialProgress, backOnClick, forwardOnClick)
+                        TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
                 }
-            }else{
-                TutorialWindow(tutorialStage, tutorialProgress, backOnClick, forwardOnClick)
-                }
+            } else {
+                TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
+            }
         }
-        if(tutorialStage >= 3)
+        if (tutorialStage >= 3)
             LevelFooter(undoClicked, restartClicked, infoClicked)
         else
             Spacer(modifier = Modifier.height(50.dp))
@@ -156,15 +161,15 @@ fun TutorialMode(
 
 @Composable
 fun TutorialHeader(movesUsed: Int) {
-        BaseHeader(
-            middleContent = {
-                Text(
-                    text = stringResource(id = R.string.moves_used, movesUsed),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(10.dp)
-                )
-            })
+    BaseHeader(
+        middleContent = {
+            Text(
+                text = stringResource(id = R.string.moves_used, movesUsed),
+                fontSize = 18.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(10.dp)
+            )
+        })
 }
 
 @Composable

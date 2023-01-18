@@ -10,6 +10,12 @@ plugins {
 android {
     compileSdk 33
 
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+        }
+    }
+
     defaultConfig {
         applicationId "logan.blockpartycompose"
         minSdk 26

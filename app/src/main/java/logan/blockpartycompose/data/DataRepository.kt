@@ -106,6 +106,8 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         )
     }
 
+
+
     fun getLevelsProgress(difficulty: LevelSet): List<Int> {
         return when (difficulty) {
             LevelSet.EASY -> {

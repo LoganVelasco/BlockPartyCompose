@@ -82,9 +82,10 @@ class TutorialModeViewModel @Inject constructor(
     }
 
     fun nextLevelOnClick(navigateToMenu: (() -> Unit)) {
-        _tutorialState.value = _tutorialState.value!!.first + 1 to 0
-        updateTutorialProgress(_tutorialState.value!!.first)
-        if (level.id + 1 >= 4) navigateToMenu()
+        val newProgress = _tutorialState.value!!.first + 1
+        _tutorialState.value = newProgress to 0
+        updateTutorialProgress(newProgress)
+        if (newProgress == 4) navigateToMenu()
         else setupTutorialStage(level.id + 1)
     }
 
@@ -266,17 +267,8 @@ class TutorialModeViewModel @Inject constructor(
 
     private fun stageTwoOnCLick(block: Char, index: Int) {
         when (tutorialState.value!!.second) {
-            0 -> {
-                progressForward()
-                regularOnClick(block, index)
-            }
-
-            1 -> {
-                progressForward()
-                regularOnClick(block, index)
-            }
-
-            2 -> {
+            0 -> {}
+            else -> {
                 regularOnClick(block, index)
             }
         }
@@ -631,7 +623,6 @@ class TutorialModeViewModel @Inject constructor(
     fun getStars(movesUsed: Int): Int {
         return if (movesUsed <= getMinMoves()) 3 else if (movesUsed - 2 <= getMinMoves()) 2 else 1
     }
-
 
     fun infoClicked() {
         if((tutorialState.value?.second ?: 0) == 2)progressForward()

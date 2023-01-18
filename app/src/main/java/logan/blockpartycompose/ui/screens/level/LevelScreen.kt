@@ -43,7 +43,7 @@ fun LevelController(
 ) {
     val state by viewModel.state.observeAsState()
 
-    val infoState by viewModel.isInfoClicked.observeAsState()
+    val infoState by viewModel.infoState.observeAsState()
 
     if (state == null) {
         viewModel.setupLevel(levelSet, name)
@@ -93,7 +93,7 @@ fun LevelController(
                     movesUsed = state!!.movesUsed,
                     x = viewModel.level.x,
                     blocks = state!!.blocks,
-                    isHelpEnabled = infoState ?: false,
+                    infoState = infoState?: 0,
                     infoProgress = viewModel.getInfoProgress(),
                     blockClicked = viewModel::blockClicked,
                     backClicked = { navigation.navigateUp() },
@@ -115,7 +115,7 @@ fun LevelScreen(
     movesUsed: Int,
     x: Int,
     blocks: List<Char>,
-    isHelpEnabled: Boolean = false,
+    infoState: Int = -1,
     infoProgress: Int = 0,
     blockClicked: (Char, Int) -> Unit,
     backClicked: () -> Unit,
@@ -136,9 +136,9 @@ fun LevelScreen(
         ) {
             LevelGrid(blockClicked, x, blocks, direction ?: Direction.DOWN)
             Spacer(modifier = Modifier.height(20.dp))
-            Crossfade(targetState = isHelpEnabled, animationSpec = tween(300)) { isHelpEnabled ->
-                if (isHelpEnabled) {
-                    HelpCard(infoProgress)
+            Crossfade(targetState = infoState != -1, animationSpec = tween(300)) { isInfoEnabled ->
+                if (isInfoEnabled) {
+                    HelpCard(count = infoProgress, currentCard = infoState)
                 } else Spacer(modifier = Modifier.height(175.dp))
             }
         }
