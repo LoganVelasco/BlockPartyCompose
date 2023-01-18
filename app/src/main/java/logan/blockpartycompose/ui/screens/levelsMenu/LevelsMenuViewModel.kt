@@ -21,20 +21,20 @@ class LevelsMenuViewModel @Inject constructor(
 
 
     private fun getLevels(levelSet: LevelSet, context: Context): List<Level> {
-        if(levelSet == LevelSet.CUSTOM)return repo.getCustomLevels(context)
+        if (levelSet == LevelSet.CUSTOM) return repo.getCustomLevels(context)
         return repo.getLevels(levelSet, context)
     }
 
     fun getProgress(levelSet: LevelSet): List<Int> {
-        if(levelSet == LevelSet.CUSTOM)return emptyList()
+        if (levelSet == LevelSet.CUSTOM) return emptyList()
         return repo.getLevelsProgress(levelSet)
     }
 
-    fun deleteCustomLevelTriggered(id: Int, name: String){
+    fun deleteCustomLevelTriggered(id: Int, name: String) {
         _state.value = LevelMenuState(_state.value!!.levels, id, name)
     }
 
-    fun deleteCustomLevel(id: Int, context: Context){
+    fun deleteCustomLevel(id: Int, context: Context) {
         repo.deleteCustomLevel(id, context)
         setupState(LevelSet.CUSTOM, context)
     }

@@ -73,9 +73,9 @@ fun Block(
             .testTag(testTag)
     }
 
-    if(isPulsing){
+    if (isPulsing) {
         val infiniteTransition = rememberInfiniteTransition()
-        val targetColor = when(backgroundColor){
+        val targetColor = when (backgroundColor) {
             Color.Yellow -> Color.Black
             else -> Color.White
         }

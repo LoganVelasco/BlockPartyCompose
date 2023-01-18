@@ -1,17 +1,22 @@
 package logan.blockpartycompose.ui.components
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -20,9 +25,9 @@ import logan.blockpartycompose.R
 
 @Composable
 fun BaseHeader(
+    modifier: Modifier = Modifier,
     startIcon: ImageVector? = null,
     endIcon: ImageVector? = null,
-    modifier: Modifier = Modifier,
     withBorder: Boolean = true,
     middleContent: @Composable () -> Unit,
     firstIconOnclick: () -> Unit = { },

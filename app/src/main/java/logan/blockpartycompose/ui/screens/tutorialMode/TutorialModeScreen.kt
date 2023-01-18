@@ -5,14 +5,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,7 +31,6 @@ import logan.blockpartycompose.ui.screens.level.Direction
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.level.LevelFooter
 import logan.blockpartycompose.ui.screens.level.LevelGrid
-import logan.blockpartycompose.ui.screens.level.LevelHeader
 
 @Composable
 fun TutorialModeScreen(navController: NavController) {
@@ -84,11 +80,8 @@ fun TutorialModeScreen(navController: NavController) {
             surroundingBlocks = gamePlayState!!.glowingBlocks,
             tutorialStage = tutorialState!!.first,
             tutorialProgress = tutorialState!!.second,
-            backOnClick = tutorialViewModel::progressBackward,
             forwardOnClick = tutorialViewModel::progressForward,
             blockClicked = tutorialViewModel::blockClicked,
-            backClicked = { navController.navigateUp() },
-            settingsClicked = { navController.navigateUp() },
             undoClicked = { tutorialViewModel.undoClicked() },
             restartClicked = { tutorialViewModel.tryAgain() },
             infoClicked = { tutorialViewModel.infoClicked() },
@@ -98,7 +91,6 @@ fun TutorialModeScreen(navController: NavController) {
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorialMode(
     movesUsed: Int,
@@ -106,13 +98,10 @@ fun TutorialMode(
     blocks: List<Char>,
     surroundingBlocks: List<Int>,
     isHelpEnabled: Boolean = false,
-    backOnClick: (() -> Unit)? = null,
     forwardOnClick: (() -> Unit)? = null,
     tutorialProgress: Int = 0,
     tutorialStage: Int,
     blockClicked: (Char, Int) -> Unit,
-    backClicked: () -> Unit,
-    settingsClicked: () -> Unit,
     undoClicked: () -> Unit,
     restartClicked: () -> Unit,
     infoClicked: () -> Unit,
@@ -172,11 +161,6 @@ fun TutorialHeader(movesUsed: Int) {
         })
 }
 
-@Composable
-fun TutorialFooter() {
-
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorialSectionOne(
@@ -187,8 +171,4 @@ fun TutorialSectionOne(
     direction: Direction?
 ) {
     LevelGrid(blockClicked, x, blocks, direction ?: Direction.DOWN, surroundingBlocks)
-
-//    "Welcome to Block Party, The object of the game is to move the blue square to the gold square"
-//    "Tap a surrounding block to move"
-//    ""
 }

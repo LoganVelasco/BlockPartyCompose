@@ -1,6 +1,5 @@
 package logan.blockpartycompose.ui.screens.splash
 
-import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -22,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -63,9 +61,11 @@ fun WelcomeScreen(navController: NavController, closeApp: () -> Unit) {
                 repeatMode = RepeatMode.Reverse
             )
         )
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .padding(25.dp)) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(25.dp)
+        ) {
             Text(
                 text = "Welcome to\nBlock Party",
                 textAlign = TextAlign.Center,
@@ -80,13 +80,15 @@ fun WelcomeScreen(navController: NavController, closeApp: () -> Unit) {
         }
         Card(
             modifier = Modifier
-            .padding(start = 25.dp, bottom = 100.dp, end = 25.dp, top = 25.dp)) {
+                .padding(start = 25.dp, bottom = 100.dp, end = 25.dp, top = 25.dp)
+        ) {
             Text(
                 text = stringResource(R.string.tap_anywhere_to_start),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = alpha.sp,
-                modifier = Modifier.background(MaterialTheme.colorScheme.primary)
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.primary)
                     .padding(15.dp)
             )
         }

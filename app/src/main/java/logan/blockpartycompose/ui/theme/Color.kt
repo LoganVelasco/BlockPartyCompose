@@ -68,8 +68,6 @@ val theme_1_dark_scrim = Color(0xFF000000)
 val seed1 = Color(0xFF33658A)
 
 
-
-
 val theme_2_light_primary = Color(0xFF0B6D36)
 val theme_2_light_onPrimary = Color(0xFFFFFFFF)
 val theme_2_light_primaryContainer = Color(0xFF9EF6B0)

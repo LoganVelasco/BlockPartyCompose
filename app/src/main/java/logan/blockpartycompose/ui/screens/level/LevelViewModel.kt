@@ -60,11 +60,11 @@ class LevelViewModel @Inject constructor(
         history.clear()
         history.add(newState)
 
-        if (levelSet == LevelSet.MEDIUM ){
+        if (levelSet == LevelSet.MEDIUM) {
             val cardToDisplay = cardToDisplay()
-            if(cardToDisplay != 0)
+            if (cardToDisplay != 0)
                 _infoState.value = cardToDisplay
-            else if(_infoState.value != -1)
+            else if (_infoState.value != -1)
                 _infoState.value = -1
         }
 
@@ -89,8 +89,8 @@ class LevelViewModel @Inject constructor(
     }
 
     private fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
-        if(difficulty == LevelSet.MEDIUM && name == 10)repo.updateTutorialStage(5)
-            else if(difficulty == LevelSet.MEDIUM && name == 11)repo.updateTutorialStage(6)
+        if (difficulty == LevelSet.MEDIUM && name == 10) repo.updateTutorialStage(5)
+        else if (difficulty == LevelSet.MEDIUM && name == 11) repo.updateTutorialStage(6)
 
         repo.updateLevelProgress(difficulty, name, stars)
     }
@@ -106,7 +106,7 @@ class LevelViewModel @Inject constructor(
         }
         if (level.blocks.indexOf('p') == -1)
             return // Already dead
-        var newState: LevelState? = null
+        val newState: LevelState?
         when (block) {
             enemyBlock -> {
                 return
@@ -183,13 +183,13 @@ class LevelViewModel @Inject constructor(
             if (redStates.isEmpty()) { // red block trapped
                 viewModelScope.launch {
                     delay(100)
-                    _state.value = newState!!
+                    newState.also { _state.value = it }
                     history.add(newState)
                 }
                 return
             }
             viewModelScope.launch {
-                _state.value = newState!!
+                newState.also { _state.value = it }
 
                 redStates.forEachIndexed { index, levelState ->
                     when (index) {
@@ -212,7 +212,7 @@ class LevelViewModel @Inject constructor(
                 history.add(redStates.last())
             }
         } else {
-            _state.value = newState!!
+            newState.also { _state.value = it }
             history.add(newState)
         }
     }
@@ -461,22 +461,13 @@ class LevelViewModel @Inject constructor(
         return if (repo.getDifficultyProgress()[0] >= 15) 8 else 6
     }
 
-    fun updateTutorialProgress(progress: Int) {
-        repo.updateTutorialStage(progress)
-    }
-
     private fun cardToDisplay(): Int {
-        return when(repo.getTutorialStage()) {
+        return when (repo.getTutorialStage()) {
             4 -> 6
             5 -> 7
             else -> 6
         }
     }
-
-    fun getTutorialProgress(): Int {
-        return repo.getTutorialStage()
-    }
-
 }
 
 @Immutable

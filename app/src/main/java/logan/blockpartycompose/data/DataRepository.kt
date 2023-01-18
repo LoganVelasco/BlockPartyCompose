@@ -14,7 +14,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
 
     private val gson = Gson()
     val levelsSets = mutableMapOf<String, List<Level>>()
-    val customFileName = "custom.json"
+    private val customFileName = "custom.json"
 
     fun getNewLevel(x: Int, y: Int): Level {
         return Level(
@@ -34,9 +34,6 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
             '.'
         }
     }
-    fun getLevel(levelSet: LevelSet, id: Int): Level {
-        return levelsSets[levelSet.name]!!.first { it.id == id }
-    }
 
     fun getLevels(difficulty: LevelSet, context: Context): List<Level> {
         if (levelsSets[difficulty.name] != null) return levelsSets[difficulty.name]!!
@@ -49,14 +46,13 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     }
 
     fun getCustomLevels(context: Context): List<Level> {
-//        if (levelsSets[LevelSet.CUSTOM.name] != null) return levelsSets[LevelSet.CUSTOM.name]!!
-        var fileInputStream: FileInputStream? = null
+        val fileInputStream: FileInputStream?
         return try {
             fileInputStream = context.openFileInput(customFileName)
             val inputStreamReader = InputStreamReader(fileInputStream)
             val json = BufferedReader(inputStreamReader).readText()
             if (json.isEmpty()) return emptyList()
-            val levels = gson.fromJson(json, LevelsDTO::class.java).convertToLevels() 
+            val levels = gson.fromJson(json, LevelsDTO::class.java).convertToLevels()
             levelsSets[LevelSet.CUSTOM.name] = levels
             levels
         } catch (e: FileNotFoundException) {
@@ -106,24 +102,27 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
         )
     }
 
-
-
     fun getLevelsProgress(difficulty: LevelSet): List<Int> {
         return when (difficulty) {
             LevelSet.EASY -> {
                 gameData.easyLevelProgress
             }
+
             LevelSet.MEDIUM -> {
                 gameData.mediumLevelProgress
             }
+
             LevelSet.HARD -> {
                 gameData.hardLevelProgress
             }
-            LevelSet.CUSTOM -> TODO()
+
+            LevelSet.CUSTOM -> {
+                emptyList()
+            }
         }
     }
 
-    fun getTutorialStage():Int {
+    fun getTutorialStage(): Int {
         return gameData.tutorialStage
     }
 
@@ -132,14 +131,12 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     }
 
     fun updateLevelProgress(difficulty: LevelSet, level: Int, stars: Int) {
-        val currentStars = getDifficultyProgress().sum()
         gameData.updateProgress(difficulty, level, stars)
-        val newStars = getDifficultyProgress().sum()
     }
 
 
     fun generateId(context: Context): Int {
-        val highestCurrentID = getCustomLevels(context).maxByOrNull { it.id }?.id?: 0
+        val highestCurrentID = getCustomLevels(context).maxByOrNull { it.id }?.id ?: 0
 
         return highestCurrentID + 1
     }
@@ -147,11 +144,12 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     fun getEmptyLayout(x: Int = 6, y: Int = 8): List<Char> {
         return getBlankLayout(x, y)
     }
-    fun getColorScheme():Int{
+
+    fun getColorScheme(): Int {
         return gameData.getColorScheme()
     }
 
-    fun updateColorScheme(colorScheme: Int){
+    fun updateColorScheme(colorScheme: Int) {
         gameData.updateColorScheme(colorScheme)
     }
 }

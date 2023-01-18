@@ -235,7 +235,10 @@ private fun LevelCard(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .background(shape = RectangleShape, color = MaterialTheme.colorScheme.secondaryContainer)
+                .background(
+                    shape = RectangleShape,
+                    color = MaterialTheme.colorScheme.secondaryContainer
+                )
                 .padding(15.dp)
                 .fillMaxWidth()
         ) {
@@ -358,7 +361,7 @@ private fun LevelStars(result: Int, modifier: Modifier) {
     }
 }
 
-enum class LevelSet() {
+enum class LevelSet {
     EASY,
     MEDIUM,
     HARD,

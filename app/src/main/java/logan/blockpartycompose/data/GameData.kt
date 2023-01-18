@@ -14,19 +14,19 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences(context.getString(R.string.levels), Context.MODE_PRIVATE)
 
-    val colorPrefs: SharedPreferences =
+    private val colorPrefs: SharedPreferences =
         context.getSharedPreferences("COLORS", Context.MODE_PRIVATE)
 
     val easyLevelProgress: MutableList<Int>
         get() {
-        return if (!prefs.getString(LevelSet.EASY.name, "").isNullOrEmpty()) {
-            prefs.getString(LevelSet.EASY.name, "")!!.map { it.code - 48 } as MutableList<Int>
-        } else {
-            mutableListOf<Int>().apply {
-                while (this.size <= 10) this.add(0)
+            return if (!prefs.getString(LevelSet.EASY.name, "").isNullOrEmpty()) {
+                prefs.getString(LevelSet.EASY.name, "")!!.map { it.code - 48 } as MutableList<Int>
+            } else {
+                mutableListOf<Int>().apply {
+                    while (this.size <= 10) this.add(0)
+                }
             }
         }
-    }
 
     val mediumLevelProgress: MutableList<Int>
         get() {
@@ -56,9 +56,10 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
             return prefs.getInt("TUTORIAL_STAGE", 0)
         }
 
-    fun updateTutorialStage(stage: Int){
+    fun updateTutorialStage(stage: Int) {
         prefs.edit().putInt("TUTORIAL_STAGE", stage).apply()
     }
+
     private fun updateLevel(
         difficulty: LevelSet,
         currentProgress: String,
@@ -89,21 +90,24 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
             LevelSet.EASY -> {
                 updateLevel(difficulty, currentProgress, level, stars)
             }
+
             LevelSet.MEDIUM -> {
                 updateLevel(difficulty, currentProgress, level - 10, stars)
             }
+
             LevelSet.HARD -> {
                 updateLevel(difficulty, currentProgress, level - 20, stars)
             }
+
             LevelSet.CUSTOM -> {}
         }
     }
 
-    fun getColorScheme():Int{
+    fun getColorScheme(): Int {
         return colorPrefs.getInt("COLORS", 0)
     }
 
-    fun updateColorScheme(colorScheme: Int){
+    fun updateColorScheme(colorScheme: Int) {
         colorPrefs.edit().putInt("COLORS", colorScheme).apply()
     }
 

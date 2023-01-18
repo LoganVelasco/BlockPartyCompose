@@ -4,17 +4,12 @@ import kotlinx.serialization.Serializable
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 
-
-data class LevelInfo(
-    val name: String
-)
-
 data class LevelsDTO(
     val levels: List<LevelDTO>
 ) {
 
     companion object {
-        fun getDTO(levels: List<Level>):LevelsDTO{
+        fun getDTO(levels: List<Level>): LevelsDTO {
             return LevelsDTO(levels.map { LevelDTO.getDTO(it) })
         }
     }
@@ -56,7 +51,7 @@ data class LevelDTO(
             LevelSet.valueOf(levelSet.uppercase()),
             x,
             y,
-            initialBlocks.filter { it != ','  && it != '[' && it != ']' && it != ' ' }.toList(),
+            initialBlocks.filter { it != ',' && it != '[' && it != ']' && it != ' ' }.toList(),
             minMoves
         )
     }
@@ -77,9 +72,7 @@ data class Level(
     var blocks = initialBlocks.toMutableList()
     var movesUsed = 0
     var playerIndex: Int = initialBlocks.indexOf('p')
-//        get() { return blocks.indexOf('p') } <- doesn't work, this needs to be manually updated to avoid new moves effecting ongoing ones
-var enemyIndex: Int = initialBlocks.indexOf('e')
-//        get() { return blocks.indexOf('e') }
+    var enemyIndex: Int = initialBlocks.indexOf('e')
     var goalIndex: Int = initialBlocks.indexOf('g')
 
     fun resetLevel() {
@@ -91,12 +84,6 @@ var enemyIndex: Int = initialBlocks.indexOf('e')
     }
 
 }
-
-@Serializable
-data class Block(
-    var color: BlockColor,
-    val index: Int,
-)
 
 enum class BlockColor(val color: Char) {
     BLUE('p'),

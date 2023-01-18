@@ -27,16 +27,14 @@ import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 fun PlayMenuScreen(navController: NavController) {
     val viewModel: PlayMenuViewModel = hiltViewModel()
     val progress = viewModel.getProgress()
-    val tutorialProgress = viewModel.getTutorialProgress()
-    PlayMenu(navController, progress, tutorialProgress)
 
+    PlayMenu(navController, progress)
 }
 
 @Composable
 private fun PlayMenu(
     navController: NavController,
     progress: List<Int>,
-    tutorialProgress: Int = 0
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,7 +63,7 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
                 Icon(
                     painter = painterResource(id = R.drawable.star),
                     contentDescription = stringResource(R.string.total_star_count),
-                    tint= Color.Unspecified,
+                    tint = Color.Unspecified,
                     modifier = Modifier
                         .scale(.5f)
 //                        .padding(start = 5.dp)

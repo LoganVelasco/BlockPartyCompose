@@ -77,8 +77,7 @@ fun LevelController(
                     movesUsed = state!!.movesUsed,
                     stars = stars,
                     levelName = viewModel.level.name,
-                    minMoves = viewModel.level.minMoves,
-                    isFinalLevel = isFinalLevel
+                    minMoves = viewModel.level.minMoves
                 )
             }
 
@@ -272,8 +271,7 @@ fun SuccessScreen(
     movesUsed: Int,
     levelName: String,
     stars: Int,
-    minMoves: Int,
-    isFinalLevel: Boolean
+    minMoves: Int
 ) {
     if (movesUsed == 0) return
     PostLevelScreen(backClicked = backClicked) {
@@ -310,7 +308,7 @@ fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit) {
 @Composable
 fun PostLevelScreen(
     backClicked: (() -> Unit)? = null,
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     Card(
         modifier = Modifier

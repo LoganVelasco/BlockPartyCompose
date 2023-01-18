@@ -77,7 +77,7 @@ fun CustomLevelScreen(
                 movesUsed = state!!.movesUsed,
                 x = levelsViewModel.level.x,
                 blocks = state!!.blocks,
-                infoState = infoState?: -1,
+                infoState = infoState ?: -1,
                 infoProgress = 6,
                 blockClicked = levelsViewModel::blockClicked,
                 backClicked = backClicked,

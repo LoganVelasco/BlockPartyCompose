@@ -19,9 +19,9 @@ import logan.blockpartycompose.ui.screens.tutorialMode.TutorialModeScreen
 
 @ExperimentalFoundationApi
 @Composable
-fun Navigation(isUpdated: Boolean, resetApp: () -> Unit, closeApp:() -> Unit) {
+fun Navigation(isUpdated: Boolean, resetApp: () -> Unit, closeApp: () -> Unit) {
     val navController = rememberNavController()
-    val start = if(isUpdated) "refreshedSettings" else "welcome"
+    val start = if (isUpdated) "refreshedSettings" else "welcome"
     NavHost(navController = navController, startDestination = start) {
         composable("welcome") { WelcomeScreen(navController, closeApp) }
         composable("tutorialMode") { TutorialModeScreen(navController) }
@@ -36,13 +36,23 @@ fun Navigation(isUpdated: Boolean, resetApp: () -> Unit, closeApp:() -> Unit) {
             navController.navigate("settings")
         }
         composable("levelBuilder") { LevelBuilderScreen(navController) }
-        composable("levelBuilder/{id}") { LevelBuilderScreen(navController,  it.arguments?.getString("id")!!.toInt()) }
+        composable("levelBuilder/{id}") {
+            LevelBuilderScreen(
+                navController,
+                it.arguments?.getString("id")!!.toInt()
+            )
+        }
         composable("easy") { LevelsMenuScreen(navController, EASY) }
         composable("medium") { LevelsMenuScreen(navController, MEDIUM) }
         composable("hard") { LevelsMenuScreen(navController, HARD) }
         composable("custom") { LevelsMenuScreen(navController, CUSTOM) }
         composable("customLevelPlayer") { CustomLevelScreen(navController) }
-        composable("customLevelPlayer/{id}") { CustomLevelScreen(navController, it.arguments?.getString("id")!!.toInt()) }
+        composable("customLevelPlayer/{id}") {
+            CustomLevelScreen(
+                navController,
+                it.arguments?.getString("id")!!.toInt()
+            )
+        }
         composable("levels/{levelSet}") {
             LevelsMenuScreen(
                 navController,

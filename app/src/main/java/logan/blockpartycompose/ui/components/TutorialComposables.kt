@@ -241,7 +241,8 @@ fun TutorialPlayMenuWindow() {
     LaunchedEffect(key1 = getShownHint) {
         state.scrollToPage(page = getShownHint)
     }
-    HorizontalPager(state = state,
+    HorizontalPager(
+        state = state,
         count = 5, modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
@@ -262,6 +263,7 @@ fun TutorialPlayMenuWindow() {
             3 -> {
                 BaseTutorial("More Levels coming soon!")
             }
+
             4 -> {
                 BaseTutorial("Tired of hints? Disable this window in settings")
             }
@@ -628,7 +630,11 @@ fun MovableInfo2(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HelpCard(count: Int, currentCard: Int = 0, modifier: Modifier = Modifier) {
+fun HelpCard(
+    count: Int,
+    modifier: Modifier = Modifier,
+    currentCard: Int = 0
+) {
     val scope = rememberCoroutineScope()
     val state = rememberPagerState()
 

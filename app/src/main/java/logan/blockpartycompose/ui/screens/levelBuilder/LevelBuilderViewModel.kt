@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.BlockColor
 import logan.blockpartycompose.data.models.Level
-import logan.blockpartycompose.ui.screens.level.LevelState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ class LevelBuilderViewModel @Inject constructor(
     lateinit var level: Level
     private val history = mutableListOf<List<Char>>()
 
-    var saved = false
+    private var saved = false
 
     fun isInProgress(): Boolean {
         if (level.id != -1) {
@@ -34,7 +33,7 @@ class LevelBuilderViewModel @Inject constructor(
         _state.value!!.blocks.toMutableList().forEach {
             if (it != '.' && !saved) return true
         }
-        return  false
+        return false
     }
 
     fun setupNewLevel(x: Int = 6, y: Int = 8) {
@@ -52,6 +51,7 @@ class LevelBuilderViewModel @Inject constructor(
         )
     }
 
+    // Block parameter needed for level grid onClick, but is unused for level builder
     fun blockClicked(block: Char, index: Int) {
         val color = _state.value!!.selectedBlockColor
         if (color != null) {
@@ -60,7 +60,7 @@ class LevelBuilderViewModel @Inject constructor(
             saved = false
             history.add(blocks.toList())
             _state.postValue(
-                LevelBuilderState(blocks, color, isEdit =  level.id != -1)
+                LevelBuilderState(blocks, color, isEdit = level.id != -1)
             )
         }
     }
@@ -74,11 +74,15 @@ class LevelBuilderViewModel @Inject constructor(
     }
 
     fun undoClicked() {
-        if(history.size < 2) return
+        if (history.size < 2) return
         history.removeLast()
         level.blocks = history.last().toMutableList()
         _state.postValue(
-            LevelBuilderState(history.last(), _state.value?.selectedBlockColor, isEdit =  level.id != -1)
+            LevelBuilderState(
+                history.last(),
+                _state.value?.selectedBlockColor,
+                isEdit = level.id != -1
+            )
         )
     }
 
@@ -97,11 +101,19 @@ class LevelBuilderViewModel @Inject constructor(
     fun triggerSaveDialog() {
         val blocks = _state.value!!.blocks.toMutableList()
         _state.postValue(
-            LevelBuilderState(blocks, selectedBlockColor = null, saved = true, isEdit = level.id != -1)
+            LevelBuilderState(
+                blocks,
+                selectedBlockColor = null,
+                saved = true,
+                isEdit = level.id != -1
+            )
         )
     }
 
-    fun saveClicked(context: Context, name: String = level.name) { // bad logic shouldn't need to pass blocks
+    fun saveClicked(
+        context: Context,
+        name: String = level.name
+    ) { // bad logic shouldn't need to pass blocks
         if (level.id == -1)
             level.id = repo.generateId(context)
 
@@ -149,7 +161,7 @@ class LevelBuilderViewModel @Inject constructor(
         )
     }
 
-    fun setupExistingLevel(id: Int, context:Context) {
+    fun setupExistingLevel(id: Int, context: Context) {
         repo.getCustomLevels(context).find { level -> level.id == id }
             ?.let { setupExistingLevel(it) }
     }

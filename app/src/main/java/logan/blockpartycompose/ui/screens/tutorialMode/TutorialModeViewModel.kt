@@ -16,7 +16,6 @@ import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.GameUtils
 import javax.inject.Inject
-import kotlin.math.absoluteValue
 
 @HiltViewModel
 class TutorialModeViewModel @Inject constructor(
@@ -40,13 +39,8 @@ class TutorialModeViewModel @Inject constructor(
 
     private val playerBlock = 'p'
     private val enemyBlock = 'e'
-    private val movableBlock = 'm'
     private val goalBlock = 'g'
     private val emptyBlock = '.'
-
-//    fun getTutorialProgress() {
-//        _tutorialState.value = repo.getTutorialStage()
-//    }
 
     private fun updateTutorialProgress(stage: Int) {
         repo.updateTutorialStage(stage)
@@ -92,7 +86,7 @@ class TutorialModeViewModel @Inject constructor(
     private fun setupLevel(id: Int) {
         level = getLevel(id)
         level.resetLevel()
-        val blocks = if (id !=1  && id !=2) getSurroundingBlocks() else emptyList()
+        val blocks = if (id != 1 && id != 2) getSurroundingBlocks() else emptyList()
         val newState = GamePlayState(
             blocks = level.initialBlocks,
             glowingBlocks = blocks,
@@ -106,19 +100,6 @@ class TutorialModeViewModel @Inject constructor(
         history.add(newState)
     }
 
-    fun setupLevel(newLevel: Level) {
-        level = newLevel
-        val newState = GamePlayState(
-            blocks = newLevel.blocks.toList(),
-            movesUsed = 0,
-            gameState = GameState.IN_PROGRESS
-        )
-        _state.postValue(
-            newState
-        )
-        history.clear()
-        history.add(newState)
-    }
 
     private fun getSurroundingBlocks(): List<Int> {
         val list = mutableListOf<Int>()
@@ -154,7 +135,7 @@ class TutorialModeViewModel @Inject constructor(
         return tutorialLevels.find { it.id == id } ?: tutorialLevels[0]
     }
 
-    fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
+    private fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
         repo.updateLevelProgress(difficulty, name, stars)
     }
 
@@ -190,8 +171,7 @@ class TutorialModeViewModel @Inject constructor(
             if (level.enemyIndex != -1) redMove(newState)
             else
                 _state.value = newState
-        }
-        else if (block == goalBlock) {
+        } else if (block == goalBlock) {
             val direction = movePlayerBlock(index)
             _state.value =
                 GamePlayState(
@@ -262,109 +242,19 @@ class TutorialModeViewModel @Inject constructor(
         }
     }
 
-//    private fun stageOneOnCLick(block: Char, index: Int) {
-//            glowBlocksOnClick(block, index)
-//    }
-//
-//
-//    private fun stageTwoOnCLick(block: Char, index: Int) {
-//        if (tutorialState.value!!.second != 0) glowBlocksOnClick(block, index)
-//    }
-
-    private fun stageThreeOnCLick(block: Char, index: Int) {
-        when (tutorialState.value!!.second) {
-            0 -> {
-            }
-
-            1 -> {
-                regularOnClick(block, index)
-            }
-        }
-    }
-
-    private fun regularOnClick(block: Char, index: Int) {
-        if (!GameUtils.isTouching(
-                index,
-                level.playerIndex,
-                level.x
-            )
-        ) {
-            return // Invalid block clicked
-        }
-        if (level.blocks.indexOf('p') == -1)
-            return // Already dead
-        var newState: GamePlayState? = null
-        when (block) {
-            enemyBlock -> {
-                return
-            }
-
-            goalBlock -> {
-                val direction = movePlayerBlock(index)
-                _state.value =
-                    GamePlayState(
-                        blocks = level.blocks,
-                        movesUsed = ++level.movesUsed,
-                        gameState = level.state,
-                        direction = direction
-                    )
-
-                viewModelScope.launch {
-                    delay(200)
-                    level.blocks[index] = goalBlock
-                    _state.value = GamePlayState(
-                        blocks = level.blocks,
-                        movesUsed = level.movesUsed,
-                        gameState = level.state,
-                        direction = direction
-                    )
-
-                    delay(400)
-                    if (level.state != GameState.FAILED) {
-                        level.state = GameState.SUCCESS
-                        updateLevel(level.levelSet, level.id, getStars(level.movesUsed))
-                    }
-                    history.clear()
-                    _state.value = GamePlayState(
-                        blocks = level.blocks,
-                        movesUsed = level.movesUsed,
-                        gameState = level.state,
-                        direction = direction
-                    )
-                }
-                return
-            }
-
-            emptyBlock -> {
-                val direction = movePlayerBlock(index)
-                newState = GamePlayState(
-                    blocks = level.blocks.toList(),
-                    movesUsed = ++level.movesUsed,
-                    gameState = level.state,
-                    direction = direction
-                )
-            }
-
-            else -> {
-                return
-            }
-        }
-        redMove(newState)
-    }
-
     private fun redMove(newState: GamePlayState) {
         if (GameUtils.shouldEnemyAttemptMove(level.enemyIndex, level.state)) {
             val redStates = handleEnemyTurn() // gets list of red moves to display
             if (redStates.isEmpty()) { // red block trapped
                 viewModelScope.launch {
                     delay(100)
-                    _state.value = newState!!
+                    newState.also { _state.value = it }
                     history.add(newState)
                 }
                 return
             }
             viewModelScope.launch {
-                _state.value = newState!!
+                newState.also { _state.value = it }
 
                 redStates.forEachIndexed { index, levelState ->
                     when (index) {
@@ -381,8 +271,9 @@ class TutorialModeViewModel @Inject constructor(
                             return@launch
                         }
                         if (history.size < 2 || history.last().blocks.indexOf('e') != level.enemyIndex) { // don't post red move if red stuck
-                            if(newState.glowingBlocks.isNotEmpty() ){
-                                levelState.glowingBlocks = if( newState.glowingBlocks.contains(level.goalIndex)) newState.glowingBlocks else getSurroundingBlocks()
+                            if (newState.glowingBlocks.isNotEmpty()) {
+                                levelState.glowingBlocks =
+                                    if (newState.glowingBlocks.contains(level.goalIndex)) newState.glowingBlocks else getSurroundingBlocks()
                             }
                             _state.value = levelState
                         }
@@ -391,7 +282,7 @@ class TutorialModeViewModel @Inject constructor(
                 history.add(redStates.last())
             }
         } else {
-            _state.value = newState!!
+            newState.also { _state.value = it }
             history.add(newState)
         }
     }
@@ -456,35 +347,6 @@ class TutorialModeViewModel @Inject constructor(
         level.blocks[oldIndex] = emptyBlock
         level.playerIndex = index
         return GameUtils.getDirection(oldIndex, index, level.x)
-    }
-
-    private fun handleMovableBlockMove(index: Int): Boolean {
-        val difference = (index - level.playerIndex)
-        val newIndex = index + difference
-
-        if (newIndex < 0 || newIndex > level.blocks.size - 1) return false
-
-        if (GameUtils.isEdge(index, level.x) && GameUtils.isEdge(
-                newIndex,
-                level.x
-            ) && difference.absoluteValue == 1
-        ) return false
-
-        return when (level.blocks[newIndex]) {
-            emptyBlock -> {
-                level.blocks[newIndex] = movableBlock
-                true
-            }
-
-            movableBlock -> {
-                level.blocks[newIndex] = emptyBlock
-                true
-            }
-
-            else -> {
-                false
-            }
-        }
     }
 
     private fun moveEnemyBlock(): Direction? {
@@ -625,7 +487,7 @@ class TutorialModeViewModel @Inject constructor(
         return level.minMoves
     }
 
-    fun getStars(movesUsed: Int): Int {
+    private fun getStars(movesUsed: Int): Int {
         return if (movesUsed <= getMinMoves()) 3 else if (movesUsed - 2 <= getMinMoves()) 2 else 1
     }
 
@@ -645,10 +507,6 @@ class TutorialModeViewModel @Inject constructor(
             )
         }
         _tutorialState.value = tutorialState.value!!.first to tutorialState.value!!.second + 1
-    }
-
-    fun progressBackward() {
-        _tutorialState.value = tutorialState.value!!.first to tutorialState.value!!.second - 1
     }
 
     @Immutable

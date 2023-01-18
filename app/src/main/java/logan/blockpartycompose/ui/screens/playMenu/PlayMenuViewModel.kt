@@ -18,24 +18,7 @@ class PlayMenuViewModel @Inject constructor(
         state = repo.getTutorialStage()
     }
 
-    private var _flags = MutableLiveData<List<Boolean>>()
-    val flags: LiveData<List<Boolean>> = _flags
-
     fun getProgress(): List<Int> {
         return repo.getDifficultyProgress()
     }
-
-//    fun isTutorialMode():Boolean {
-//        return getTutorialProgress() == 0
-//    }
-
-    fun getTutorialProgress(): Int {
-        return state
-    }
-
-    fun updateTutorialProgress(progress: Int) {
-        repo.updateTutorialStage(progress)
-    }
-
-
 }

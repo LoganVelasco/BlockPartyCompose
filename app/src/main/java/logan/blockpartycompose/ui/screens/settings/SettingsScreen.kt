@@ -16,11 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -31,17 +27,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import logan.blockpartycompose.R
-import logan.blockpartycompose.ui.components.BaseHeader
 import logan.blockpartycompose.ui.theme.theme_1_dark_primary
 import logan.blockpartycompose.ui.theme.theme_1_light_primary
 import logan.blockpartycompose.ui.theme.theme_2_dark_primary
@@ -56,15 +46,14 @@ fun SettingsScreen(navController: NavController) {
     val restartApp by viewModel.restartApp.observeAsState()
 
     if (restartApp == true) restartApp(navController)
-    val resetProgressOnClick = viewModel::resetProgress
     val updateColorsOnClick = viewModel::updateColorScheme
-    Settings(navController, theme, resetProgressOnClick, updateColorsOnClick)
+    Settings(navController, theme, updateColorsOnClick)
 }
+
 @Composable
 fun Settings(
     navController: NavController,
     currentTheme: Int,
-    resetProgressOnClick: () -> Unit,
     updateColorsOnClick: (colorScheme: Int) -> Unit
 ) {
     Column(
@@ -79,15 +68,6 @@ fun Settings(
         )
         Spacer(modifier = Modifier.height(10.dp))
         ColorPicker(currentTheme = currentTheme, updateColorsOnClick)
-        Spacer(modifier = Modifier.height(50.dp))
-        Button(
-            onClick = resetProgressOnClick,
-        ) {
-            Text(
-                text = "Clear all progress",
-                fontSize = 12.sp
-            )
-        }
     }
 
 }
