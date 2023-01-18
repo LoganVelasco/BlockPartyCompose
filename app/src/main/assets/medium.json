@@ -44,51 +44,6 @@
       "x": "6",
       "y": "8",
       "initialBlocks": "ge................xxp.x....m.m.................."
-    },
-    {
-      "id": "15",
-      "name": "Level 6",
-      "levelSet": "Medium",
-      "minMoves": "28",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
-    },
-    {
-      "id": "16",
-      "name": "Level 7",
-      "levelSet": "Medium",
-      "minMoves": "23",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": ".........p....x.....m....mx................eg..."
-    },
-    {
-      "id": "17",
-      "name": "Level 8",
-      "levelSet": "Medium",
-      "minMoves": "17",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": "........m.....m.....m.....m......mx.....xpe..gx."
-    },
-    {
-      "id": "18",
-      "name": "Level 9",
-      "levelSet": "Medium",
-      "minMoves": "4",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": "p........m...m..x...m....m....m...m.....m....exg"
-    },
-    {
-      "id": "19",
-      "name": "Level 10",
-      "levelSet": "Medium",
-      "minMoves": "38",
-      "x": "6",
-      "y": "8",
-      "initialBlocks": "mm..m.mp..m.....m.m......m.............xx....xeg"
     }
-  ]
+    ]
 }

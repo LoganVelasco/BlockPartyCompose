@@ -1,7 +1,7 @@
 {
   "levels": [
     {
-      "id": "20",
+      "id": "15",
       "name": "Level 1",
       "levelSet": "Hard",
       "minMoves": "23",
@@ -10,7 +10,7 @@
       "initialBlocks": ".........p....x.....m....mx................eg..."
     },
     {
-      "id": "21",
+      "id": "16",
       "name": "Level 2",
       "levelSet": "Hard",
       "minMoves": "28",
@@ -19,7 +19,7 @@
       "initialBlocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
     },
     {
-      "id": "22",
+      "id": "17",
       "name": "Level 3",
       "levelSet": "Hard",
       "minMoves": "17",
@@ -28,7 +28,7 @@
       "initialBlocks": "........m.....m.....m.....m......mx.....xpe..gx."
     },
     {
-      "id": "23",
+      "id": "18",
       "name": "Level 4",
       "levelSet": "Hard",
       "minMoves": "4",
@@ -37,8 +37,8 @@
       "initialBlocks": "p........m...m..x...m....m....m...m.....m....exg"
     },
     {
-      "id": "24",
-      "name": "Level 15",
+      "id": "19",
+      "name": "Level 5",
       "levelSet": "Hard",
       "minMoves": "38",
       "x": "6",

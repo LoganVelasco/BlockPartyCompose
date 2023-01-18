@@ -469,7 +469,7 @@ class LevelViewModel @Inject constructor(
         return when(repo.getTutorialStage()) {
             4 -> 6
             5 -> 7
-            else -> 0
+            else -> 6
         }
     }
 

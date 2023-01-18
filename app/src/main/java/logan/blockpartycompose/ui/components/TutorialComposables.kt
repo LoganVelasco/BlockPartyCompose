@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,10 +25,10 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -65,8 +66,8 @@ fun BaseTutorial(
 ) {
 
     val configuration = LocalConfiguration.current
-    Card(
-//        border = BorderStroke(5.dp, Color.DarkGray),
+    OutlinedCard(
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
             .width(configuration.screenWidthDp.dp)
@@ -78,7 +79,7 @@ fun BaseTutorial(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.tertiaryContainer)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxHeight()
         ) {
             if (forwardOnClick != null || backOnClick != null) Spacer(modifier = Modifier.height(25.dp))
@@ -88,7 +89,7 @@ fun BaseTutorial(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
                     .height(IntrinsicSize.Min)
                     .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
             ) {
@@ -101,7 +102,7 @@ fun BaseTutorial(
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
                     text = description,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
             if (forwardOnClick != null || backOnClick != null) {
@@ -235,8 +236,13 @@ fun TutorialStageFour(infoProgress: Int) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialPlayMenuWindow() {
-    HorizontalPager(
-        count = 2, modifier = Modifier
+    val state = rememberPagerState()
+    val getShownHint = (0..4).random()
+    LaunchedEffect(key1 = getShownHint) {
+        state.scrollToPage(page = getShownHint)
+    }
+    HorizontalPager(state = state,
+        count = 5, modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
@@ -251,6 +257,13 @@ fun TutorialPlayMenuWindow() {
 
             2 -> {
                 BaseTutorial("Tap the gear icon to apply a custom theme")
+            }
+
+            3 -> {
+                BaseTutorial("More Levels coming soon!")
+            }
+            4 -> {
+                BaseTutorial("Tired of hints? Disable this window in settings")
             }
         }
     }
@@ -294,9 +307,9 @@ fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
     LaunchedEffect(state) {
         // Collect from the pager state a snapshotFlow reading the currentPage
         snapshotFlow { state.currentPage }.collect { page ->
-           if(page == 2 && progress == 0 && forwardOnClick != null) {
-               forwardOnClick()
-           }
+            if (page == 2 && progress == 0 && forwardOnClick != null) {
+                forwardOnClick()
+            }
         }
     }
     val scope = rememberCoroutineScope()
@@ -344,20 +357,22 @@ fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
     LaunchedEffect(state) {
         // Collect from the pager state a snapshotFlow reading the currentPage
         snapshotFlow { state.currentPage }.collect { page ->
-            if(page == 1 && progress == 0 && forwardOnClick != null) {
+            if (page == 1 && progress == 0 && forwardOnClick != null) {
                 forwardOnClick()
             }
         }
     }
     val scope = rememberCoroutineScope()
-    HorizontalPager(state = state,
+    HorizontalPager(
+        state = state,
         count = 2, modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
         when (it) {
             0 -> {
-                BaseTutorial("This an obstacle. It cannot be moved and blocks both the player and enemy.",
+                BaseTutorial(
+                    "This an obstacle. It cannot be moved and blocks both the player and enemy.",
                     forwardOnClick = { scope.launch { state.scrollToPage(1) } },
                     animateForward = true
                 ) {
@@ -439,7 +454,10 @@ fun TutorialSuccessScreen(
     if (movesUsed == 0) return
     PostLevelScreen {
         Text(text = stringResource(id = R.string.you_did_it), fontSize = 36.sp)
-        Text(text = stringResource(id = R.string.tutorial_level_completed_in, movesUsed), fontSize = 26.sp)
+        Text(
+            text = stringResource(id = R.string.tutorial_level_completed_in, movesUsed),
+            fontSize = 26.sp
+        )
         SuccessStars(3)
         when (tutorialState) {
             0 -> {
@@ -591,6 +609,7 @@ fun MovableInfo1(
         MovableBlock()
     }
 }
+
 @Composable
 fun MovableInfo2(
     modifier: Modifier = Modifier,
@@ -614,7 +633,7 @@ fun HelpCard(count: Int, currentCard: Int = 0, modifier: Modifier = Modifier) {
     val state = rememberPagerState()
 
     LaunchedEffect(key1 = currentCard) {
-        if(currentCard > 0) state.animateScrollToPage(page = currentCard)
+        if (currentCard > 0) state.scrollToPage(page = currentCard)
     }
 
     HorizontalPager(

@@ -47,7 +47,7 @@ private fun PlayMenu(
     ) {
         MenuHeader(navController, progress.sum())
         MenuDifficulties(navController, progress)
-        if (tutorialProgress <= 4) TutorialPlayMenuWindow()
+        TutorialPlayMenuWindow()
         MenuFooter(navController)
     }
 }
@@ -156,13 +156,13 @@ private fun DifficultyButton(
             }
 
             LevelSet.MEDIUM -> {
-                if (totalStars >= 15) EnabledDifficulty(progress, onClick, difficulty.name)
-                else DisabledDifficulty(requirement = 15, difficulty.name)
+                if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name, 15)
+                else DisabledDifficulty(requirement = 30, difficulty.name)
             }
 
             LevelSet.HARD -> {
-                if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name, 15)
-                else DisabledDifficulty(requirement = 30, difficulty.name)
+                if (totalStars >= 45) EnabledDifficulty(progress, onClick, difficulty.name, 15)
+                else DisabledDifficulty(requirement = 45, difficulty.name)
             }
 
             LevelSet.CUSTOM -> {}

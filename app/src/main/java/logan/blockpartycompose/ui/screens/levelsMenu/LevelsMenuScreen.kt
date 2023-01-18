@@ -220,7 +220,7 @@ private fun LevelCard(
     deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Card(
-//        border = BorderStroke(5.dp, Color.DarkGray),// TODO: make dynamic
+        border = BorderStroke(5.dp, MaterialTheme.colorScheme.outline),// TODO: make dynamic
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -235,7 +235,7 @@ private fun LevelCard(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .background(shape = RectangleShape, color = MaterialTheme.colorScheme.primaryContainer)
+                .background(shape = RectangleShape, color = MaterialTheme.colorScheme.secondaryContainer)
                 .padding(15.dp)
                 .fillMaxWidth()
         ) {
@@ -265,7 +265,7 @@ private fun LevelCard(
                     text = level.name.uppercase(Locale("us")),
                     fontSize = 32.sp,
                     fontStyle = FontStyle.Italic,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
 
             Spacer(modifier = Modifier.height(20.dp))

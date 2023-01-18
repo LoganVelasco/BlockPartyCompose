@@ -28,7 +28,7 @@ fun BaseHeader(
     firstIconOnclick: () -> Unit = { },
     endIconOnclick: () -> Unit = { }
 ) {
-    if (withBorder) modifier.then(Modifier.border(2.dp, Color.DarkGray, RectangleShape))// TODO: Make dynamic
+    if (withBorder) modifier.then(Modifier.border(2.dp, MaterialTheme.colorScheme.outline, RectangleShape))// TODO: Make dynamic
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

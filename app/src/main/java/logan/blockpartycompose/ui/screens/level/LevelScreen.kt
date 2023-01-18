@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -182,7 +183,7 @@ fun LevelGrid(
             contentPadding = PaddingValues(5.dp),
             modifier = Modifier
                 .padding(15.dp)
-                .border(2.dp, MaterialTheme.colorScheme.outline)
+                .border(2.dp, MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(2.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .fillMaxWidth()
                 .testTag(stringResource(id = R.string.level))
