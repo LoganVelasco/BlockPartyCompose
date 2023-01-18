@@ -172,7 +172,7 @@ fun TutorialWindow(
         }
 
         2 -> {
-            TutorialStageThree()
+            TutorialStageThree(tutorialProgress, forwardOnClick)
         }
 
         3 -> {
@@ -339,15 +339,28 @@ fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TutorialStageThree() {
-    HorizontalPager(
+fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
+    val state = rememberPagerState()
+    LaunchedEffect(state) {
+        // Collect from the pager state a snapshotFlow reading the currentPage
+        snapshotFlow { state.currentPage }.collect { page ->
+            if(page == 1 && progress == 0 && forwardOnClick != null) {
+                forwardOnClick()
+            }
+        }
+    }
+    val scope = rememberCoroutineScope()
+    HorizontalPager(state = state,
         count = 2, modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
         when (it) {
             0 -> {
-                BaseTutorial("This an obstacle. It cannot be moved and blocks both the player and enemy.") {
+                BaseTutorial("This an obstacle. It cannot be moved and blocks both the player and enemy.",
+                    forwardOnClick = { scope.launch { state.scrollToPage(1) } },
+                    animateForward = true
+                ) {
                     UnmovableBlock()
                 }
             }
@@ -425,8 +438,8 @@ fun TutorialSuccessScreen(
 ) {
     if (movesUsed == 0) return
     PostLevelScreen {
-        Text(text = stringResource(id = R.string.you_did_it))
-        Text(text = stringResource(id = R.string.tutorial_level_completed_in, movesUsed))
+        Text(text = stringResource(id = R.string.you_did_it), fontSize = 36.sp)
+        Text(text = stringResource(id = R.string.tutorial_level_completed_in, movesUsed), fontSize = 26.sp)
         SuccessStars(3)
         when (tutorialState) {
             0 -> {

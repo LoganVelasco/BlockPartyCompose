@@ -20,6 +20,14 @@ class GameUtils {
         private const val enemyDelay = 100
 
         fun isTouching(index: Int, index2: Int, x: Int): Boolean {
+            // checks for out of bounds indices
+            if(index < 0 || index2 < 0) return false
+            if(x == 4){
+                if(index >= 24 || index2 >= 24)return false
+            }else{
+                if(index >= 48 || index2 >= 48)return false
+            }
+
             if (isEdge(index2, x))
                 return isValidEdgeMove(index, index2, x)
 

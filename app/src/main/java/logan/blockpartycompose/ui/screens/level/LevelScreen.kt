@@ -276,8 +276,8 @@ fun SuccessScreen(
 ) {
     if (movesUsed == 0) return
     PostLevelScreen(backClicked = backClicked) {
-        Text(text = stringResource(id = R.string.you_did_it))
-        Text(text = stringResource(id = R.string.level_completed_in, levelName, movesUsed))
+        Text(text = stringResource(id = R.string.you_did_it), fontSize = 36.sp)
+        Text(text = stringResource(id = R.string.level_completed_in, levelName, movesUsed), fontSize = 22.sp)
         if (stars < 3) Text(text = stringResource(id = R.string.complete_in, minMoves))
         SuccessStars(stars)
         Row(
