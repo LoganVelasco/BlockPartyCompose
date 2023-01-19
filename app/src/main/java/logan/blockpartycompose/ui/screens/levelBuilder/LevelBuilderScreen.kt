@@ -209,7 +209,7 @@ fun SaveExistingLevelDialog(
     AlertDialog(
         onDismissRequest = closeDialog,
         title = {
-            Text(text = "Would you like to override existing level: $name or create a new copy?")
+            Text(text = stringResource(R.string.override_existing_level, name))
         },
         confirmButton =
         {
@@ -222,17 +222,17 @@ fun SaveExistingLevelDialog(
                     Button(
                         onClick = saveLevel
                     ) {
-                        Text("Override")
+                        Text(stringResource(R.string.override))
                     }
                     Button(
                         onClick = saveNewLevel
                     ) {
-                        Text("Save")
+                        Text(stringResource(R.string.save))
                     }
                     Button(
                         onClick = closeDialog
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             }
@@ -347,20 +347,20 @@ fun LevelBuilderFooter(undoClicked: () -> Unit, playClicked: () -> Unit, saveCli
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_undo_24),
-                contentDescription = "Undo",
+                contentDescription = stringResource(R.string.undo),
             )
         }
         IconButton(
             onClick = { playClicked() },
         ) {
-            Icon(Icons.Filled.PlayArrow, contentDescription = "Play")
+            Icon(Icons.Filled.PlayArrow, contentDescription = stringResource(R.string.play))
         }
         IconButton(
             onClick = { saveClicked() },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_save_24),
-                contentDescription = "Save",
+                contentDescription = stringResource(R.string.save),
             )
         }
     }

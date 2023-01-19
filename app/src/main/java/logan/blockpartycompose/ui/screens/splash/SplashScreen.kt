@@ -67,7 +67,7 @@ fun WelcomeScreen(navController: NavController, closeApp: () -> Unit) {
                 .padding(25.dp)
         ) {
             Text(
-                text = "Welcome to\nBlock Party",
+                text = stringResource(R.string.welcome_to_block_party),
                 textAlign = TextAlign.Center,
                 fontSize = 36.sp,
                 lineHeight = 45.sp,

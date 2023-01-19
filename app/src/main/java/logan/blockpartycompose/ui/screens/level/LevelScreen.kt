@@ -247,18 +247,18 @@ fun LevelFooter(
             Icon(
                 painter = painterResource(id = R.drawable.baseline_undo_24),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                contentDescription = "Undo",
+                contentDescription = stringResource(R.string.undo)
             )
         }
         IconButton(
             onClick = restartClicked,
         ) {
-            Icon(Icons.Filled.Refresh, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "Restart")
+            Icon(Icons.Filled.Refresh, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = stringResource(R.string.restart))
         }
         IconButton(
             onClick = infoClicked,
         ) {
-            Icon(Icons.Filled.Info, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "Info")
+            Icon(Icons.Filled.Info, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = stringResource(R.string.info))
         }
     }
 }

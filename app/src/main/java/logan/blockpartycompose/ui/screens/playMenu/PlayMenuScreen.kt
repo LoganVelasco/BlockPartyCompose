@@ -66,7 +66,6 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
                     tint = Color.Unspecified,
                     modifier = Modifier
                         .scale(.5f)
-//                        .padding(start = 5.dp)
                 )
             }
         },

@@ -48,7 +48,7 @@ fun BaseHeader(
                 onClick = firstIconOnclick,
             ) {
                 Icon(
-                    startIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "Undo", modifier = Modifier
+                    startIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "", modifier = Modifier
                         .scale(1.5f)
                         .padding(10.dp)
                 )
@@ -65,7 +65,7 @@ fun BaseHeader(
             ) {
 
                 Icon(
-                    endIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "Hint", modifier = Modifier
+                    endIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "", modifier = Modifier
                         .scale(1.5f)
                         .padding(10.dp)
                 )

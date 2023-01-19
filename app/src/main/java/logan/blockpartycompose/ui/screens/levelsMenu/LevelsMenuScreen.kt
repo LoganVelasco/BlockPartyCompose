@@ -86,7 +86,7 @@ fun DeletionConfirmationPopup(name: String, delete: () -> Unit, cancel: () -> Un
     AlertDialog(
         onDismissRequest = { },
         title = {
-            Text(text = "Are you sure you want to delete Custom Level: $name")
+            Text(stringResource(R.string.delete_level, name))
         },
         confirmButton =
         {
@@ -99,12 +99,12 @@ fun DeletionConfirmationPopup(name: String, delete: () -> Unit, cancel: () -> Un
                     Button(
                         onClick = cancel
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
                     Button(
                         onClick = delete
                     ) {
-                        Text("Delete")
+                        Text(stringResource(R.string.delete))
                     }
                 }
             }

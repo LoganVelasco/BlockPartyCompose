@@ -9,15 +9,18 @@ import logan.blockpartycompose.ui.screens.level.GameState
 class GameUtils {
 
     companion object {
-        private const val playerBlock = 'p'
-        private const val enemyBlock = 'e'
-        private const val movableBlock = 'm'
-        private const val goalBlock = 'g'
-        private const val emptyBlock = '.'
-        private const val playerSpeed = 350
-        private const val playerDelay = 100
-        private const val enemySpeed = 250
-        private const val enemyDelay = 100
+        const val PLAYER_BLOCK = 'p'
+        const val ENEMY_BLOCK = 'e'
+        const val MOVABLE_BLOCK = 'm'
+        const val UNMOVABLE_BLOCK = 'x'
+        const val GOAL_BLOCK = 'g'
+        const val EMPTY_BLOCK = '.'
+        private const val PLAYER_SPEED = 350
+        private const val PLAYER_DELAY = 100
+        private const val ENEMY_SPEED = 250
+        private const val ENEMY_DELAY = 100
+        val FINAL_LEVELS = listOf(9,14,19)
+        private const val helpCardCount = 6
 
         fun isTouching(index: Int, index2: Int, x: Int): Boolean {
             // checks for out of bounds indices
@@ -83,9 +86,9 @@ class GameUtils {
 
         fun isValidEnemyMove(newIndexType: Char): Boolean {
             return when (newIndexType) {
-                emptyBlock -> true
-                playerBlock -> true
-                goalBlock -> true
+                EMPTY_BLOCK -> true
+                PLAYER_BLOCK -> true
+                GOAL_BLOCK -> true
                 else -> false
             }
         }
@@ -103,19 +106,19 @@ class GameUtils {
             direction: Direction
         ): ContentTransform {
             return when {
-                initialState == emptyBlock && targetState == playerBlock -> { // Grey box turning Blue
+                initialState == EMPTY_BLOCK && targetState == PLAYER_BLOCK -> { // Grey box turning Blue
                     return when (direction) {
                         Direction.LEFT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.End,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -124,14 +127,14 @@ class GameUtils {
                         Direction.UP -> { //G
                             slideInVertically(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height * 2 } with // Blue slide in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         ), shrinkTowards = Alignment.Top
                                     ) // Grey shrink out
                         }
@@ -139,14 +142,14 @@ class GameUtils {
                         Direction.RIGHT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> -height } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.Start,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -154,31 +157,31 @@ class GameUtils {
 
                         Direction.DOWN -> {
                             expandVertically(
-                                animationSpec = tween(playerSpeed, delayMillis = 0),
+                                animationSpec = tween(PLAYER_SPEED, delayMillis = 0),
                                 expandFrom = Alignment.Bottom
                             ) with // Blue expand in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         )
                                     ) // Grey shrink out
                         }
                     }
                 }
 
-                initialState == playerBlock && targetState == emptyBlock -> { // Blue box turning Grey
+                initialState == PLAYER_BLOCK && targetState == EMPTY_BLOCK -> { // Blue box turning Grey
                     return when (direction) {
                         Direction.LEFT -> {
                             expandHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height + height / 2 } with // Grey expand in
                                     slideOutHorizontally(
                                         animationSpec = tween(
-                                            playerSpeed,
+                                            PLAYER_SPEED,
                                             delayMillis = 0
                                         )
                                     ) { height -> -height } // Blue slide out
@@ -187,14 +190,14 @@ class GameUtils {
                         Direction.UP -> {
                             slideInVertically(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height * 2 } with // Grey slide in
                                     slideOutVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         )
                                     ) { height -> height * 2 } // Blue slide out
                         }
@@ -202,13 +205,13 @@ class GameUtils {
                         Direction.RIGHT -> {
                             expandHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> (height + height / 2) * -1 } with // Grey expand in
                                     slideOutHorizontally(
                                         animationSpec = tween(
-                                            playerSpeed,
+                                            PLAYER_SPEED,
                                             delayMillis = 0
                                         )
                                     ) { height -> height } // Blue slide out
@@ -216,13 +219,13 @@ class GameUtils {
 
                         Direction.DOWN -> { //G
                             expandVertically(
-                                animationSpec = tween(playerSpeed, delayMillis = 0),
+                                animationSpec = tween(PLAYER_SPEED, delayMillis = 0),
                                 expandFrom = Alignment.Top
                             ) with // Grey expand in
                                     slideOutVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         )
                                     ) { height -> -height } // Blue slide out
                         }
@@ -230,19 +233,19 @@ class GameUtils {
 
                 }
 
-                initialState == emptyBlock && targetState == enemyBlock -> { // Grey box turning Red
+                initialState == EMPTY_BLOCK && targetState == ENEMY_BLOCK -> { // Grey box turning Red
                     return when (direction) {
                         Direction.LEFT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    enemySpeed,
+                                    ENEMY_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height } + fadeIn() with
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = enemyDelay
+                                            delayMillis = ENEMY_DELAY
                                         ),
                                         shrinkTowards = Alignment.End,
                                         targetWidth = { 0 }) + fadeOut()
@@ -251,14 +254,14 @@ class GameUtils {
                         Direction.UP -> { //G
                             slideInVertically(
                                 animationSpec = tween(
-                                    enemySpeed,
+                                    ENEMY_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height } + fadeIn() with
                                     shrinkVertically(
                                         animationSpec = tween(
-                                            enemySpeed,
-                                            delayMillis = enemyDelay
+                                            ENEMY_SPEED,
+                                            delayMillis = ENEMY_DELAY
                                         ), shrinkTowards = Alignment.Bottom
                                     ) + fadeOut()
                         }
@@ -266,14 +269,14 @@ class GameUtils {
                         Direction.RIGHT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    enemySpeed,
+                                    ENEMY_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> -height } + fadeIn() with
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = enemyDelay
+                                            delayMillis = ENEMY_DELAY
                                         ),
                                         shrinkTowards = Alignment.Start,
                                         targetWidth = { 0 }) + fadeOut()
@@ -281,31 +284,31 @@ class GameUtils {
 
                         Direction.DOWN -> {
                             expandVertically(
-                                animationSpec = tween(enemySpeed, delayMillis = 0),
+                                animationSpec = tween(ENEMY_SPEED, delayMillis = 0),
                                 expandFrom = Alignment.Bottom
                             ) + fadeIn() with
                                     shrinkVertically(
                                         animationSpec = tween(
-                                            enemySpeed,
-                                            delayMillis = enemyDelay
+                                            ENEMY_SPEED,
+                                            delayMillis = ENEMY_DELAY
                                         ), shrinkTowards = Alignment.Bottom
                                     ) + fadeOut()
                         }
                     }
                 }
 
-                initialState == enemyBlock && targetState == emptyBlock -> { // Red box turning Grey
+                initialState == ENEMY_BLOCK && targetState == EMPTY_BLOCK -> { // Red box turning Grey
                     return when (direction) {
                         Direction.LEFT -> {
                             expandHorizontally(
                                 animationSpec = tween(
-                                    enemySpeed * 2,
-                                    delayMillis = enemyDelay
+                                    ENEMY_SPEED * 2,
+                                    delayMillis = ENEMY_DELAY
                                 )
                             ) { height -> height + height / 2 } + fadeIn() with
                                     slideOutHorizontally(
                                         animationSpec = tween(
-                                            enemySpeed * 2,
+                                            ENEMY_SPEED * 2,
                                             delayMillis = 0
                                         )
                                     ) { height -> -height } + fadeOut()
@@ -318,7 +321,7 @@ class GameUtils {
                             ) + fadeIn() with
                                     shrinkVertically(
                                         animationSpec = tween(
-                                            enemySpeed * 2,
+                                            ENEMY_SPEED * 2,
                                             delayMillis = 0
                                         ), shrinkTowards = Alignment.Top
                                     ) + fadeOut()
@@ -327,13 +330,13 @@ class GameUtils {
                         Direction.RIGHT -> {
                             expandHorizontally(
                                 animationSpec = tween(
-                                    enemySpeed * 2,
+                                    ENEMY_SPEED * 2,
                                     delayMillis = 0
                                 )
                             ) { height -> (height + height / 2) * -1 } + fadeIn() with
                                     slideOutHorizontally(
                                         animationSpec = tween(
-                                            enemySpeed * 2,
+                                            ENEMY_SPEED * 2,
                                             delayMillis = 0
                                         )
                                     ) { height -> height } + fadeOut()
@@ -354,19 +357,19 @@ class GameUtils {
                     }
                 }
 
-                initialState == emptyBlock && targetState == movableBlock -> {
+                initialState == EMPTY_BLOCK && targetState == MOVABLE_BLOCK -> {
                     return when (direction) {
                         Direction.LEFT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.End,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -375,14 +378,14 @@ class GameUtils {
                         Direction.UP -> { //G
                             slideInVertically(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height * 2 } with // Blue slide in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         ), shrinkTowards = Alignment.Top
                                     ) // Grey shrink out
                         }
@@ -390,14 +393,14 @@ class GameUtils {
                         Direction.RIGHT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> -height } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.Start,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -405,32 +408,32 @@ class GameUtils {
 
                         Direction.DOWN -> {
                             expandVertically(
-                                animationSpec = tween(playerSpeed, delayMillis = 0),
+                                animationSpec = tween(PLAYER_SPEED, delayMillis = 0),
                                 expandFrom = Alignment.Bottom
                             ) with // Blue expand in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         )
                                     ) // Grey shrink out
                         }
                     }
                 }
 
-                initialState == movableBlock && targetState == emptyBlock -> {
+                initialState == MOVABLE_BLOCK && targetState == EMPTY_BLOCK -> {
                     return when (direction) {
                         Direction.LEFT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> -height * 2 } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.Start,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -439,14 +442,14 @@ class GameUtils {
                         Direction.UP -> { //G
                             slideInVertically(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> -height } with // Blue slide in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         ), shrinkTowards = Alignment.Bottom
                                     ) // Grey shrink out
                         }
@@ -454,47 +457,47 @@ class GameUtils {
                         Direction.RIGHT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height * 2 } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ), shrinkTowards = Alignment.End, targetWidth = { 0 })
                         }
 
                         Direction.DOWN -> {
                             slideInVertically(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height * 2 } with // Blue slide in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         ), shrinkTowards = Alignment.Top
                                     ) // Grey shrink out
                         }
                     }
                 }
 
-                initialState == movableBlock && targetState == playerBlock -> {
+                initialState == MOVABLE_BLOCK && targetState == PLAYER_BLOCK -> {
                     return when (direction) {
                         Direction.LEFT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.End,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -503,14 +506,14 @@ class GameUtils {
                         Direction.UP -> { //G
                             slideInVertically(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height * 2 } with // Blue slide in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         ), shrinkTowards = Alignment.Top
                                     ) // Grey shrink out
                         }
@@ -518,14 +521,14 @@ class GameUtils {
                         Direction.RIGHT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> -height } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.Start,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -533,50 +536,50 @@ class GameUtils {
 
                         Direction.DOWN -> {
                             expandVertically(
-                                animationSpec = tween(playerSpeed, delayMillis = 0),
+                                animationSpec = tween(PLAYER_SPEED, delayMillis = 0),
                                 expandFrom = Alignment.Bottom
                             ) with // Blue expand in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         )
                                     ) // Grey shrink out
                         }
                     }
                 }
 
-                initialState == goalBlock && targetState == enemyBlock -> {
+                initialState == GOAL_BLOCK && targetState == ENEMY_BLOCK -> {
                     slideInVertically { height -> height } + fadeIn() with
                             slideOutVertically { height -> -height } + fadeOut()
 
                 }
 
-                initialState == enemyBlock && targetState == goalBlock -> {
+                initialState == ENEMY_BLOCK && targetState == GOAL_BLOCK -> {
                     scaleIn() + fadeIn() with
                             scaleOut() + fadeOut()
 
                 }
 
-                initialState == playerBlock && targetState == enemyBlock -> { // Kill blue animation
+                initialState == PLAYER_BLOCK && targetState == ENEMY_BLOCK -> { // Kill blue animation
                     scaleIn() + fadeIn() with
                             scaleOut() + fadeOut()
 
                 }
 
-                initialState == goalBlock && targetState == playerBlock -> { // Win Animation
+                initialState == GOAL_BLOCK && targetState == PLAYER_BLOCK -> { // Win Animation
                     return when (direction) {
                         Direction.LEFT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.End,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -585,14 +588,14 @@ class GameUtils {
                         Direction.UP -> { //G
                             slideInVertically(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> height * 2 } with // Blue slide in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         ), shrinkTowards = Alignment.Top
                                     ) // Grey shrink out
                         }
@@ -600,14 +603,14 @@ class GameUtils {
                         Direction.RIGHT -> {
                             slideInHorizontally(
                                 animationSpec = tween(
-                                    playerSpeed,
+                                    PLAYER_SPEED,
                                     delayMillis = 0
                                 )
                             ) { height -> -height } with // Blue slide in
                                     shrinkHorizontally(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerDelay
+                                            delayMillis = PLAYER_DELAY
                                         ),
                                         shrinkTowards = Alignment.Start,
                                         targetWidth = { 0 }) // Grey shrink out
@@ -615,20 +618,20 @@ class GameUtils {
 
                         Direction.DOWN -> {
                             expandVertically(
-                                animationSpec = tween(playerSpeed, delayMillis = 0),
+                                animationSpec = tween(PLAYER_SPEED, delayMillis = 0),
                                 expandFrom = Alignment.Bottom
                             ) with // Blue expand in
                                     shrinkVertically(
                                         animationSpec = tween(
                                             1,
-                                            delayMillis = playerSpeed
+                                            delayMillis = PLAYER_SPEED
                                         )
                                     ) // Grey shrink out
                         }
                     }
                 }
 
-                initialState == playerBlock && targetState == goalBlock -> { // Win Animation 2
+                initialState == PLAYER_BLOCK && targetState == GOAL_BLOCK -> { // Win Animation 2
                     scaleIn() with
                             scaleOut()
                 }

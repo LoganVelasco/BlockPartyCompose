@@ -9,13 +9,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GameData @Inject constructor(@ApplicationContext context: Context) {
+class GameData @Inject constructor(@ApplicationContext val context: Context) {
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences(context.getString(R.string.levels), Context.MODE_PRIVATE)
 
     private val colorPrefs: SharedPreferences =
-        context.getSharedPreferences("COLORS", Context.MODE_PRIVATE)
+        context.getSharedPreferences(context.getString(R.string.colors), Context.MODE_PRIVATE)
 
     val easyLevelProgress: MutableList<Int>
         get() {
@@ -53,11 +53,11 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
 
     val tutorialStage: Int
         get() {
-            return prefs.getInt("TUTORIAL_STAGE", 0)
+            return prefs.getInt(context.getString(R.string.tutorial_stage), 0)
         }
 
     fun updateTutorialStage(stage: Int) {
-        prefs.edit().putInt("TUTORIAL_STAGE", stage).apply()
+        prefs.edit().putInt(context.getString(R.string.tutorial_stage), stage).apply()
     }
 
     private fun updateLevel(
@@ -104,11 +104,11 @@ class GameData @Inject constructor(@ApplicationContext context: Context) {
     }
 
     fun getColorScheme(): Int {
-        return colorPrefs.getInt("COLORS", 0)
+        return colorPrefs.getInt(context.getString(R.string.colors), 0)
     }
 
     fun updateColorScheme(colorScheme: Int) {
-        colorPrefs.edit().putInt("COLORS", colorScheme).apply()
+        colorPrefs.edit().putInt(context.getString(R.string.colors), colorScheme).apply()
     }
 
 }

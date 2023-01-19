@@ -52,7 +52,7 @@ class LevelBuilderViewModel @Inject constructor(
     }
 
     // Block parameter needed for level grid onClick, but is unused for level builder
-    fun blockClicked(block: Char, index: Int) {
+    fun blockClicked(@Suppress("UNUSED_PARAMETER") block: Char, index: Int) {
         val color = _state.value!!.selectedBlockColor
         if (color != null) {
             val blocks = _state.value!!.blocks.toMutableList()

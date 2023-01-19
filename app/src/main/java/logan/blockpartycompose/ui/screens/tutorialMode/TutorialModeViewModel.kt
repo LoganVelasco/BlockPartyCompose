@@ -15,6 +15,10 @@ import logan.blockpartycompose.ui.screens.level.Direction
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.GameUtils
+import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.PLAYER_BLOCK
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,17 +34,12 @@ class TutorialModeViewModel @Inject constructor(
 
     private val history = mutableListOf<GamePlayState>()
 
-    lateinit var tutorialLevels: List<Level>
+    private lateinit var tutorialLevels: List<Level>
 
     lateinit var level: Level
 
     private var _isInfoClicked = MutableLiveData<Boolean>()
     val isInfoClicked: LiveData<Boolean> = _isInfoClicked
-
-    private val playerBlock = 'p'
-    private val enemyBlock = 'e'
-    private val goalBlock = 'g'
-    private val emptyBlock = '.'
 
     private fun updateTutorialProgress(stage: Int) {
         repo.updateTutorialStage(stage)
@@ -150,7 +149,7 @@ class TutorialModeViewModel @Inject constructor(
         }
         if (level.blocks.indexOf('p') == -1)
             return // Already dead
-        if (block == emptyBlock) {
+        if (block == EMPTY_BLOCK) {
             val direction = movePlayerBlock(index)
             var glow = getSurroundingBlocks()
             if (GameUtils.isTouching(
@@ -171,7 +170,7 @@ class TutorialModeViewModel @Inject constructor(
             if (level.enemyIndex != -1) redMove(newState)
             else
                 _state.value = newState
-        } else if (block == goalBlock) {
+        } else if (block == GOAL_BLOCK) {
             val direction = movePlayerBlock(index)
             _state.value =
                 GamePlayState(
@@ -183,7 +182,7 @@ class TutorialModeViewModel @Inject constructor(
 
             viewModelScope.launch {
                 delay(200)
-                level.blocks[index] = goalBlock
+                level.blocks[index] = GOAL_BLOCK
                 _state.value = GamePlayState(
                     blocks = level.blocks,
                     movesUsed = level.movesUsed,
@@ -207,31 +206,6 @@ class TutorialModeViewModel @Inject constructor(
             return
         }
     }
-//
-//    private fun stageOnePartTwo(block: Char, index: Int) {
-//        if (!GameUtils.isTouching(
-//                index,
-//                level.playerIndex,
-//                level.x
-//            )
-//        ) {
-//            return // Invalid block clicked
-//        }
-//
-//        if (block == emptyBlock) {
-//            val direction = movePlayerBlock(index)
-//
-//            _state.value = GamePlayState(
-//                blocks = level.blocks.toList(),
-//                glowingBlocks = listOf(level.goalIndex),
-//                movesUsed = ++level.movesUsed,
-//                gameState = level.state,
-//                direction = direction
-//            )
-//            return
-//        }
-//
-//    }
 
     fun blockClicked(block: Char, index: Int) {
         when (tutorialState.value!!.first) {
@@ -343,8 +317,8 @@ class TutorialModeViewModel @Inject constructor(
 
     private fun movePlayerBlock(index: Int): Direction? {
         val oldIndex = level.playerIndex
-        level.blocks[index] = playerBlock
-        level.blocks[oldIndex] = emptyBlock
+        level.blocks[index] = PLAYER_BLOCK
+        level.blocks[oldIndex] = EMPTY_BLOCK
         level.playerIndex = index
         return GameUtils.getDirection(oldIndex, index, level.x)
     }
@@ -430,14 +404,14 @@ class TutorialModeViewModel @Inject constructor(
     }
 
     private fun moveEnemyOffGoal(newIndex: Int) {
-        level.blocks[level.enemyIndex] = goalBlock
-        level.blocks[newIndex] = enemyBlock
+        level.blocks[level.enemyIndex] = GOAL_BLOCK
+        level.blocks[newIndex] = ENEMY_BLOCK
         level.enemyIndex = newIndex
     }
 
     private fun moveEnemyToNewIndex(newIndex: Int) {
-        level.blocks[level.enemyIndex] = emptyBlock
-        level.blocks[newIndex] = enemyBlock
+        level.blocks[level.enemyIndex] = EMPTY_BLOCK
+        level.blocks[newIndex] = ENEMY_BLOCK
         level.enemyIndex = newIndex
     }
 

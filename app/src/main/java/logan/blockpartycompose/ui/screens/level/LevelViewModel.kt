@@ -12,6 +12,7 @@ import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.GameUtils
+import logan.blockpartycompose.utils.GameUtils.Companion.FINAL_LEVELS
 import logan.blockpartycompose.utils.GameUtils.Companion.getDirection
 import logan.blockpartycompose.utils.GameUtils.Companion.isAbove
 import logan.blockpartycompose.utils.GameUtils.Companion.isInSameColumn
@@ -19,6 +20,11 @@ import logan.blockpartycompose.utils.GameUtils.Companion.isInSameRow
 import logan.blockpartycompose.utils.GameUtils.Companion.isRightOf
 import logan.blockpartycompose.utils.GameUtils.Companion.isValidEnemyMove
 import logan.blockpartycompose.utils.GameUtils.Companion.shouldEnemyAttemptMove
+import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.PLAYER_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.MOVABLE_BLOCK
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
@@ -37,12 +43,6 @@ class LevelViewModel @Inject constructor(
 
     private var _infoState = MutableLiveData(-1)
     val infoState: LiveData<Int> = _infoState
-
-    private val playerBlock = 'p'
-    private val enemyBlock = 'e'
-    private val movableBlock = 'm'
-    private val goalBlock = 'g'
-    private val emptyBlock = '.'
 
     fun setupLevel(levelSet: LevelSet, id: Int) {
         level = getLevel(levelSet, id)
@@ -108,11 +108,11 @@ class LevelViewModel @Inject constructor(
             return // Already dead
         val newState: LevelState?
         when (block) {
-            enemyBlock -> {
+            ENEMY_BLOCK -> {
                 return
             }
 
-            movableBlock -> {
+            MOVABLE_BLOCK -> {
                 if (handleMovableBlockMove(index)) {
                     val direction = movePlayerBlock(index)
                     newState = LevelState(
@@ -126,7 +126,7 @@ class LevelViewModel @Inject constructor(
                 }
             }
 
-            goalBlock -> {
+            GOAL_BLOCK -> {
                 val direction = movePlayerBlock(index)
                 _state.value =
                     LevelState(
@@ -138,7 +138,7 @@ class LevelViewModel @Inject constructor(
 
                 viewModelScope.launch {
                     delay(200)
-                    level.blocks[index] = goalBlock
+                    level.blocks[index] = GOAL_BLOCK
                     _state.value = LevelState(
                         blocks = level.blocks,
                         movesUsed = level.movesUsed,
@@ -162,7 +162,7 @@ class LevelViewModel @Inject constructor(
                 return
             }
 
-            emptyBlock -> {
+            EMPTY_BLOCK -> {
                 val direction = movePlayerBlock(index)
                 newState = LevelState(
                     blocks = level.blocks.toList(),
@@ -273,8 +273,8 @@ class LevelViewModel @Inject constructor(
 
     private fun movePlayerBlock(index: Int): Direction? {
         val oldIndex = level.playerIndex
-        level.blocks[index] = playerBlock
-        level.blocks[oldIndex] = emptyBlock
+        level.blocks[index] = PLAYER_BLOCK
+        level.blocks[oldIndex] = EMPTY_BLOCK
         level.playerIndex = index
         return getDirection(oldIndex, index, level.x)
     }
@@ -292,13 +292,13 @@ class LevelViewModel @Inject constructor(
         ) return false
 
         return when (level.blocks[newIndex]) {
-            emptyBlock -> {
-                level.blocks[newIndex] = movableBlock
+            EMPTY_BLOCK -> {
+                level.blocks[newIndex] = MOVABLE_BLOCK
                 true
             }
 
-            movableBlock -> {
-                level.blocks[newIndex] = emptyBlock
+            MOVABLE_BLOCK -> {
+                level.blocks[newIndex] = EMPTY_BLOCK
                 true
             }
 
@@ -389,14 +389,14 @@ class LevelViewModel @Inject constructor(
     }
 
     private fun moveEnemyOffGoal(newIndex: Int) {
-        level.blocks[level.enemyIndex] = goalBlock
-        level.blocks[newIndex] = enemyBlock
+        level.blocks[level.enemyIndex] = GOAL_BLOCK
+        level.blocks[newIndex] = ENEMY_BLOCK
         level.enemyIndex = newIndex
     }
 
     private fun moveEnemyToNewIndex(newIndex: Int) {
-        level.blocks[level.enemyIndex] = emptyBlock
-        level.blocks[newIndex] = enemyBlock
+        level.blocks[level.enemyIndex] = EMPTY_BLOCK
+        level.blocks[newIndex] = ENEMY_BLOCK
         level.enemyIndex = newIndex
     }
 
@@ -445,7 +445,7 @@ class LevelViewModel @Inject constructor(
         return if (movesUsed <= getMinMoves()) 3 else if (movesUsed - 2 <= getMinMoves()) 2 else 1
     }
 
-    fun isFinalLevel(): Boolean = (level.id + 1 == 10 || level.id + 1 == 20 || level.id + 1 == 30)
+    fun isFinalLevel(): Boolean = FINAL_LEVELS.contains(level.id)
 
     fun infoClicked() {
         if (_infoState.value != -1) {

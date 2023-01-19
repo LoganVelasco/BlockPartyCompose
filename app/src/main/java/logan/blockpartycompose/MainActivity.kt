@@ -22,18 +22,18 @@ class MainActivity  @Inject constructor(): ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val prefs: SharedPreferences =
-            this.getSharedPreferences("COLORS", Context.MODE_PRIVATE)
+            this.getSharedPreferences(getString(R.string.colors), Context.MODE_PRIVATE)
 
-        val colors = prefs.getInt("COLORS", 0)
+        val colors = prefs.getInt(getString(R.string.colors), 0)
 
         val restartApp = {
             val mIntent = intent
-            mIntent.putExtra("UPDATED", true)
+            mIntent.putExtra(getString(R.string.updated), true)
             finish()
            startActivity(mIntent)
         }
 
-        val isUpdated = intent.getBooleanExtra("UPDATED", false)
+        val isUpdated = intent.getBooleanExtra(getString(R.string.updated), false)
 
         installSplashScreen()
 

@@ -130,7 +130,7 @@ fun BaseTutorial(
                         ) {
                             Icon(
                                 Icons.Filled.ArrowBack,
-                                contentDescription = "Undo",
+                                contentDescription = stringResource(R.string.show_next_hint),
                                 modifier = Modifier
                                     .scale(1.5f)
                                     .padding(10.dp)
@@ -144,7 +144,7 @@ fun BaseTutorial(
                         ) {
                             Icon(
                                 Icons.Filled.ArrowForward,
-                                contentDescription = "Undo",
+                                contentDescription = stringResource(R.string.show_previous_hint),
                                 modifier = Modifier
                                     .scale(alpha)
                                     .padding(10.dp)
@@ -200,33 +200,34 @@ fun TutorialStageFour(infoProgress: Int) {
         when (it) {
             0 -> {
                 BaseTutorial(
-                    "This button will undo your last move",
+                    stringResource(R.string.undo_tut),
                     forwardOnClick = { scope.launch { state.scrollToPage(1) } },
                     animateForward = true
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_undo_24),
-                        contentDescription = "Undo",
+                        contentDescription = stringResource(R.string.undo),
                     )
                 }
             }
 
             1 -> {
                 BaseTutorial(
-                    "This button will restart the level",
+                    stringResource(R.string.restart_tut),
                     forwardOnClick = { scope.launch { state.scrollToPage(2) } },
                     backOnClick = { scope.launch { state.scrollToPage(0) } },
                     animateForward = true
                 ) {
-                    Icon(Icons.Filled.Refresh, contentDescription = "Restart")
+                    Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.restart))
                 }
             }
 
             2 -> {
-                BaseTutorial("This button will show how each block functions",
+                BaseTutorial(
+                                    stringResource(R.string.info_tut),
                     backOnClick = { scope.launch { state.scrollToPage(0) } }
                 ) {
-                    Icon(Icons.Filled.Info, contentDescription = "Info")
+                    Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.info))
                 }
             }
         }
@@ -249,23 +250,23 @@ fun TutorialPlayMenuWindow() {
     ) {
         when (it) {
             0 -> {
-                BaseTutorial("Tap Level builder to build a custom level of your own!")
+                BaseTutorial(stringResource(R.string.hint_1))
             }
 
             1 -> {
-                BaseTutorial("Earn more stars to unlock harder difficulties")
+                BaseTutorial(stringResource(R.string.hint_2))
             }
 
             2 -> {
-                BaseTutorial("Tap the gear icon to apply a custom theme")
+                BaseTutorial(stringResource(R.string.hint_3))
             }
 
             3 -> {
-                BaseTutorial("More Levels coming soon!")
+                BaseTutorial(stringResource(R.string.hint_4))
             }
 
             4 -> {
-                BaseTutorial("Tired of hints? Disable this window in settings")
+                BaseTutorial(stringResource(R.string.hint_5))
             }
         }
     }
@@ -288,13 +289,13 @@ fun TutorialStageOne(
     ) {
         when (it) {
             0 -> {
-                BaseTutorial("Move the Blue block to the gold block to beat the level") {
+                BaseTutorial(stringResource(R.string.initial_tut_1)) {
                     PlayerBlock()
                 }
             }
 
             1 -> {
-                BaseTutorial("Tap the gold block to beat the level") {
+                BaseTutorial(stringResource(R.string.initial_tut_2)) {
                     GoalBlock()
                 }
             }
@@ -323,7 +324,7 @@ fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
         when (it) {
             0 -> {
                 BaseTutorial(
-                    "This is the Enemy block. It moves twice after ever player move.",
+                    stringResource(R.string.enemy_tut_1),
                     forwardOnClick = { scope.launch { state.scrollToPage(1) } },
                     animateForward = true
                 ) {
@@ -333,7 +334,7 @@ fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
 
             1 -> {
                 BaseTutorial(
-                    "It can only move closer to the Blue block and always tries to move horizontally first if possible.",
+                    stringResource(R.string.enemy_tut_2),
                     forwardOnClick = {
                         scope.launch { state.scrollToPage(2) }
                     },
@@ -344,7 +345,7 @@ fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
 
             2 -> {
                 BaseTutorial(
-                    "Don't let it catch you or its game over!",
+                    stringResource(R.string.enemy_tut_3),
                     backOnClick = { scope.launch { state.scrollToPage(1) } }
                 )
             }
@@ -374,7 +375,7 @@ fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
         when (it) {
             0 -> {
                 BaseTutorial(
-                    "This an obstacle. It cannot be moved and blocks both the player and enemy.",
+                    stringResource(R.string.unmovable_tut),
                     forwardOnClick = { scope.launch { state.scrollToPage(1) } },
                     animateForward = true
                 ) {
@@ -383,7 +384,7 @@ fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
             }
 
             1 -> {
-                BaseTutorial("Use this block to trap the enemy and make it safely to the goal") {
+                BaseTutorial(stringResource(R.string.unmovable_tut_2)) {
                     UnmovableBlock()
                 }
             }
@@ -401,11 +402,11 @@ fun FirstWinTutorialWindow() {
     ) {
         when (it) {
             0 -> {
-                BaseTutorial(description = "Complete levels in as few moves as possible to earn all 3 stars")
+                BaseTutorial(description = stringResource(R.string.win_tut_2))
             }
 
             1 -> {
-                BaseTutorial(description = "Earning stars will let you unlock harder levels")
+                BaseTutorial(description = stringResource(R.string.win_tut_1))
             }
 
         }
@@ -422,11 +423,11 @@ fun SecondWinTutorialWindow() {
     ) {
         when (it) {
             0 -> {
-                BaseTutorial(description = "Earning stars will let you unlock harder levels")
+                BaseTutorial(description = stringResource(R.string.win_tut_1))
             }
 
             1 -> {
-                BaseTutorial(description = "Complete levels in as few moves as possible to earn all 3 stars")
+                BaseTutorial(description = stringResource(R.string.win_tut_2))
             }
 
         }
@@ -443,7 +444,7 @@ fun FirstLossTutorialWindow() {
     ) {
         when (it) {
             0 -> {
-                BaseTutorial(description = "Don't let the red block catch you!")
+                BaseTutorial(description = stringResource(R.string.loss_tut))
             }
         }
     }
@@ -505,7 +506,7 @@ fun PlayerInfo(
     forwardOnClick: (() -> Unit)? = null,
 ) {
     BaseTutorial(
-        "Tap a surrounding square to move",
+        stringResource(R.string.player_tut),
         forwardOnClick = forwardOnClick,
         backOnClick = backOnClick,
         modifier = modifier
@@ -521,7 +522,7 @@ fun GoalInfo(
     forwardOnClick: (() -> Unit)? = null,
 ) {
     BaseTutorial(
-        "This is the goal block.\nMove the Player Block here\n to complete the level.",
+        stringResource(R.string.goal_tut),
         forwardOnClick = forwardOnClick,
         backOnClick = backOnClick,
         modifier = modifier
@@ -537,7 +538,7 @@ fun EnemyInfo1(
     forwardOnClick: (() -> Unit)? = null,
 ) {
     BaseTutorial(
-        "This is the Enemy block. It moves twice after ever player move.",
+        stringResource(R.string.enemy_tut_1),
         forwardOnClick = forwardOnClick,
         backOnClick = backOnClick,
         modifier = modifier
@@ -553,7 +554,7 @@ fun EnemyInfo2(
     forwardOnClick: (() -> Unit)? = null,
 ) {
     BaseTutorial(
-        "It can only move closer to you and tries to move horizontally first if possible.",
+        stringResource(R.string.enemy_tut_2),
         forwardOnClick = forwardOnClick,
         backOnClick = backOnClick,
         modifier = modifier
@@ -570,7 +571,7 @@ fun EnemyInfo3(
     forwardOnClick: (() -> Unit)? = null,
 ) {
     BaseTutorial(
-        "Don't let it catch you or it's game over!",
+        stringResource(R.string.enemy_tut_3),
         forwardOnClick = forwardOnClick,
         backOnClick = backOnClick,
         modifier = modifier
@@ -587,7 +588,7 @@ fun UnmovableInfo(
     forwardOnClick: (() -> Unit)? = null,
 ) {
     BaseTutorial(
-        "This an obstacle. It cannot be moved and blocks both the player and enemy.",
+        stringResource(R.string.unmovable_tut),
         forwardOnClick = forwardOnClick,
         backOnClick = backOnClick,
         modifier = modifier
@@ -603,7 +604,7 @@ fun MovableInfo1(
     forwardOnClick: (() -> Unit)? = null,
 ) {
     BaseTutorial(
-        "This is the Movable block.\nIt can be pushed only by the player.",
+        stringResource(R.string.movable_tut_1),
         forwardOnClick = forwardOnClick,
         backOnClick = backOnClick,
         modifier = modifier
@@ -619,7 +620,7 @@ fun MovableInfo2(
     forwardOnClick: (() -> Unit)? = null,
 ) {
     BaseTutorial(
-        "Push two Movable blocks together and they both disappear!",
+        stringResource(R.string.movable_tut_2),
         forwardOnClick = forwardOnClick,
         backOnClick = backOnClick,
         modifier = modifier
