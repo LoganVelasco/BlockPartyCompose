@@ -88,11 +88,11 @@ class LevelViewModel @Inject constructor(
         return repo.levelsSets[levelSet.name]!!.first { it.id == id }
     }
 
-    private fun updateLevel(difficulty: LevelSet, name: Int, stars: Int) {
-        if (difficulty == LevelSet.MEDIUM && name == 10) repo.updateTutorialStage(5)
-        else if (difficulty == LevelSet.MEDIUM && name == 11) repo.updateTutorialStage(6)
+    private fun updateLevel(difficulty: LevelSet, id: Int, stars: Int) {
+        if (difficulty == LevelSet.MEDIUM && id == 10) repo.updateTutorialStage(5)
+        else if (difficulty == LevelSet.MEDIUM && id == 11) repo.updateTutorialStage(6)
 
-        repo.updateLevelProgress(difficulty, name, stars)
+        repo.updateLevelProgress(difficulty, id, stars)
     }
 
     fun blockClicked(block: Char, index: Int) {
@@ -104,7 +104,7 @@ class LevelViewModel @Inject constructor(
         ) {
             return // Invalid block clicked
         }
-        if (level.blocks.indexOf('p') == -1)
+        if (level.blocks.indexOf(PLAYER_BLOCK) == -1)
             return // Already dead
         val newState: LevelState?
         when (block) {
@@ -198,14 +198,14 @@ class LevelViewModel @Inject constructor(
                     }
                     if (levelState.gameState == GameState.FAILED) {
                         _state.value = levelState
-                    } else if ((redStates.size == 1 && redStates[0].blocks.indexOf('e') == level.enemyIndex) ||    // TODO: refactor this
-                        (redStates.size >= 2 && (redStates[0].blocks.indexOf('e') == level.enemyIndex ||
-                                redStates[1].blocks.indexOf('e') == level.enemyIndex))
+                    } else if ((redStates.size == 1 && redStates[0].blocks.indexOf(ENEMY_BLOCK) == level.enemyIndex) ||    // TODO: refactor this
+                        (redStates.size >= 2 && (redStates[0].blocks.indexOf(ENEMY_BLOCK) == level.enemyIndex ||
+                                redStates[1].blocks.indexOf(ENEMY_BLOCK) == level.enemyIndex))
                     ) { // if red move is stale (new red move occurred) don't post it
-                        if (level.goalIndex != -1 && (level.blocks.indexOf('p') == level.goalIndex)) {   // don't post red move if valid win happens
+                        if (level.goalIndex != -1 && (level.blocks.indexOf(PLAYER_BLOCK) == level.goalIndex)) {   // don't post red move if valid win happens
                             return@launch
                         }
-                        if (history.size < 2 || history.last().blocks.indexOf('e') != level.enemyIndex) // don't post red move if red stuck
+                        if (history.size < 2 || history.last().blocks.indexOf(ENEMY_BLOCK) != level.enemyIndex) // don't post red move if red stuck
                             _state.value = levelState
                     }
                 }
@@ -231,7 +231,7 @@ class LevelViewModel @Inject constructor(
                 )
             )
 
-            if (level.blocks.indexOf('p') == -1) {
+            if (level.blocks.indexOf(PLAYER_BLOCK) == -1) {
                 states.add(
                     LevelState(
                         blocks = level.blocks.toMutableList(),
@@ -255,7 +255,7 @@ class LevelViewModel @Inject constructor(
                     )
                 )
 
-                if (level.blocks.indexOf('p') == -1) {
+                if (level.blocks.indexOf(PLAYER_BLOCK) == -1) {
                     states.add(
                         LevelState(
                             blocks = level.blocks.toMutableList(),
@@ -404,9 +404,9 @@ class LevelViewModel @Inject constructor(
         if (history.size >= 2) {
             history.sortBy { it.movesUsed }
             level.blocks = history[history.size - 2].blocks.toMutableList() // Code Smell
-            val direction = getUndoDirection(level.playerIndex, level.blocks.indexOf('p'))
-            level.playerIndex = level.blocks.indexOf('p')
-            level.enemyIndex = level.blocks.indexOf('e')
+            val direction = getUndoDirection(level.playerIndex, level.blocks.indexOf(PLAYER_BLOCK))
+            level.playerIndex = level.blocks.indexOf(PLAYER_BLOCK)
+            level.enemyIndex = level.blocks.indexOf(ENEMY_BLOCK)
             _state.value = history[history.size - 2].copy(direction = direction)
             history.removeLast()
             level.movesUsed--

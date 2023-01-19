@@ -33,6 +33,12 @@ import androidx.navigation.NavController
 import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.components.*
+import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.MOVABLE_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.PLAYER_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.UNMOVABLE_BLOCK
 import java.util.*
 import kotlin.reflect.KFunction2
 
@@ -311,27 +317,27 @@ fun LevelPicture(
         val scale = if (x == 4) 48.dp else 40.dp
         items(blocks.size) { index ->
             when (blocks[index]) {
-                'e' -> {
+                ENEMY_BLOCK -> {
                     EnemyBlock(size = scale)
                 }
 
-                'p' -> {
+                PLAYER_BLOCK -> {
                     PlayerBlock(size = scale)
                 }
 
-                'm' -> {
+                MOVABLE_BLOCK -> {
                     MovableBlock(size = scale)
                 }
 
-                'g' -> {
+                GOAL_BLOCK -> {
                     GoalBlock(size = scale)
                 }
 
-                '.' -> {
+                EMPTY_BLOCK -> {
                     EmptyBlock(size = scale)
                 }
 
-                'x' -> {
+                UNMOVABLE_BLOCK -> {
                     UnmovableBlock(size = scale)
                 }
             }

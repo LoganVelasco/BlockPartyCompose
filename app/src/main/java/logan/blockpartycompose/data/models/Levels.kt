@@ -3,6 +3,12 @@ package logan.blockpartycompose.data.models
 import kotlinx.serialization.Serializable
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.MOVABLE_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.PLAYER_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.UNMOVABLE_BLOCK
 
 data class LevelsDTO(
     val levels: List<LevelDTO>
@@ -71,25 +77,25 @@ data class Level(
     var state: GameState = GameState.IN_PROGRESS
     var blocks = initialBlocks.toMutableList()
     var movesUsed = 0
-    var playerIndex: Int = initialBlocks.indexOf('p')
-    var enemyIndex: Int = initialBlocks.indexOf('e')
-    var goalIndex: Int = initialBlocks.indexOf('g')
+    var playerIndex: Int = initialBlocks.indexOf(PLAYER_BLOCK)
+    var enemyIndex: Int = initialBlocks.indexOf(ENEMY_BLOCK)
+    var goalIndex: Int = initialBlocks.indexOf(GOAL_BLOCK)
 
     fun resetLevel() {
         state = GameState.IN_PROGRESS
         blocks = initialBlocks.toMutableList()
         movesUsed = 0
-        playerIndex = initialBlocks.indexOf('p')
-        enemyIndex = initialBlocks.indexOf('e')
+        playerIndex = initialBlocks.indexOf(PLAYER_BLOCK)
+        enemyIndex = initialBlocks.indexOf(ENEMY_BLOCK)
     }
 
 }
 
-enum class BlockColor(val color: Char) {
-    BLUE('p'),
-    RED('e'),
-    YELLOW('g'),
-    GREEN('m'),
-    BLACK('x'),
-    GRAY('.'),
+enum class BlockType(val type: Char) {
+    PLAYER(PLAYER_BLOCK),
+    ENEMY(ENEMY_BLOCK),
+    GOAL(GOAL_BLOCK),
+    MOVABLE(MOVABLE_BLOCK),
+    UNMOVABLE(UNMOVABLE_BLOCK),
+    EMPTY(EMPTY_BLOCK),
 }

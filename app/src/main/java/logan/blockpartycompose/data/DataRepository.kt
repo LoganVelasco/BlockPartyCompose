@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.data.models.LevelsDTO
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
 import java.io.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -31,7 +32,7 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
 
     private fun getBlankLayout(x: Int, y: Int): List<Char> {
         return MutableList(x * y) {
-            '.'
+            EMPTY_BLOCK
         }
     }
 

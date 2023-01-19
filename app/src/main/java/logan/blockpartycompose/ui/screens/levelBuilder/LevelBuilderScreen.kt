@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.R
-import logan.blockpartycompose.data.models.BlockColor
+import logan.blockpartycompose.data.models.BlockType
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.level.LevelGrid
 import kotlin.reflect.KFunction2
@@ -69,7 +69,7 @@ fun LevelBuilderScreen(
     LevelBuilder(
         x = viewModel.level.x,
         blocks = state!!.blocks,
-        selectedBlockColor = state!!.selectedBlockColor,
+        selectedBlockType = state!!.selectedBlockType,
         backClicked = { backClicked() },
         blockClicked = viewModel::blockClicked,
         colorClicked = viewModel::colorSelected,
@@ -245,9 +245,9 @@ fun SaveExistingLevelDialog(
 fun LevelBuilder(
     x: Int,
     blocks: List<Char>,
-    selectedBlockColor: BlockColor?,
+    selectedBlockType: BlockType?,
     blockClicked: (Char, Int) -> Unit,
-    colorClicked: (BlockColor) -> Unit,
+    colorClicked: (BlockType) -> Unit,
     backClicked: () -> Unit,
     undoClicked: () -> Unit,
     playClicked: () -> Unit,
@@ -273,14 +273,14 @@ fun LevelBuilder(
             }
         }
         LevelGrid(blockClicked = blockClicked, x = x, blocks = blocks)
-        BlockPalette(selectedBlockColor, colorClicked)
+        BlockPalette(selectedBlockType, colorClicked)
         LevelBuilderFooter(undoClicked, playClicked, saveClicked)
     }
 }
 
 @ExperimentalFoundationApi
 @Composable
-fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> Unit) {
+fun BlockPalette(selectedBlockType: BlockType?, typeClicked: (BlockType) -> Unit) {
     CompositionLocalProvider(
         LocalOverscrollConfiguration provides null
     ) {
@@ -294,42 +294,42 @@ fun BlockPalette(selectedBlockColor: BlockColor?, colorClicked: (BlockColor) -> 
                     orientation = Orientation.Vertical,
                     enabled = false
                 )
-                .testTag("palette")
+                .testTag(stringResource(R.string.palette))
         ) {
             item {
                 PlayerBlock(
-                    onClick = { colorClicked(BlockColor.BLUE) },
-                    isSelected = selectedBlockColor == BlockColor.BLUE
+                    onClick = { typeClicked(BlockType.PLAYER) },
+                    isSelected = selectedBlockType == BlockType.PLAYER
                 )
             }
             item {
                 EnemyBlock(
-                    onClick = { colorClicked(BlockColor.RED) },
-                    isSelected = selectedBlockColor == BlockColor.RED
+                    onClick = { typeClicked(BlockType.ENEMY) },
+                    isSelected = selectedBlockType == BlockType.ENEMY
                 )
             }
             item {
                 GoalBlock(
-                    onClick = { colorClicked(BlockColor.YELLOW) },
-                    isSelected = selectedBlockColor == BlockColor.YELLOW
+                    onClick = { typeClicked(BlockType.GOAL) },
+                    isSelected = selectedBlockType == BlockType.GOAL
                 )
             }
             item {
                 MovableBlock(
-                    onClick = { colorClicked(BlockColor.GREEN) },
-                    isSelected = selectedBlockColor == BlockColor.GREEN
+                    onClick = { typeClicked(BlockType.MOVABLE) },
+                    isSelected = selectedBlockType == BlockType.MOVABLE
                 )
             }
             item {
                 UnmovableBlock(
-                    onClick = { colorClicked(BlockColor.BLACK) },
-                    isSelected = selectedBlockColor == BlockColor.BLACK
+                    onClick = { typeClicked(BlockType.UNMOVABLE) },
+                    isSelected = selectedBlockType == BlockType.UNMOVABLE
                 )
             }
             item {
                 EmptyBlock(
-                    onClick = { colorClicked(BlockColor.GRAY) },
-                    isSelected = selectedBlockColor == BlockColor.GRAY
+                    onClick = { typeClicked(BlockType.EMPTY) },
+                    isSelected = selectedBlockType == BlockType.EMPTY
                 )
             }
         }

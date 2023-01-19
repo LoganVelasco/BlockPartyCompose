@@ -32,6 +32,12 @@ import androidx.navigation.NavController
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.MOVABLE_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.PLAYER_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.UNMOVABLE_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.levelGridTransitions
 
 @ExperimentalFoundationApi
@@ -151,7 +157,6 @@ fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> 
     BaseHeader(
         startIcon = Icons.Filled.ArrowBack,
         firstIconOnclick = backClicked,
-//        endIcon = Icons.Filled.Settings,
         endIconOnclick = settingsClicked,
         middleContent = {
             Text(
@@ -200,27 +205,27 @@ fun LevelGrid(
                     }
                 ) { type ->
                     when (type) {
-                        'e' -> {
+                        ENEMY_BLOCK -> {
                             EnemyBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
-                        'p' -> {
+                        PLAYER_BLOCK -> {
                             PlayerBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
-                        'm' -> {
+                        MOVABLE_BLOCK -> {
                             MovableBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
-                        'g' -> {
+                        GOAL_BLOCK -> {
                             GoalBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
-                        '.' -> {
+                        EMPTY_BLOCK -> {
                             EmptyBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
 
-                        'x' -> {
+                        UNMOVABLE_BLOCK -> {
                             UnmovableBlock(onClick = onClick, isPulsing = glowList.contains(index))
                         }
                     }
@@ -298,7 +303,7 @@ fun SuccessScreen(
 @Composable
 fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit) {
     PostLevelScreen(backClicked = backClicked) {
-        Text(text = stringResource(R.string.you_died))
+        Text(text = stringResource(R.string.you_died), fontSize = 36.sp)
         Button(onClick = { tryAgainOnClick() }) {
             Text(text = stringResource(id = R.string.try_again))
         }

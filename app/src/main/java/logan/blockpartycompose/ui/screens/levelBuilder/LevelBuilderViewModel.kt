@@ -7,9 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import logan.blockpartycompose.data.DataRepository
-import logan.blockpartycompose.data.models.BlockColor
+import logan.blockpartycompose.data.models.BlockType
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
 import javax.inject.Inject
 
 
@@ -31,7 +32,7 @@ class LevelBuilderViewModel @Inject constructor(
             return _state.value!!.blocks != level.initialBlocks
         }
         _state.value!!.blocks.toMutableList().forEach {
-            if (it != '.' && !saved) return true
+            if (it != EMPTY_BLOCK && !saved) return true
         }
         return false
     }
@@ -45,18 +46,18 @@ class LevelBuilderViewModel @Inject constructor(
         )
     }
 
-    fun colorSelected(selectedBlockColor: BlockColor) {
+    fun colorSelected(selectedBlockType: BlockType) {
         _state.postValue(
-            LevelBuilderState(_state.value!!.blocks, selectedBlockColor, isEdit = level.id != -1)
+            LevelBuilderState(_state.value!!.blocks, selectedBlockType, isEdit = level.id != -1)
         )
     }
 
     // Block parameter needed for level grid onClick, but is unused for level builder
     fun blockClicked(@Suppress("UNUSED_PARAMETER") block: Char, index: Int) {
-        val color = _state.value!!.selectedBlockColor
+        val color = _state.value!!.selectedBlockType
         if (color != null) {
             val blocks = _state.value!!.blocks.toMutableList()
-            blocks[index] = color.color
+            blocks[index] = color.type
             saved = false
             history.add(blocks.toList())
             _state.postValue(
@@ -80,7 +81,7 @@ class LevelBuilderViewModel @Inject constructor(
         _state.postValue(
             LevelBuilderState(
                 history.last(),
-                _state.value?.selectedBlockColor,
+                _state.value?.selectedBlockType,
                 isEdit = level.id != -1
             )
         )
@@ -103,7 +104,7 @@ class LevelBuilderViewModel @Inject constructor(
         _state.postValue(
             LevelBuilderState(
                 blocks,
-                selectedBlockColor = null,
+                selectedBlockType = null,
                 saved = true,
                 isEdit = level.id != -1
             )
@@ -169,7 +170,7 @@ class LevelBuilderViewModel @Inject constructor(
     @Immutable
     data class LevelBuilderState(
         val blocks: List<Char>,
-        var selectedBlockColor: BlockColor? = null,
+        var selectedBlockType: BlockType? = null,
         val showDialog: Boolean = false,
         val saved: Boolean = false,
         val isEdit: Boolean = false
