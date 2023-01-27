@@ -17,6 +17,9 @@ class GameData @Inject constructor(@ApplicationContext val context: Context) {
     private val colorPrefs: SharedPreferences =
         context.getSharedPreferences(context.getString(R.string.colors), Context.MODE_PRIVATE)
 
+    private val userPrefs: SharedPreferences =
+        context.getSharedPreferences(context.getString(R.string.user), Context.MODE_PRIVATE)
+
     val easyLevelProgress: MutableList<Int>
         get() {
             return if (!prefs.getString(LevelSet.EASY.name, "").isNullOrEmpty()) {
@@ -34,7 +37,7 @@ class GameData @Inject constructor(@ApplicationContext val context: Context) {
                 prefs.getString(LevelSet.MEDIUM.name, "")!!.map { it.code - 48 } as MutableList<Int>
             } else {
                 mutableListOf<Int>().apply {
-                    while (this.size <= 10) this.add(0)
+                    while (this.size <= 5) this.add(0)
                 }
             }
         }
@@ -45,7 +48,7 @@ class GameData @Inject constructor(@ApplicationContext val context: Context) {
                 prefs.getString(LevelSet.HARD.name, "")!!.map { it.code - 48 } as MutableList<Int>
             } else {
                 mutableListOf<Int>().apply {
-                    while (this.size <= 10) this.add(0)
+                    while (this.size <= 5) this.add(0)
                 }
             }
         }
@@ -81,10 +84,11 @@ class GameData @Inject constructor(@ApplicationContext val context: Context) {
         return false
     }
 
-    fun updateProgress(difficulty: LevelSet, level: Int, stars: Int) {
+    fun updateProgress(difficulty: LevelSet, level: Int, stars: Int) {// TODO update to scale
         var currentProgress = prefs.getString(difficulty.name, "")
-        if (currentProgress.isNullOrEmpty()) { // TODO update to scale
-            currentProgress = "0000000000"
+        if (currentProgress.isNullOrEmpty()) {
+            currentProgress = if(difficulty == LevelSet.EASY ) "0000000000"
+                else "00000"
         }
         when (difficulty) {
             LevelSet.EASY -> {
@@ -96,7 +100,7 @@ class GameData @Inject constructor(@ApplicationContext val context: Context) {
             }
 
             LevelSet.HARD -> {
-                updateLevel(difficulty, currentProgress, level - 20, stars)
+                updateLevel(difficulty, currentProgress, level - 15, stars)
             }
 
             LevelSet.CUSTOM -> {}
@@ -111,4 +115,11 @@ class GameData @Inject constructor(@ApplicationContext val context: Context) {
         colorPrefs.edit().putInt(context.getString(R.string.colors), colorScheme).apply()
     }
 
+    fun getHintPreference(): Boolean {
+        return userPrefs.getBoolean(context.getString(R.string.hints), true)
+    }
+
+    fun updateHintPreference(enabled: Boolean) {
+        userPrefs.edit().putBoolean(context.getString(R.string.hints), enabled).apply()
+    }
 }

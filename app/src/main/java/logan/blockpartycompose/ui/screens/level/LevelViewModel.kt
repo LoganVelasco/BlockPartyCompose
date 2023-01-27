@@ -453,7 +453,7 @@ class LevelViewModel @Inject constructor(
             return
         }
         var cardShown = 0
-        if (level.levelSet == LevelSet.MEDIUM) cardShown = cardToDisplay()
+        if (level.levelSet == LevelSet.MEDIUM) cardShown = 6
         _infoState.value = cardShown
     }
 
@@ -465,7 +465,7 @@ class LevelViewModel @Inject constructor(
         return when (repo.getTutorialStage()) {
             4 -> 6
             5 -> 7
-            else -> 6
+            else -> -1
         }
     }
 }

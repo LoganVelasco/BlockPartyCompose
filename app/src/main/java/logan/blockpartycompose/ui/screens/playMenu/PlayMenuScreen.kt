@@ -2,6 +2,7 @@ package logan.blockpartycompose.ui.screens.playMenu
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,14 +29,16 @@ import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 fun PlayMenuScreen(navController: NavController) {
     val viewModel: PlayMenuViewModel = hiltViewModel()
     val progress = viewModel.getProgress()
+    val isHintsEnabled = viewModel.isHintsEnabled()
 
-    PlayMenu(navController, progress)
+    PlayMenu(navController, progress, isHintsEnabled)
 }
 
 @Composable
 private fun PlayMenu(
     navController: NavController,
     progress: List<Int>,
+    isHintsEnabled: Boolean,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,7 +49,7 @@ private fun PlayMenu(
     ) {
         MenuHeader(navController, progress.sum())
         MenuDifficulties(navController, progress)
-        TutorialPlayMenuWindow()
+        if(isHintsEnabled)TutorialPlayMenuWindow()
         MenuFooter(navController)
     }
 }
@@ -54,11 +58,11 @@ private fun PlayMenu(
 fun MenuHeader(navController: NavController, totalStars: Int) {
     BaseHeader(
         middleContent = {
-            Row(Modifier.padding(10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically , modifier = Modifier.padding(10.dp)) {
                 Text(
                     text = stringResource(id = R.string.total_star_progress, totalStars),
                     fontSize = 18.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                    textAlign = TextAlign.Center,
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.star),
@@ -69,8 +73,9 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
                 )
             }
         },
+        startIcon = Icons.Filled.ArrowBack,
         endIcon = Icons.Filled.Settings,
-        firstIconOnclick = { navController.popBackStack() },
+        startIconOnclick = { navController.popBackStack() },
         endIconOnclick = { navController.navigate("settings") }
     )
 }

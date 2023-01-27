@@ -1,5 +1,6 @@
 package logan.blockpartycompose.ui.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -10,7 +11,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -64,48 +64,61 @@ fun BaseTutorial(
     animateForward: Boolean = false,
     content: @Composable (() -> Unit)? = null
 ) {
-
-    val configuration = LocalConfiguration.current
     OutlinedCard(
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
-            .width(configuration.screenWidthDp.dp)
+            .fillMaxWidth()
             .padding(10.dp)
             .height(200.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxHeight()
         ) {
-            if (forwardOnClick != null || backOnClick != null) Spacer(modifier = Modifier.height(25.dp))
-            else Spacer(modifier = Modifier.height(1.dp))
+            if (backOnClick != null) {
+                IconButton(
+                    onClick = backOnClick,
+                    modifier = Modifier
+                        .align(Alignment.Bottom)
+                        .padding(start = 5.dp)
+                        .weight(.1f)
+                ) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.show_previous_hint),
+                        modifier = Modifier
+                            .scale(1.5f)
+                    )
+                }
+            } else Spacer(modifier = Modifier.weight(.1f))
+
             Row(
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
-                    .fillMaxWidth()
+                    .weight(.8f)
                     .background(MaterialTheme.colorScheme.primaryContainer)
-                    .height(IntrinsicSize.Min)
-                    .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
+                    .fillMaxHeight()
             ) {
                 if (content != null) {
-                    Spacer(modifier = Modifier.width(20.dp))
                     content()
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(7.dp))
                 }
                 Text(
                     textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     text = description,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
-            if (forwardOnClick != null || backOnClick != null) {
+
+            if (forwardOnClick != null) {
                 var alpha = 1.5f
                 if (animateForward) {
                     val infiniteTransition = rememberInfiniteTransition()
@@ -119,40 +132,21 @@ fun BaseTutorial(
                     )
                     alpha = animatedAlpha
                 }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                IconButton(
+                    onClick = forwardOnClick,
+                    modifier = Modifier
+                        .align(Alignment.Bottom)
+                        .weight(.1f)
                 ) {
-                    if (backOnClick != null) {
-                        IconButton(
-                            onClick = backOnClick,
-                        ) {
-                            Icon(
-                                Icons.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.show_next_hint),
-                                modifier = Modifier
-                                    .scale(1.5f)
-                                    .padding(10.dp)
-                            )
-                        }
-                    } else Spacer(modifier = Modifier.width(1.dp))
-
-                    if (forwardOnClick != null) {
-                        IconButton(
-                            onClick = forwardOnClick,
-                        ) {
-                            Icon(
-                                Icons.Filled.ArrowForward,
-                                contentDescription = stringResource(R.string.show_previous_hint),
-                                modifier = Modifier
-                                    .scale(alpha)
-                                    .padding(10.dp)
-                            )
-                        }
-                    } else Spacer(modifier = Modifier.width(1.dp))
+                    Icon(
+                        Icons.Filled.ArrowForward,
+                        contentDescription = stringResource(R.string.show_next_hint),
+                        modifier = Modifier
+                            .scale(alpha)
+                            .padding(end = 5.dp)
+                    )
                 }
-            } else Spacer(modifier = Modifier.width(1.dp))
+            } else Spacer(modifier = Modifier.weight(.1f))
         }
     }
 }
@@ -218,13 +212,16 @@ fun TutorialStageFour(infoProgress: Int) {
                     backOnClick = { scope.launch { state.scrollToPage(0) } },
                     animateForward = true
                 ) {
-                    Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.restart))
+                    Icon(
+                        Icons.Filled.Refresh,
+                        contentDescription = stringResource(R.string.restart)
+                    )
                 }
             }
 
             2 -> {
                 BaseTutorial(
-                                    stringResource(R.string.info_tut),
+                    stringResource(R.string.info_tut),
                     backOnClick = { scope.launch { state.scrollToPage(0) } }
                 ) {
                     Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.info))
@@ -384,7 +381,8 @@ fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
             }
 
             1 -> {
-                BaseTutorial(stringResource(R.string.unmovable_tut_2)) {
+                BaseTutorial(stringResource(R.string.unmovable_tut_2),
+                backOnClick = { scope.launch { state.scrollToPage(0) } }) {
                     UnmovableBlock()
                 }
             }
@@ -647,6 +645,7 @@ fun HelpCard(
         count,
         state = state,
         modifier = modifier
+            .animateContentSize()
             .fillMaxWidth()
             .height(175.dp)
     ) {

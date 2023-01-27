@@ -16,7 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -33,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.R
+import logan.blockpartycompose.ui.components.BaseHeader
 import logan.blockpartycompose.ui.theme.theme_1_dark_primary
 import logan.blockpartycompose.ui.theme.theme_1_light_primary
 import logan.blockpartycompose.ui.theme.theme_2_dark_primary
@@ -45,32 +49,85 @@ fun SettingsScreen(navController: NavController) {
     val viewModel: SettingsViewModel = hiltViewModel()
     val theme = viewModel.state
     val restartApp by viewModel.restartApp.observeAsState()
+    val isHintsEnabled = viewModel.hintState.observeAsState()
 
     if (restartApp == true) restartApp(navController)
-    val updateColorsOnClick = viewModel::updateColorScheme
-    Settings(navController, theme, updateColorsOnClick)
+
+    Settings(
+        navController = navController,
+        currentTheme = theme,
+        isHintsEnabled = isHintsEnabled.value?:true,
+        hintSwitchOnClick = viewModel::hintSwitchOnClick,
+        updateColorsOnClick = viewModel::updateColorScheme
+    )
 }
 
 @Composable
 fun Settings(
     navController: NavController,
     currentTheme: Int,
+    isHintsEnabled: Boolean = true,
+    hintSwitchOnClick: ((Boolean) -> Unit)?,
     updateColorsOnClick: (colorScheme: Int) -> Unit
 ) {
     Column(
         Modifier
             .fillMaxHeight()
             .fillMaxWidth()
-            .padding(20.dp)
     ) {
-        Text(
-            text = stringResource(R.string.change_theme),
-            fontSize = 24.sp
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        ColorPicker(currentTheme = currentTheme, updateColorsOnClick)
+        BaseHeader(
+            startIcon = Icons.Filled.ArrowBack,
+            startIconOnclick = { navController.popBackStack() })
+        Spacer(modifier = Modifier.height(15.dp))
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(15.dp)
+        ) {
+            HintPreference(isHintsEnabled, hintSwitchOnClick)
+            Spacer(modifier = Modifier.height(25.dp))
+            ThemePreference(currentTheme, updateColorsOnClick)
+        }
     }
 
+}
+
+@Composable
+private fun ThemePreference(
+    currentTheme: Int,
+    updateColorsOnClick: (colorScheme: Int) -> Unit
+) {
+    Text(
+        text = stringResource(R.string.change_theme),
+        fontSize = 24.sp
+    )
+    Spacer(modifier = Modifier.height(10.dp))
+    ColorPicker(currentTheme = currentTheme, updateColorsOnClick)
+}
+
+@Composable
+private fun HintPreference(
+    isHintsEnabled: Boolean,
+    hintSwitchOnClick: ((Boolean) -> Unit)?
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 50.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.hints_on_main_menu),
+            fontSize = 24.sp
+        )
+        Switch(
+            checked = isHintsEnabled,
+            onCheckedChange = hintSwitchOnClick,
+            modifier = Modifier.size(5.dp)
+        )
+    }
 }
 
 @Composable

@@ -86,7 +86,8 @@ class TutorialModeViewModel @Inject constructor(
     private fun setupLevel(id: Int) {
         level = getLevel(id)
         level.resetLevel()
-        val blocks = if (id != 1 && id != 2) getSurroundingBlocks() else emptyList()
+//        val blocks = if (id != 1 && id != 2) getSurroundingBlocks() else emptyList()
+        val blocks = getSurroundingBlocks()
         val newState = GamePlayState(
             blocks = level.initialBlocks,
             glowingBlocks = blocks,
@@ -211,8 +212,8 @@ class TutorialModeViewModel @Inject constructor(
     fun blockClicked(block: Char, index: Int) {
         when (tutorialState.value!!.first) {
             0 -> glowBlocksOnClick(block, index)
-            1 -> if (tutorialState.value!!.second != 0) glowBlocksOnClick(block, index)
-            2 -> if (tutorialState.value!!.second != 0) glowBlocksOnClick(block, index)
+            1 -> glowBlocksOnClick(block, index)
+            2 -> glowBlocksOnClick(block, index)
             3 -> glowBlocksOnClick(block, index)
         }
     }

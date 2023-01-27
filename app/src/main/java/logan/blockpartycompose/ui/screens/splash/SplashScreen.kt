@@ -80,7 +80,7 @@ fun WelcomeScreen(navController: NavController, closeApp: () -> Unit) {
         }
         Card(
             modifier = Modifier
-                .padding(start = 25.dp, bottom = 100.dp, end = 25.dp, top = 25.dp)
+                .padding(start = 15.dp, bottom = 50.dp, end = 15.dp, top = 25.dp)
         ) {
             Text(
                 text = stringResource(R.string.tap_anywhere_to_start),

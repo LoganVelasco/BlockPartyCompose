@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -91,6 +92,7 @@ fun TutorialModeScreen(navController: NavController) {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorialMode(
     movesUsed: Int,
@@ -107,43 +109,50 @@ fun TutorialMode(
     infoClicked: () -> Unit,
     direction: Direction?,
 ) {
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxHeight()
-    ) {
-        TutorialHeader(movesUsed)
-        val padding = if (tutorialStage >= 3) 20.dp else 60.dp
+    BoxWithConstraints() {
+        var gridSize = (maxWidth.value / (x + 1)).dp
+        if (x == 4) gridSize -= 25.dp
+        val contentHeight = (gridSize.value * (x + 2)) + 150f
+        if (((maxHeight.value * .8f) <= contentHeight)) gridSize /= 1.25f
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .padding(top = padding)
-                .fillMaxHeight(.85f)
+            modifier = Modifier.fillMaxHeight()
         ) {
-            TutorialSectionOne(
-                blockClicked = blockClicked,
-                x = x,
-                blocks = blocks,
-                surroundingBlocks = surroundingBlocks,
-                direction = direction
-            )
-            if (tutorialStage >= 3) {
-                Crossfade(
-                    targetState = isHelpEnabled,
-                    animationSpec = tween(300)
-                ) { isHelpEnabled ->
-                    if (isHelpEnabled) {
-                        HelpCard(6)
-                    } else
-                        TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
+            TutorialHeader(movesUsed)
+            val padding = if (tutorialStage >= 3) 20.dp else 60.dp
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .padding(top = padding)
+                    .fillMaxHeight(.85f)
+            ) {
+                LevelGrid(
+                    blockClicked = blockClicked,
+                    x = x,
+                    gridSize = gridSize,
+                    blocks = blocks,
+                    glowList = surroundingBlocks,
+                    direction = direction?: Direction.DOWN,
+                )
+                if (tutorialStage >= 3) {
+                    Crossfade(
+                        targetState = isHelpEnabled,
+                        animationSpec = tween(300)
+                    ) { isHelpEnabled ->
+                        if (isHelpEnabled) {
+                            HelpCard(6)
+                        } else
+                            TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
+                    }
+                } else {
+                    TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
                 }
-            } else {
-                TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
             }
+            if (tutorialStage >= 3)
+                LevelFooter(undoClicked, restartClicked, infoClicked)
+            else
+                Spacer(modifier = Modifier.height(50.dp))
         }
-        if (tutorialStage >= 3)
-            LevelFooter(undoClicked, restartClicked, infoClicked)
-        else
-            Spacer(modifier = Modifier.height(50.dp))
     }
 }
 
@@ -159,16 +168,4 @@ fun TutorialHeader(movesUsed: Int) {
                 modifier = Modifier.padding(10.dp)
             )
         })
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun TutorialSectionOne(
-    blockClicked: (Char, Int) -> Unit,
-    x: Int,
-    blocks: List<Char>,
-    surroundingBlocks: List<Int>,
-    direction: Direction?
-) {
-    LevelGrid(blockClicked, x, blocks, direction ?: Direction.DOWN, surroundingBlocks)
 }

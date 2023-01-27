@@ -21,4 +21,8 @@ class PlayMenuViewModel @Inject constructor(
     fun getProgress(): List<Int> {
         return repo.getDifficultyProgress()
     }
+
+    fun isHintsEnabled():Boolean {
+        return repo.getHintPreference()
+    }
 }

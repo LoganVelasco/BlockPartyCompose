@@ -153,4 +153,12 @@ class DataRepository @Inject constructor(private val gameData: GameData) {
     fun updateColorScheme(colorScheme: Int) {
         gameData.updateColorScheme(colorScheme)
     }
+
+    fun getHintPreference(): Boolean {
+        return gameData.getHintPreference()
+    }
+
+    fun updateHintPreference(enabled: Boolean) {
+        gameData.updateHintPreference(enabled)
+    }
 }

@@ -1,6 +1,7 @@
 package logan.blockpartycompose.ui.components
 
 import androidx.compose.animation.animateColor
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -34,6 +35,7 @@ fun BaseBlock(size: Dp = 50.dp, modifier: Modifier) {
     ) {
         Box(
             modifier = modifier
+                .animateContentSize()
                 .height(size)
                 .width(size)
                 .padding(5.dp)

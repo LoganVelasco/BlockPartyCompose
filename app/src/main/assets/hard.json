@@ -34,16 +34,16 @@
       "minMoves": "4",
       "x": "6",
       "y": "8",
-      "initialBlocks": "p........m...m..x...m....m....m...m.....m....exg"
+      "initialBlocks": "p........m...m..x...m....m..............m....exg"
     },
     {
       "id": "19",
       "name": "Level 5",
       "levelSet": "Hard",
-      "minMoves": "38",
+      "minMoves": "32",
       "x": "6",
       "y": "8",
-      "initialBlocks": "mm..m.mp..m.....m.m......m.............xx....xeg"
+      "initialBlocks": ".......p..m.....m.m......m.............xx....xeg"
     }
   ]
 }

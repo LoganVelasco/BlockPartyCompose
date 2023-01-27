@@ -47,6 +47,7 @@
     <string name="difficulty_star_progress">%1$d/%2$d Stars Collected</string>
     <string name="difficulty_text">%1$s text</string>
     <string name="total_star_count">Total Star Count</string>
+    <string name="total_difficulty_star_count">Total %1$s Star Count</string>
     <string name="level_builder">Level Builder</string>
     <string name="collection_requirement">Collect %1$s Stars to Unlock</string>
     <string name="palette">palette</string>
@@ -59,7 +60,7 @@
     <string name="unmovable_tut">This an obstacle. It cannot be moved and blocks both the player and enemy.</string>
     <string name="enemy_tut_3">Don\'t let it catch you or it\'s game over!</string>
     <string name="enemy_tut_2">It can only move closer to you and tries to move horizontally first if possible.</string>
-    <string name="enemy_tut_1">This is the Enemy block. It moves twice after ever player move.</string>
+    <string name="enemy_tut_1">This is the Enemy block. It moves twice after every player move.</string>
     <string name="goal_tut">This is the goal block.\nMove the Player Block here\n to complete the level.</string>
     <string name="player_tut">Tap a surrounding square to move</string>
     <string name="loss_tut">Don\'t let the red block catch you!</string>
@@ -90,4 +91,7 @@
     <string name="change_theme">Change theme</string>
     <string name="welcome_to_block_party">Welcome to\nBlock Party</string>
     <string name="updated">UPDATED</string>
+    <string name="user">USER</string>
+    <string name="hints">HINTS</string>
+    <string name="hints_on_main_menu">Hints on Main Menu</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -29,15 +30,16 @@ fun BaseHeader(
     startIcon: ImageVector? = null,
     endIcon: ImageVector? = null,
     withBorder: Boolean = true,
-    middleContent: @Composable () -> Unit,
-    firstIconOnclick: () -> Unit = { },
+    middleContent: @Composable () -> Unit = {},
+    startIconOnclick: () -> Unit = { },
     endIconOnclick: () -> Unit = { }
 ) {
-    if (withBorder) modifier.then(Modifier.border(2.dp, MaterialTheme.colorScheme.outline, RectangleShape))// TODO: Make dynamic
+    var newMod = modifier
+    if (withBorder)newMod = modifier.then(Modifier.border(2.dp, MaterialTheme.colorScheme.outline, RectangleShape))// TODO: Make dynamic
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.then(
+        modifier = newMod.then(
             Modifier
                 .fillMaxHeight(.07f)
                 .fillMaxWidth()
@@ -45,7 +47,7 @@ fun BaseHeader(
     ) {
         if (startIcon != null) {
             IconButton(
-                onClick = firstIconOnclick,
+                onClick = startIconOnclick,
             ) {
                 Icon(
                     startIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "", modifier = Modifier

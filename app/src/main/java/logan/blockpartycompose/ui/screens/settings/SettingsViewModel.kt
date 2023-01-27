@@ -14,6 +14,10 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     var state by Delegates.notNull<Int>()
+
+    private var _hintState = MutableLiveData(getCurrentHintState())
+    val hintState: LiveData<Boolean> = _hintState
+
     private var _restartApp = MutableLiveData(false)
     val restartApp: LiveData<Boolean> = _restartApp
 
@@ -24,6 +28,15 @@ class SettingsViewModel @Inject constructor(
     fun updateColorScheme(colorScheme: Int) {
         repo.updateColorScheme(colorScheme)
         _restartApp.value = true
+    }
+
+    fun hintSwitchOnClick(state: Boolean){
+        repo.updateHintPreference(state)
+        _hintState.value = state
+    }
+
+    private fun getCurrentHintState():Boolean{
+        return repo.getHintPreference()
     }
 
 }

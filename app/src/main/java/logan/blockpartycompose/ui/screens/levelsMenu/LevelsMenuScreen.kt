@@ -15,15 +15,18 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -167,9 +170,9 @@ fun LevelTopBar(
 ) {
     BaseHeader(
         startIcon = Icons.Filled.ArrowBack,
-        firstIconOnclick = { navController.navigateUp() },
+        startIconOnclick = { navController.navigateUp() },
         middleContent = {
-            Row(Modifier.padding(10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
                 val count = if (progress.isEmpty()) 0 else progress.sum()
                 val text =
                     if (levelSet == LevelSet.CUSTOM) stringResource(R.string.my_levels) else stringResource(
@@ -177,16 +180,14 @@ fun LevelTopBar(
                     )
                 Text(text = text, fontSize = 18.sp)
                 if (levelSet != LevelSet.CUSTOM) Icon(
-                    Icons.Filled.Star,
-                    contentDescription = stringResource(id = R.string.star_count, levelSet.name),
+                    painter = painterResource(id = R.drawable.star),
+                    contentDescription = stringResource(R.string.total_difficulty_star_count),
+                    tint = Color.Unspecified,
                     modifier = Modifier
-                        .scale(1.25f)
-                        .padding(start = 5.dp)
+                        .scale(.5f)
                 )
             }
-        },
-        modifier = Modifier
-            .border(2.dp, Color.DarkGray, RectangleShape),
+        }
     )
 }
 
@@ -200,18 +201,26 @@ fun LevelsList(
     editLevel: (Int?) -> Unit = {},
     deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
+    val state = rememberScrollState()
+    LaunchedEffect(key1 = progress) {
+        state.scrollTo(state.maxValue)
+    }
+
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(state)
             .testTag(stringResource(R.string.levels))
     ) {
-        levels.forEachIndexed { index, level ->
+        var nextLevel = progress.indexOf(0)
+        if (nextLevel == -1) nextLevel = levels.size - 1
+        val currentLevels = levels.subList(0, nextLevel + 1)
+        currentLevels.forEachIndexed { index, level ->
             val stars = if (progress.isEmpty()) -1 else progress[index]
             LevelCard(navController, levelSet, level, stars, editLevel, deleteLevel)
-            Spacer(Modifier.height(25.dp))
+            if (index == currentLevels.size-1) Spacer(Modifier.height(1.dp))
+            else Spacer(Modifier.height(25.dp))
         }
     }
 }
@@ -226,7 +235,7 @@ private fun LevelCard(
     deleteLevel: KFunction2<Int, String, Unit>? = null
 ) {
     Card(
-        border = BorderStroke(5.dp, MaterialTheme.colorScheme.outline),// TODO: make dynamic
+        border = BorderStroke(5.dp, MaterialTheme.colorScheme.outline),
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -243,7 +252,12 @@ private fun LevelCard(
             modifier = Modifier
                 .background(
                     shape = RectangleShape,
-                    color = MaterialTheme.colorScheme.secondaryContainer
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.secondaryContainer,
+                            MaterialTheme.colorScheme.primaryContainer,
+                        )
+                    )
                 )
                 .padding(15.dp)
                 .fillMaxWidth()
@@ -260,7 +274,7 @@ private fun LevelCard(
                             fontStyle = FontStyle.Italic
                         )
                     },
-                    firstIconOnclick = {
+                    startIconOnclick = {
                         editLevel(level.id)
                     },
                     endIconOnclick = {
