@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -35,7 +34,13 @@ fun BaseHeader(
     endIconOnclick: () -> Unit = { }
 ) {
     var newMod = modifier
-    if (withBorder)newMod = modifier.then(Modifier.border(2.dp, MaterialTheme.colorScheme.outline, RectangleShape))// TODO: Make dynamic
+    if (withBorder) newMod = modifier.then(
+        Modifier.border(
+            2.dp,
+            MaterialTheme.colorScheme.outline,
+            RectangleShape
+        )
+    )
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -50,12 +55,15 @@ fun BaseHeader(
                 onClick = startIconOnclick,
             ) {
                 Icon(
-                    startIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "", modifier = Modifier
+                    startIcon,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = "",
+                    modifier = Modifier
                         .scale(1.5f)
                         .padding(10.dp)
                 )
             }
-        }else {
+        } else {
             Spacer(modifier = Modifier.width(endIcon?.defaultWidth?.times(1.5f) ?: 0.dp))
         }
 
@@ -67,13 +75,16 @@ fun BaseHeader(
             ) {
 
                 Icon(
-                    endIcon, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = "", modifier = Modifier
+                    endIcon,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = "",
+                    modifier = Modifier
                         .scale(1.5f)
                         .padding(10.dp)
                 )
             }
 
-        }else{
+        } else {
             Spacer(modifier = Modifier.width(startIcon?.defaultWidth?.times(1.5f) ?: 0.dp))
         }
     }
@@ -85,6 +96,10 @@ fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
         onClick = backClicked,
         modifier = modifier
     ) {
-        Icon(Icons.Filled.ArrowBack, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = stringResource(R.string.back_to_menu))
+        Icon(
+            Icons.Filled.ArrowBack,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            contentDescription = stringResource(R.string.back_to_menu)
+        )
     }
 }

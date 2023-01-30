@@ -34,13 +34,13 @@ fun BlockPartyTheme(
             } else {
                 dynamicLightColorScheme(context)
             }
-        }else if(colors == 1){
+        } else if (colors == 1) {
             if (darkTheme) {
                 DarkColorsGreen
             } else {
                 LightColorsGreen
             }
-        } else if(colors == 2){
+        } else if (colors == 2) {
             if (darkTheme) {
                 DarkColorsPurple
             } else {

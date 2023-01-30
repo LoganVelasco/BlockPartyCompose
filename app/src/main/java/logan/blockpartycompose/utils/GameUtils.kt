@@ -19,12 +19,15 @@ class GameUtils {
         const val MEDIUM_MAX_STARS = 15
         const val HARD_STAR_REQUIREMENT = 40
         const val HARD_MAX_STARS = 15
+        val FINAL_LEVELS = listOf(9, 14, 19)
+        const val HELP_CARD_COUNT_INITIAL = 6
+        const val HELP_CARD_COUNT_SECOND = 8
+        const val HELP_CARD_MOVE_INITIAL = 6
+        const val HELP_CARD_MOVE_SECOND = 7
         private const val PLAYER_SPEED = 350
         private const val PLAYER_DELAY = 100
         private const val ENEMY_SPEED = 250
         private const val ENEMY_DELAY = 100
-        val FINAL_LEVELS = listOf(9,14,19)
-        private const val helpCardCount = 6
 
         fun isTouching(index: Int, index2: Int, x: Int): Boolean {
             // checks for out of bounds indices

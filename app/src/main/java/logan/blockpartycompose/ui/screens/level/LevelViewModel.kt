@@ -12,7 +12,16 @@ import logan.blockpartycompose.data.DataRepository
 import logan.blockpartycompose.data.models.Level
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
 import logan.blockpartycompose.utils.GameUtils
+import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.FINAL_LEVELS
+import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.HELP_CARD_COUNT_INITIAL
+import logan.blockpartycompose.utils.GameUtils.Companion.HELP_CARD_COUNT_SECOND
+import logan.blockpartycompose.utils.GameUtils.Companion.HELP_CARD_MOVE_INITIAL
+import logan.blockpartycompose.utils.GameUtils.Companion.HELP_CARD_MOVE_SECOND
+import logan.blockpartycompose.utils.GameUtils.Companion.MOVABLE_BLOCK
+import logan.blockpartycompose.utils.GameUtils.Companion.PLAYER_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.getDirection
 import logan.blockpartycompose.utils.GameUtils.Companion.isAbove
 import logan.blockpartycompose.utils.GameUtils.Companion.isInSameColumn
@@ -20,11 +29,6 @@ import logan.blockpartycompose.utils.GameUtils.Companion.isInSameRow
 import logan.blockpartycompose.utils.GameUtils.Companion.isRightOf
 import logan.blockpartycompose.utils.GameUtils.Companion.isValidEnemyMove
 import logan.blockpartycompose.utils.GameUtils.Companion.shouldEnemyAttemptMove
-import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
-import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
-import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
-import logan.blockpartycompose.utils.GameUtils.Companion.PLAYER_BLOCK
-import logan.blockpartycompose.utils.GameUtils.Companion.MOVABLE_BLOCK
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
@@ -453,18 +457,18 @@ class LevelViewModel @Inject constructor(
             return
         }
         var cardShown = 0
-        if (level.levelSet == LevelSet.MEDIUM) cardShown = 6
+        if (level.levelSet == LevelSet.MEDIUM) cardShown = HELP_CARD_MOVE_INITIAL
         _infoState.value = cardShown
     }
 
     fun getInfoProgress(): Int {
-        return if (repo.getDifficultyProgress()[0] >= 15) 8 else 6
+        return if (repo.getDifficultyProgress()[0] >= 15) HELP_CARD_COUNT_SECOND else HELP_CARD_COUNT_INITIAL
     }
 
     private fun cardToDisplay(): Int {
         return when (repo.getTutorialStage()) {
-            4 -> 6
-            5 -> 7
+            4 -> HELP_CARD_MOVE_INITIAL
+            5 -> HELP_CARD_MOVE_SECOND
             else -> -1
         }
     }

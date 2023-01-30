@@ -25,7 +25,7 @@ fun FilledStar() {
     Icon(
         painter = painterResource(id = R.drawable.star),
         contentDescription = stringResource(R.string.star),
-        tint= Color.Unspecified,
+        tint = Color.Unspecified,
         modifier = Modifier
             .padding(5.dp)
     )

@@ -87,8 +87,8 @@ class GameData @Inject constructor(@ApplicationContext val context: Context) {
     fun updateProgress(difficulty: LevelSet, level: Int, stars: Int) {// TODO update to scale
         var currentProgress = prefs.getString(difficulty.name, "")
         if (currentProgress.isNullOrEmpty()) {
-            currentProgress = if(difficulty == LevelSet.EASY ) "0000000000"
-                else "00000"
+            currentProgress = if (difficulty == LevelSet.EASY) "0000000000"
+            else "00000"
         }
         when (difficulty) {
             LevelSet.EASY -> {

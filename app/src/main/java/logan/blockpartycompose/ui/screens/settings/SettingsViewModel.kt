@@ -30,12 +30,12 @@ class SettingsViewModel @Inject constructor(
         _restartApp.value = true
     }
 
-    fun hintSwitchOnClick(state: Boolean){
+    fun hintSwitchOnClick(state: Boolean) {
         repo.updateHintPreference(state)
         _hintState.value = state
     }
 
-    private fun getCurrentHintState():Boolean{
+    private fun getCurrentHintState(): Boolean {
         return repo.getHintPreference()
     }
 

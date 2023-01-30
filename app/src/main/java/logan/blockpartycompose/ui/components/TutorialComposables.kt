@@ -10,7 +10,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -38,7 +37,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -382,7 +380,7 @@ fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
 
             1 -> {
                 BaseTutorial(stringResource(R.string.unmovable_tut_2),
-                backOnClick = { scope.launch { state.scrollToPage(0) } }) {
+                    backOnClick = { scope.launch { state.scrollToPage(0) } }) {
                     UnmovableBlock()
                 }
             }

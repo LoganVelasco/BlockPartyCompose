@@ -56,7 +56,7 @@ fun SettingsScreen(navController: NavController) {
     Settings(
         navController = navController,
         currentTheme = theme,
-        isHintsEnabled = isHintsEnabled.value?:true,
+        isHintsEnabled = isHintsEnabled.value ?: true,
         hintSwitchOnClick = viewModel::hintSwitchOnClick,
         updateColorsOnClick = viewModel::updateColorScheme
     )

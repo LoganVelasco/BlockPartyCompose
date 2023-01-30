@@ -1,7 +1,5 @@
 package logan.blockpartycompose.ui.screens.playMenu
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import logan.blockpartycompose.data.DataRepository
@@ -22,7 +20,7 @@ class PlayMenuViewModel @Inject constructor(
         return repo.getDifficultyProgress()
     }
 
-    fun isHintsEnabled():Boolean {
+    fun isHintsEnabled(): Boolean {
         return repo.getHintPreference()
     }
 }

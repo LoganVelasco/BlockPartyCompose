@@ -100,7 +100,7 @@ fun LevelController(
                     movesUsed = state!!.movesUsed,
                     x = viewModel.level.x,
                     blocks = state!!.blocks,
-                    infoState = infoState?: 0,
+                    infoState = infoState ?: 0,
                     infoProgress = viewModel.getInfoProgress(),
                     blockClicked = viewModel::blockClicked,
                     backClicked = { navigation.navigateUp() },
@@ -116,7 +116,6 @@ fun LevelController(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
 fun LevelScreen(
@@ -135,27 +134,29 @@ fun LevelScreen(
 ) {
     BoxWithConstraints() {
         val isInfoClicked = infoState != -1
-        var gridSize = (maxWidth.value / (x+1)).dp
-        if(x == 4) gridSize -= 25.dp
-        val contentHeight = (gridSize.value * (x+2)) + 150f
-        if(isInfoClicked && ((maxHeight.value * .8f) <= contentHeight)) gridSize /= 1.25f
+        var gridSize = (maxWidth.value / (x + 1)).dp
+        if (x == 4) gridSize -= 25.dp
+        val contentHeight = (gridSize.value * (x + 2)) + 150f
+        if (isInfoClicked && ((maxHeight.value * .8f) <= contentHeight)) gridSize /= 1.25f
 
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxHeight()
         ) {
             LevelHeader(movesUsed, backClicked, settingsClicked)
-            Crossfade(targetState = isInfoClicked, modifier = Modifier
+            Crossfade(
+                targetState = isInfoClicked, modifier = Modifier
                     .weight(.8f)
-                .fillMaxHeight()) {
-                val arrangement = if(isInfoClicked)Arrangement.SpaceEvenly else Arrangement.Center
-                Column(
-                verticalArrangement = arrangement,
-                modifier = Modifier
                     .fillMaxHeight()
             ) {
+                val arrangement = if (isInfoClicked) Arrangement.SpaceEvenly else Arrangement.Center
+                Column(
+                    verticalArrangement = arrangement,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                ) {
                     LevelGrid(blockClicked, x, blocks, gridSize, direction ?: Direction.DOWN)
-                    if (it)HelpCard(count = infoProgress, currentCard = infoState)
+                    if (it) HelpCard(count = infoProgress, currentCard = infoState)
                 }
             }
             LevelFooter(undoClicked, restartClicked, infoClicked, Modifier.weight(.05f))
@@ -164,7 +165,12 @@ fun LevelScreen(
 }
 
 @Composable
-fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> Unit, modifier: Modifier = Modifier) {
+fun LevelHeader(
+    movesUsed: Int,
+    backClicked: () -> Unit,
+    settingsClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     BaseHeader(
         modifier = modifier,
         startIcon = Icons.Filled.ArrowBack,
@@ -217,27 +223,51 @@ fun LevelGrid(
                 ) { type ->
                     when (type) {
                         ENEMY_BLOCK -> {
-                            EnemyBlock(onClick = onClick, size = gridSize, isPulsing = glowList.contains(index))
+                            EnemyBlock(
+                                onClick = onClick,
+                                size = gridSize,
+                                isPulsing = glowList.contains(index)
+                            )
                         }
 
                         PLAYER_BLOCK -> {
-                            PlayerBlock(onClick = onClick, size = gridSize, isPulsing = glowList.contains(index))
+                            PlayerBlock(
+                                onClick = onClick,
+                                size = gridSize,
+                                isPulsing = glowList.contains(index)
+                            )
                         }
 
                         MOVABLE_BLOCK -> {
-                            MovableBlock(onClick = onClick, size = gridSize, isPulsing = glowList.contains(index))
+                            MovableBlock(
+                                onClick = onClick,
+                                size = gridSize,
+                                isPulsing = glowList.contains(index)
+                            )
                         }
 
                         GOAL_BLOCK -> {
-                            GoalBlock(onClick = onClick, size = gridSize, isPulsing = glowList.contains(index))
+                            GoalBlock(
+                                onClick = onClick,
+                                size = gridSize,
+                                isPulsing = glowList.contains(index)
+                            )
                         }
 
                         EMPTY_BLOCK -> {
-                            EmptyBlock(onClick = onClick, size = gridSize, isPulsing = glowList.contains(index))
+                            EmptyBlock(
+                                onClick = onClick,
+                                size = gridSize,
+                                isPulsing = glowList.contains(index)
+                            )
                         }
 
                         UNMOVABLE_BLOCK -> {
-                            UnmovableBlock(onClick = onClick, size = gridSize, isPulsing = glowList.contains(index))
+                            UnmovableBlock(
+                                onClick = onClick,
+                                size = gridSize,
+                                isPulsing = glowList.contains(index)
+                            )
                         }
                     }
 
@@ -270,12 +300,20 @@ fun LevelFooter(
         IconButton(
             onClick = restartClicked,
         ) {
-            Icon(Icons.Filled.Refresh, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = stringResource(R.string.restart))
+            Icon(
+                Icons.Filled.Refresh,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                contentDescription = stringResource(R.string.restart)
+            )
         }
         IconButton(
             onClick = infoClicked,
         ) {
-            Icon(Icons.Filled.Info, tint = MaterialTheme.colorScheme.onSurfaceVariant, contentDescription = stringResource(R.string.info))
+            Icon(
+                Icons.Filled.Info,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                contentDescription = stringResource(R.string.info)
+            )
         }
     }
 }
@@ -293,7 +331,10 @@ fun SuccessScreen(
     if (movesUsed == 0) return
     PostLevelScreen(backClicked = backClicked) {
         Text(text = stringResource(id = R.string.you_did_it), fontSize = 36.sp)
-        Text(text = stringResource(id = R.string.level_completed_in, levelName, movesUsed), fontSize = 22.sp)
+        Text(
+            text = stringResource(id = R.string.level_completed_in, levelName, movesUsed),
+            fontSize = 22.sp
+        )
         if (stars < 3) Text(text = stringResource(id = R.string.complete_in, minMoves))
         SuccessStars(stars)
         Row(
@@ -309,7 +350,6 @@ fun SuccessScreen(
         }
     }
 }
-
 
 
 @Composable
@@ -333,7 +373,9 @@ fun PostLevelScreen(
             .fillMaxWidth()
     ) {
         Column {
-            if(backClicked != null){  BackIcon(backClicked, Modifier.padding(10.dp)) }
+            if (backClicked != null) {
+                BackIcon(backClicked, Modifier.padding(10.dp))
+            }
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,

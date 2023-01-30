@@ -1,6 +1,14 @@
 package logan.blockpartycompose.ui.screens.playMenu
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -53,7 +61,7 @@ private fun PlayMenu(
     ) {
         MenuHeader(navController, progress.sum())
         MenuDifficulties(navController, progress)
-        if(isHintsEnabled)TutorialPlayMenuWindow()
+        if (isHintsEnabled) TutorialPlayMenuWindow()
         MenuFooter(navController)
     }
 }
@@ -62,7 +70,10 @@ private fun PlayMenu(
 fun MenuHeader(navController: NavController, totalStars: Int) {
     BaseHeader(
         middleContent = {
-            Row(verticalAlignment = Alignment.CenterVertically , modifier = Modifier.padding(10.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(10.dp)
+            ) {
                 Text(
                     text = stringResource(id = R.string.total_star_progress, totalStars),
                     fontSize = 18.sp,
@@ -162,12 +173,22 @@ private fun DifficultyButton(
             }
 
             LevelSet.MEDIUM -> {
-                if (totalStars >= MEDIUM_STAR_REQUIREMENT) EnabledDifficulty(progress, onClick, difficulty.name, MEDIUM_MAX_STARS)
+                if (totalStars >= MEDIUM_STAR_REQUIREMENT) EnabledDifficulty(
+                    progress,
+                    onClick,
+                    difficulty.name,
+                    MEDIUM_MAX_STARS
+                )
                 else DisabledDifficulty(requirement = MEDIUM_STAR_REQUIREMENT, difficulty.name)
             }
 
             LevelSet.HARD -> {
-                if (totalStars >= HARD_STAR_REQUIREMENT) EnabledDifficulty(progress, onClick, difficulty.name, HARD_MAX_STARS)
+                if (totalStars >= HARD_STAR_REQUIREMENT) EnabledDifficulty(
+                    progress,
+                    onClick,
+                    difficulty.name,
+                    HARD_MAX_STARS
+                )
                 else DisabledDifficulty(requirement = HARD_STAR_REQUIREMENT, difficulty.name)
             }
 

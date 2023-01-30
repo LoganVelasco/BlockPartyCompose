@@ -4,16 +4,29 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,14 +48,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.Level
-import logan.blockpartycompose.ui.components.*
+import logan.blockpartycompose.ui.components.BaseHeader
+import logan.blockpartycompose.ui.components.EmptyBlock
+import logan.blockpartycompose.ui.components.EmptyStar
+import logan.blockpartycompose.ui.components.EnemyBlock
+import logan.blockpartycompose.ui.components.FilledStar
+import logan.blockpartycompose.ui.components.GoalBlock
+import logan.blockpartycompose.ui.components.MovableBlock
+import logan.blockpartycompose.ui.components.PlayerBlock
+import logan.blockpartycompose.ui.components.UnmovableBlock
 import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.MOVABLE_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.PLAYER_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.UNMOVABLE_BLOCK
-import java.util.*
+import java.util.Locale
 import kotlin.reflect.KFunction2
 
 @Composable
@@ -172,7 +193,10 @@ fun LevelTopBar(
         startIcon = Icons.Filled.ArrowBack,
         startIconOnclick = { navController.navigateUp() },
         middleContent = {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(10.dp)
+            ) {
                 val count = if (progress.isEmpty()) 0 else progress.sum()
                 val text =
                     if (levelSet == LevelSet.CUSTOM) stringResource(R.string.my_levels) else stringResource(
@@ -219,7 +243,7 @@ fun LevelsList(
         currentLevels.forEachIndexed { index, level ->
             val stars = if (progress.isEmpty()) -1 else progress[index]
             LevelCard(navController, levelSet, level, stars, editLevel, deleteLevel)
-            if (index == currentLevels.size-1) Spacer(Modifier.height(1.dp))
+            if (index == currentLevels.size - 1) Spacer(Modifier.height(1.dp))
             else Spacer(Modifier.height(25.dp))
         }
     }

@@ -6,9 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -119,9 +117,11 @@ fun TutorialMode(
             modifier = Modifier.fillMaxHeight()
         ) {
             TutorialHeader(movesUsed)
-            Crossfade(targetState = isHelpEnabled, modifier = Modifier
-                .weight(.8f)
-                .fillMaxHeight()) {
+            Crossfade(
+                targetState = isHelpEnabled, modifier = Modifier
+                    .weight(.8f)
+                    .fillMaxHeight()
+            ) {
                 Column(
                     verticalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
@@ -135,7 +135,7 @@ fun TutorialMode(
                         direction = direction ?: Direction.DOWN,
                         glowList = surroundingBlocks
                     )
-                    if (it)HelpCard(count = 6)
+                    if (it) HelpCard(count = 6)
                     else TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
                 }
             }
