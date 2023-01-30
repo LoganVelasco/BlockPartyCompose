@@ -40,10 +40,10 @@
       "id": "4",
       "name": "Level 5",
       "levelSet": "Easy",
-      "minMoves": "10",
+      "minMoves": "9",
       "x": "6",
       "y": "8",
-      "initialBlocks": ".....g......e......x.x....x...p................."
+      "initialBlocks": "...........ge.......x.x....x....p..............."
     },
     {
       "id": "5",
