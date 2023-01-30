@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -154,6 +155,7 @@ fun SaveLevelDialog(
     saveLevel: KFunction2<Context, String, Unit>,
 ) {
     val levelName = remember { mutableStateOf("") }
+    val maxChar = 12
     val focusRequester = remember { FocusRequester() }
     AlertDialog(
         onDismissRequest = closeDialog,
@@ -168,10 +170,17 @@ fun SaveLevelDialog(
             Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)) {
                 TextField(
                     value = levelName.value,
-                    onValueChange = { levelName.value = it },
+                    onValueChange = { if (it.length <= maxChar) levelName.value = it },
                     modifier = Modifier
                         .focusRequester(focusRequester)
                         .testTag(stringResource(R.string.level_name))
+                )
+                Text(
+                    text = "${levelName.value.length} / $maxChar",
+                    textAlign = TextAlign.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 16.dp)
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 Row(
@@ -198,7 +207,6 @@ fun SaveLevelDialog(
     )
 }
 
-
 @Composable
 fun SaveExistingLevelDialog(
     name: String,
@@ -220,20 +228,24 @@ fun SaveExistingLevelDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(
-                        onClick = saveLevel
+                        onClick = saveLevel,
+                        modifier = Modifier.weight(.45f)
                     ) {
                         Text(stringResource(R.string.override))
                     }
+                    Spacer(modifier = Modifier.weight(.1f))
                     Button(
-                        onClick = saveNewLevel
+                        onClick = saveNewLevel,
+                        modifier = Modifier.weight(.45f)
                     ) {
                         Text(stringResource(R.string.save))
                     }
-                    Button(
-                        onClick = closeDialog
-                    ) {
-                        Text(stringResource(R.string.cancel))
-                    }
+                }
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = closeDialog
+                ) {
+                    Text(stringResource(R.string.cancel))
                 }
             }
         }

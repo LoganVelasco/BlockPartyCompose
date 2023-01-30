@@ -152,7 +152,6 @@ fun LevelScreen(
                 Column(
                 verticalArrangement = arrangement,
                 modifier = Modifier
-//                    .weight(.8f)
                     .fillMaxHeight()
             ) {
                     LevelGrid(blockClicked, x, blocks, gridSize, direction ?: Direction.DOWN)
@@ -176,7 +175,6 @@ fun LevelHeader(movesUsed: Int, backClicked: () -> Unit, settingsClicked: () -> 
                 text = stringResource(id = R.string.moves_used, movesUsed),
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
-//                modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp)
             )
         })
 }

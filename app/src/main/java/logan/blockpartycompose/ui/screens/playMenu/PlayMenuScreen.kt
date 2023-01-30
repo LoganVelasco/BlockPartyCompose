@@ -24,6 +24,10 @@ import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.BaseHeader
 import logan.blockpartycompose.ui.components.TutorialPlayMenuWindow
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.utils.GameUtils.Companion.HARD_MAX_STARS
+import logan.blockpartycompose.utils.GameUtils.Companion.HARD_STAR_REQUIREMENT
+import logan.blockpartycompose.utils.GameUtils.Companion.MEDIUM_MAX_STARS
+import logan.blockpartycompose.utils.GameUtils.Companion.MEDIUM_STAR_REQUIREMENT
 
 @Composable
 fun PlayMenuScreen(navController: NavController) {
@@ -158,13 +162,13 @@ private fun DifficultyButton(
             }
 
             LevelSet.MEDIUM -> {
-                if (totalStars >= 30) EnabledDifficulty(progress, onClick, difficulty.name, 15)
-                else DisabledDifficulty(requirement = 30, difficulty.name)
+                if (totalStars >= MEDIUM_STAR_REQUIREMENT) EnabledDifficulty(progress, onClick, difficulty.name, MEDIUM_MAX_STARS)
+                else DisabledDifficulty(requirement = MEDIUM_STAR_REQUIREMENT, difficulty.name)
             }
 
             LevelSet.HARD -> {
-                if (totalStars >= 45) EnabledDifficulty(progress, onClick, difficulty.name, 15)
-                else DisabledDifficulty(requirement = 45, difficulty.name)
+                if (totalStars >= HARD_STAR_REQUIREMENT) EnabledDifficulty(progress, onClick, difficulty.name, HARD_MAX_STARS)
+                else DisabledDifficulty(requirement = HARD_STAR_REQUIREMENT, difficulty.name)
             }
 
             LevelSet.CUSTOM -> {}

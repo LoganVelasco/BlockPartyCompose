@@ -102,7 +102,9 @@ private fun goToLevelBuilder(
     if (id != -1) {
         levelBuilderViewModel.setupExistingLevel(levelsViewModel.level)
         navigation.navigate("levelBuilder/$id")
-    } else navigation.popBackStack("levelBuilder", inclusive = false)
+    } else {
+        navigation.popBackStack()
+    }
 }
 
 

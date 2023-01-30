@@ -15,6 +15,10 @@ class GameUtils {
         const val UNMOVABLE_BLOCK = 'x'
         const val GOAL_BLOCK = 'g'
         const val EMPTY_BLOCK = '.'
+        const val MEDIUM_STAR_REQUIREMENT = 25
+        const val MEDIUM_MAX_STARS = 15
+        const val HARD_STAR_REQUIREMENT = 40
+        const val HARD_MAX_STARS = 15
         private const val PLAYER_SPEED = 350
         private const val PLAYER_DELAY = 100
         private const val ENEMY_SPEED = 250

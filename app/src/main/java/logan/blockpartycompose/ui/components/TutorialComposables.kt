@@ -111,7 +111,7 @@ fun BaseTutorial(
                 }
                 Text(
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     text = description,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.fillMaxWidth()

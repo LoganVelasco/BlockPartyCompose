@@ -119,39 +119,28 @@ fun TutorialMode(
             modifier = Modifier.fillMaxHeight()
         ) {
             TutorialHeader(movesUsed)
-            val padding = if (tutorialStage >= 3) 20.dp else 60.dp
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .padding(top = padding)
-                    .fillMaxHeight(.85f)
-            ) {
-                LevelGrid(
-                    blockClicked = blockClicked,
-                    x = x,
-                    gridSize = gridSize,
-                    blocks = blocks,
-                    glowList = surroundingBlocks,
-                    direction = direction?: Direction.DOWN,
-                )
-                if (tutorialStage >= 3) {
-                    Crossfade(
-                        targetState = isHelpEnabled,
-                        animationSpec = tween(300)
-                    ) { isHelpEnabled ->
-                        if (isHelpEnabled) {
-                            HelpCard(6)
-                        } else
-                            TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
-                    }
-                } else {
-                    TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
+            Crossfade(targetState = isHelpEnabled, modifier = Modifier
+                .weight(.8f)
+                .fillMaxHeight()) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                ) {
+                    LevelGrid(
+                        blockClicked = blockClicked,
+                        x = x,
+                        blocks = blocks,
+                        gridSize = gridSize,
+                        direction = direction ?: Direction.DOWN,
+                        glowList = surroundingBlocks
+                    )
+                    if (it)HelpCard(count = 6)
+                    else TutorialWindow(tutorialStage, tutorialProgress, forwardOnClick)
                 }
             }
             if (tutorialStage >= 3)
                 LevelFooter(undoClicked, restartClicked, infoClicked)
-            else
-                Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }

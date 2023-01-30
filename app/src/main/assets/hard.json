@@ -13,19 +13,19 @@
       "id": "16",
       "name": "Level 2",
       "levelSet": "Hard",
-      "minMoves": "28",
+      "minMoves": "23",
       "x": "6",
       "y": "8",
-      "initialBlocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
+      "initialBlocks": "........m.....x.....m.....x......mx....mxpe..gx."
     },
     {
       "id": "17",
       "name": "Level 3",
       "levelSet": "Hard",
-      "minMoves": "23",
+      "minMoves": "28",
       "x": "6",
       "y": "8",
-      "initialBlocks": "........m.....x.....m.....x......mx....mxpe..gx."
+      "initialBlocks": ".....g..e.........mmmmmmmmmm.mpx..mm.xxxm.m..m.."
     },
     {
       "id": "18",
