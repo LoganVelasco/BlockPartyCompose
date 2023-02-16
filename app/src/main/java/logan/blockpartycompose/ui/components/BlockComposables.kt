@@ -11,7 +11,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import logan.blockpartycompose.R
+import logan.blockpartycompose.ui.theme.empty_color
+import logan.blockpartycompose.ui.theme.enemy_color
+import logan.blockpartycompose.ui.theme.enemy_color_outline
+import logan.blockpartycompose.ui.theme.goal_color
+import logan.blockpartycompose.ui.theme.goal_color_outline
+import logan.blockpartycompose.ui.theme.movable_color
+import logan.blockpartycompose.ui.theme.movable_color_outline
+import logan.blockpartycompose.ui.theme.player_color
+import logan.blockpartycompose.ui.theme.player_color_outline
+import logan.blockpartycompose.ui.theme.unmovable_color
 
 
 @Composable
@@ -78,7 +95,7 @@ fun Block(
     if (isPulsing) {
         val infiniteTransition = rememberInfiniteTransition()
         val targetColor = when (backgroundColor) {
-            Color.Yellow -> Color.Black
+            goal_color -> Color.Black
             else -> Color.White
         }
         val color by infiniteTransition.animateColor(
@@ -123,9 +140,9 @@ fun EnemyBlock(
         isPulsing = isPulsing,
         size = size,
         modifier = modifier,
-        backgroundColor = Color.Red,
-        defaultColor = Color.Black,
-        selectedColor = Color.White,
+        backgroundColor = enemy_color,
+        defaultColor = enemy_color_outline,
+        selectedColor = if(isSystemInDarkTheme()) Color.White else Color.Black,
         testTag = stringResource(R.string.enemy)
     )
 }
@@ -145,9 +162,9 @@ fun PlayerBlock(
         isPulsing = isPulsing,
         size = size,
         modifier = modifier,
-        backgroundColor = Color.Blue,
-        defaultColor = Color.Black,
-        selectedColor = Color.White,
+        backgroundColor = player_color,
+        defaultColor = player_color_outline,
+        selectedColor = if(isSystemInDarkTheme()) Color.White else Color.Black,
         testTag = stringResource(R.string.player)
     )
 }
@@ -167,9 +184,9 @@ fun GoalBlock(
         isPulsing = isPulsing,
         size = size,
         modifier = modifier,
-        backgroundColor = Color.Yellow,
-        defaultColor = Color.Black,
-        selectedColor = Color.White,
+        backgroundColor = goal_color,
+        defaultColor = goal_color_outline,
+        selectedColor = if(isSystemInDarkTheme()) Color.White else Color.Black,
         testTag = stringResource(R.string.goal)
     )
 }
@@ -188,9 +205,9 @@ fun EmptyBlock(
         isPulsing = isPulsing,
         size = size,
         modifier = modifier,
-        backgroundColor = Color.Gray,
+        backgroundColor = empty_color,
         defaultColor = Color.DarkGray,
-        selectedColor = Color.White,
+        selectedColor = if(isSystemInDarkTheme()) Color.White else Color.Black,
         testTag = stringResource(R.string.empty)
     )
 }
@@ -209,9 +226,9 @@ fun UnmovableBlock(
         isPulsing = isPulsing,
         size = size,
         modifier = modifier,
-        backgroundColor = Color.Black,
+        backgroundColor = unmovable_color,
         defaultColor = Color.DarkGray,
-        selectedColor = Color.White,
+        selectedColor = if(isSystemInDarkTheme()) Color.White else Color.DarkGray,
         testTag = stringResource(R.string.unmovable)
     )
 }
@@ -230,9 +247,9 @@ fun MovableBlock(
         isPulsing = isPulsing,
         size = size,
         modifier = modifier,
-        backgroundColor = Color.Green,
-        defaultColor = Color.Black,
-        selectedColor = Color.White,
+        backgroundColor = movable_color,
+        defaultColor = movable_color_outline,
+        selectedColor = if(isSystemInDarkTheme()) Color.White else Color.Black,
         testTag = stringResource(R.string.movable)
     )
 }

@@ -40,10 +40,10 @@
       "id": "19",
       "name": "Level 5",
       "levelSet": "Hard",
-      "minMoves": "32",
+      "minMoves": "23",
       "x": "6",
       "y": "8",
-      "initialBlocks": ".......p..m.....m.m......m.............xx....xeg"
+      "initialBlocks": "........p.m.....m.m......m..e...........g......."
     }
   ]
 }

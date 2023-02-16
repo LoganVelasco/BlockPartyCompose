@@ -12,9 +12,11 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import logan.blockpartycompose.ui.components.DarkColorsDefault
 import logan.blockpartycompose.ui.components.DarkColorsGreen
+import logan.blockpartycompose.ui.components.DarkColorsGrey
 import logan.blockpartycompose.ui.components.DarkColorsPurple
 import logan.blockpartycompose.ui.components.LightColorsDefault
 import logan.blockpartycompose.ui.components.LightColorsGreen
+import logan.blockpartycompose.ui.components.LightColorsGrey
 import logan.blockpartycompose.ui.components.LightColorsPurple
 
 
@@ -45,6 +47,12 @@ fun BlockPartyTheme(
                 DarkColorsPurple
             } else {
                 LightColorsPurple
+            }
+        }else if (colors == 3) {
+            if (darkTheme) {
+                DarkColorsGrey
+            } else {
+                LightColorsGrey
             }
         } else {
             if (darkTheme) {

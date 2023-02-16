@@ -11,22 +11,22 @@ import androidx.compose.ui.unit.dp
 import logan.blockpartycompose.R
 
 @Composable
-fun EmptyStar() {
+fun EmptyStar(modifier: Modifier = Modifier) {
     Icon(
         painter = painterResource(id = R.drawable.star),
         contentDescription = stringResource(R.string.empty_star), tint = Color.Gray,
-        modifier = Modifier
+        modifier = modifier
             .padding(5.dp)
     )
 }
 
 @Composable
-fun FilledStar() {
+fun FilledStar(modifier: Modifier = Modifier) {
     Icon(
         painter = painterResource(id = R.drawable.star),
         contentDescription = stringResource(R.string.star),
         tint = Color.Unspecified,
-        modifier = Modifier
+        modifier = modifier
             .padding(5.dp)
     )
 }

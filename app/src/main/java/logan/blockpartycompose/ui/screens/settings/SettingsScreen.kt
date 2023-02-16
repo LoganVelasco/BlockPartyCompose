@@ -37,12 +37,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.BaseHeader
+import logan.blockpartycompose.ui.theme.MainFont
 import logan.blockpartycompose.ui.theme.theme_1_dark_primary
 import logan.blockpartycompose.ui.theme.theme_1_light_primary
 import logan.blockpartycompose.ui.theme.theme_2_dark_primary
 import logan.blockpartycompose.ui.theme.theme_2_light_primary
 import logan.blockpartycompose.ui.theme.theme_3_dark_primary
 import logan.blockpartycompose.ui.theme.theme_3_light_primary
+import logan.blockpartycompose.ui.theme.theme_4_dark_primary
+import logan.blockpartycompose.ui.theme.theme_4_light_primary
 
 @Composable
 fun SettingsScreen(navController: NavController) {
@@ -66,6 +69,7 @@ fun SettingsScreen(navController: NavController) {
 fun Settings(
     navController: NavController,
     currentTheme: Int,
+//    unlockAll: () -> Unit,
     isHintsEnabled: Boolean = true,
     hintSwitchOnClick: ((Boolean) -> Unit)?,
     updateColorsOnClick: (colorScheme: Int) -> Unit
@@ -85,6 +89,9 @@ fun Settings(
                 .fillMaxWidth()
                 .padding(15.dp)
         ) {
+//            Button(unlockAll){
+//                Text(text = "Unlock all levels")
+//            }
             HintPreference(isHintsEnabled, hintSwitchOnClick)
             Spacer(modifier = Modifier.height(25.dp))
             ThemePreference(currentTheme, updateColorsOnClick)
@@ -100,10 +107,11 @@ private fun ThemePreference(
 ) {
     Text(
         text = stringResource(R.string.change_theme),
+        fontFamily = MainFont,
         fontSize = 24.sp
     )
     Spacer(modifier = Modifier.height(10.dp))
-    ColorPicker(currentTheme = currentTheme, updateColorsOnClick)
+    PalettePicker(currentTheme = currentTheme, updateColorsOnClick)
 }
 
 @Composable
@@ -120,6 +128,7 @@ private fun HintPreference(
     ) {
         Text(
             text = stringResource(R.string.hints_on_main_menu),
+            fontFamily = MainFont,
             fontSize = 24.sp
         )
         Switch(
@@ -131,7 +140,7 @@ private fun HintPreference(
 }
 
 @Composable
-fun ColorPicker(currentTheme: Int, updateColorsOnClick: (colorScheme: Int) -> Unit) {
+fun PalettePicker(currentTheme: Int, updateColorsOnClick: (colorScheme: Int) -> Unit, customColorSelected: Boolean = false) {
     val modifier = Modifier
         .size(50.dp)
         .padding(5.dp)
@@ -151,6 +160,12 @@ fun ColorPicker(currentTheme: Int, updateColorsOnClick: (colorScheme: Int) -> Un
         theme_3_dark_primary
     } else {
         theme_3_light_primary
+    }
+
+    val pinkThemeColor = if (isSystemInDarkTheme()) {
+        theme_4_dark_primary
+    } else {
+        theme_4_light_primary
     }
     val dynamicColorEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
@@ -204,19 +219,35 @@ fun ColorPicker(currentTheme: Int, updateColorsOnClick: (colorScheme: Int) -> Un
                     .clickable { updateColorsOnClick(1) }
             )
         }
+
         if (currentTheme == 2) {
             Box(
                 modifier = modifier
                     .background(purpleThemeColor)
                     .border(2.dp, MaterialTheme.colorScheme.onSurface, CircleShape)
             )
-        } else {
+        }else {
             Box(
                 modifier = modifier
                     .background(purpleThemeColor)
                     .clickable { updateColorsOnClick(2) }
             )
         }
+
+        if (currentTheme == 3) {
+            Box(
+                modifier = modifier
+                    .background(pinkThemeColor)
+                    .border(2.dp, MaterialTheme.colorScheme.onSurface, CircleShape)
+            )
+        } else {
+            Box(
+                modifier = modifier
+                    .background(pinkThemeColor)
+                    .clickable { updateColorsOnClick(3) }
+            )
+        }
+
     }
 }
 

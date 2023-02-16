@@ -10,9 +10,9 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -30,6 +30,7 @@ import logan.blockpartycompose.R
 import logan.blockpartycompose.data.models.BlockType
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.level.LevelGrid
+import logan.blockpartycompose.ui.theme.MainFont
 import kotlin.reflect.KFunction2
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,11 +122,11 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
     AlertDialog(
         onDismissRequest = dismissLevel,
         title = {
-            Text(text = stringResource(R.string.save_level_question))
+            Text(text = stringResource(R.string.save_level_question), fontFamily = MainFont,)
         },
         text = {
             Text(
-                stringResource(R.string.level_not_saved)
+                stringResource(R.string.level_not_saved), fontFamily = MainFont,
             )
         },
         confirmButton =
@@ -133,7 +134,7 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
             Button(
                 onClick = saveLevel
             ) {
-                Text(stringResource(R.string.save))
+                Text(stringResource(R.string.save), fontFamily = MainFont,)
             }
         },
         dismissButton =
@@ -141,7 +142,7 @@ fun UnsavedLevelDialog(dismissLevel: () -> Unit, saveLevel: () -> Unit) {
             Button(
                 onClick = dismissLevel
             ) {
-                Text(stringResource(R.string.discard))
+                Text(stringResource(R.string.discard), fontFamily = MainFont,)
             }
         }
     )
@@ -155,15 +156,15 @@ fun SaveLevelDialog(
     saveLevel: KFunction2<Context, String, Unit>,
 ) {
     val levelName = remember { mutableStateOf("") }
-    val maxChar = 12
+    val maxChar = 9
     val focusRequester = remember { FocusRequester() }
     AlertDialog(
         onDismissRequest = closeDialog,
         title = {
-            Text(text = stringResource(id = R.string.save_level))
+            Text(text = stringResource(id = R.string.save_level), fontFamily = MainFont,)
         },
         text = {
-            Text(text = stringResource(R.string.enter_level_name))
+            Text(text = stringResource(R.string.enter_level_name), fontFamily = MainFont,)
         },
         confirmButton =
         {
@@ -178,6 +179,7 @@ fun SaveLevelDialog(
                 Text(
                     text = "${levelName.value.length} / $maxChar",
                     textAlign = TextAlign.End,
+                    fontFamily = MainFont,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 16.dp)
@@ -190,7 +192,7 @@ fun SaveLevelDialog(
                     Button(
                         onClick = closeDialog
                     ) {
-                        Text(stringResource(R.string.cancel))
+                        Text(stringResource(R.string.cancel), fontFamily = MainFont,)
                     }
                     Button(
                         enabled = levelName.value.isNotEmpty(),
@@ -199,7 +201,7 @@ fun SaveLevelDialog(
                             closeDialog()
                         }
                     ) {
-                        Text(stringResource(id = R.string.save))
+                        Text(stringResource(id = R.string.save), fontFamily = MainFont,)
                     }
                 }
             }
@@ -217,7 +219,7 @@ fun SaveExistingLevelDialog(
     AlertDialog(
         onDismissRequest = closeDialog,
         title = {
-            Text(text = stringResource(R.string.override_existing_level, name))
+            Text(text = stringResource(R.string.override_existing_level, name), fontFamily = MainFont,)
         },
         confirmButton =
         {
@@ -231,21 +233,21 @@ fun SaveExistingLevelDialog(
                         onClick = saveLevel,
                         modifier = Modifier.weight(.45f)
                     ) {
-                        Text(stringResource(R.string.override))
+                        Text(stringResource(R.string.override), fontFamily = MainFont,)
                     }
                     Spacer(modifier = Modifier.weight(.1f))
                     Button(
                         onClick = saveNewLevel,
                         modifier = Modifier.weight(.45f)
                     ) {
-                        Text(stringResource(R.string.save))
+                        Text(stringResource(R.string.save), fontFamily = MainFont,)
                     }
                 }
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = closeDialog
                 ) {
-                    Text(stringResource(R.string.cancel))
+                    Text(stringResource(R.string.cancel), fontFamily = MainFont,)
                 }
             }
         }
@@ -281,7 +283,7 @@ fun LevelBuilder(
                 modifier = Modifier.testTag(stringResource(R.string.back_button))
             )
             Button(onClick = { clearAllClicked() }, Modifier.padding(15.dp)) {
-                Text(text = stringResource(R.string.clear_all))
+                Text(text = stringResource(R.string.clear_all), fontFamily = MainFont,)
             }
         }
         LevelGrid(blockClicked = blockClicked, x = x, blocks = blocks)

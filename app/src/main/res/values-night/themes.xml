@@ -13,4 +13,24 @@
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.BlockPartySplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_round</item>
+        <item name="windowSplashScreenAnimationDuration">6000</item>
+        <item name="postSplashScreenTheme">@style/Theme.BlockParty</item>
+
+        <item name="android:statusBarColor" >@color/black</item>
+        <item name="android:navigationBarColor">@color/black</item>
+    </style>
+
+
+    <style name="Theme.BlockParty.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.BlockPartyCompose.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.BlockPartyCompose.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

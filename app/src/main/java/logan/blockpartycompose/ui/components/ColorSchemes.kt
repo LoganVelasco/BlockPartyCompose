@@ -176,6 +176,64 @@ import logan.blockpartycompose.ui.theme.theme_3_light_surfaceTint
 import logan.blockpartycompose.ui.theme.theme_3_light_surfaceVariant
 import logan.blockpartycompose.ui.theme.theme_3_light_tertiary
 import logan.blockpartycompose.ui.theme.theme_3_light_tertiaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_dark_background
+import logan.blockpartycompose.ui.theme.theme_4_dark_error
+import logan.blockpartycompose.ui.theme.theme_4_dark_errorContainer
+import logan.blockpartycompose.ui.theme.theme_4_dark_inverseOnSurface
+import logan.blockpartycompose.ui.theme.theme_4_dark_inversePrimary
+import logan.blockpartycompose.ui.theme.theme_4_dark_inverseSurface
+import logan.blockpartycompose.ui.theme.theme_4_dark_onBackground
+import logan.blockpartycompose.ui.theme.theme_4_dark_onError
+import logan.blockpartycompose.ui.theme.theme_4_dark_onErrorContainer
+import logan.blockpartycompose.ui.theme.theme_4_dark_onPrimary
+import logan.blockpartycompose.ui.theme.theme_4_dark_onPrimaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_dark_onSecondary
+import logan.blockpartycompose.ui.theme.theme_4_dark_onSecondaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_dark_onSurface
+import logan.blockpartycompose.ui.theme.theme_4_dark_onSurfaceVariant
+import logan.blockpartycompose.ui.theme.theme_4_dark_onTertiary
+import logan.blockpartycompose.ui.theme.theme_4_dark_onTertiaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_dark_outline
+import logan.blockpartycompose.ui.theme.theme_4_dark_outlineVariant
+import logan.blockpartycompose.ui.theme.theme_4_dark_primary
+import logan.blockpartycompose.ui.theme.theme_4_dark_primaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_dark_scrim
+import logan.blockpartycompose.ui.theme.theme_4_dark_secondary
+import logan.blockpartycompose.ui.theme.theme_4_dark_secondaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_dark_surface
+import logan.blockpartycompose.ui.theme.theme_4_dark_surfaceTint
+import logan.blockpartycompose.ui.theme.theme_4_dark_surfaceVariant
+import logan.blockpartycompose.ui.theme.theme_4_dark_tertiary
+import logan.blockpartycompose.ui.theme.theme_4_dark_tertiaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_light_background
+import logan.blockpartycompose.ui.theme.theme_4_light_error
+import logan.blockpartycompose.ui.theme.theme_4_light_errorContainer
+import logan.blockpartycompose.ui.theme.theme_4_light_inverseOnSurface
+import logan.blockpartycompose.ui.theme.theme_4_light_inversePrimary
+import logan.blockpartycompose.ui.theme.theme_4_light_inverseSurface
+import logan.blockpartycompose.ui.theme.theme_4_light_onBackground
+import logan.blockpartycompose.ui.theme.theme_4_light_onError
+import logan.blockpartycompose.ui.theme.theme_4_light_onErrorContainer
+import logan.blockpartycompose.ui.theme.theme_4_light_onPrimary
+import logan.blockpartycompose.ui.theme.theme_4_light_onPrimaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_light_onSecondary
+import logan.blockpartycompose.ui.theme.theme_4_light_onSecondaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_light_onSurface
+import logan.blockpartycompose.ui.theme.theme_4_light_onSurfaceVariant
+import logan.blockpartycompose.ui.theme.theme_4_light_onTertiary
+import logan.blockpartycompose.ui.theme.theme_4_light_onTertiaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_light_outline
+import logan.blockpartycompose.ui.theme.theme_4_light_outlineVariant
+import logan.blockpartycompose.ui.theme.theme_4_light_primary
+import logan.blockpartycompose.ui.theme.theme_4_light_primaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_light_scrim
+import logan.blockpartycompose.ui.theme.theme_4_light_secondary
+import logan.blockpartycompose.ui.theme.theme_4_light_secondaryContainer
+import logan.blockpartycompose.ui.theme.theme_4_light_surface
+import logan.blockpartycompose.ui.theme.theme_4_light_surfaceTint
+import logan.blockpartycompose.ui.theme.theme_4_light_surfaceVariant
+import logan.blockpartycompose.ui.theme.theme_4_light_tertiary
+import logan.blockpartycompose.ui.theme.theme_4_light_tertiaryContainer
 
 
 val LightColorsGreen = lightColorScheme(
@@ -372,3 +430,69 @@ val DarkColorsPurple = darkColorScheme(
     outlineVariant = theme_3_dark_outlineVariant,
     scrim = theme_3_dark_scrim,
 )
+
+val LightColorsGrey = lightColorScheme(
+    primary = theme_4_light_primary,
+    onPrimary = theme_4_light_onPrimary,
+    primaryContainer = theme_4_light_primaryContainer,
+    onPrimaryContainer = theme_4_light_onPrimaryContainer,
+    secondary = theme_4_light_secondary,
+    onSecondary = theme_4_light_onSecondary,
+    secondaryContainer = theme_4_light_secondaryContainer,
+    onSecondaryContainer = theme_4_light_onSecondaryContainer,
+    tertiary = theme_4_light_tertiary,
+    onTertiary = theme_4_light_onTertiary,
+    tertiaryContainer = theme_4_light_tertiaryContainer,
+    onTertiaryContainer = theme_4_light_onTertiaryContainer,
+    error = theme_4_light_error,
+    errorContainer = theme_4_light_errorContainer,
+    onError = theme_4_light_onError,
+    onErrorContainer = theme_4_light_onErrorContainer,
+    background = theme_4_light_background,
+    onBackground = theme_4_light_onBackground,
+    surface = theme_4_light_surface,
+    onSurface = theme_4_light_onSurface,
+    surfaceVariant = theme_4_light_surfaceVariant,
+    onSurfaceVariant = theme_4_light_onSurfaceVariant,
+    outline = theme_4_light_outline,
+    inverseOnSurface = theme_4_light_inverseOnSurface,
+    inverseSurface = theme_4_light_inverseSurface,
+    inversePrimary = theme_4_light_inversePrimary,
+    surfaceTint = theme_4_light_surfaceTint,
+    outlineVariant = theme_4_light_outlineVariant,
+    scrim = theme_4_light_scrim,
+)
+
+
+val DarkColorsGrey = darkColorScheme(
+    primary = theme_4_dark_primary,
+    onPrimary = theme_4_dark_onPrimary,
+    primaryContainer = theme_4_dark_primaryContainer,
+    onPrimaryContainer = theme_4_dark_onPrimaryContainer,
+    secondary = theme_4_dark_secondary,
+    onSecondary = theme_4_dark_onSecondary,
+    secondaryContainer = theme_4_dark_secondaryContainer,
+    onSecondaryContainer = theme_4_dark_onSecondaryContainer,
+    tertiary = theme_4_dark_tertiary,
+    onTertiary = theme_4_dark_onTertiary,
+    tertiaryContainer = theme_4_dark_tertiaryContainer,
+    onTertiaryContainer = theme_4_dark_onTertiaryContainer,
+    error = theme_4_dark_error,
+    errorContainer = theme_4_dark_errorContainer,
+    onError = theme_4_dark_onError,
+    onErrorContainer = theme_4_dark_onErrorContainer,
+    background = theme_4_dark_background,
+    onBackground = theme_4_dark_onBackground,
+    surface = theme_4_dark_surface,
+    onSurface = theme_4_dark_onSurface,
+    surfaceVariant = theme_4_dark_surfaceVariant,
+    onSurfaceVariant = theme_4_dark_onSurfaceVariant,
+    outline = theme_4_dark_outline,
+    inverseOnSurface = theme_4_dark_inverseOnSurface,
+    inverseSurface = theme_4_dark_inverseSurface,
+    inversePrimary = theme_4_dark_inversePrimary,
+    surfaceTint = theme_4_dark_surfaceTint,
+    outlineVariant = theme_4_dark_outlineVariant,
+    scrim = theme_4_dark_scrim,
+)
+

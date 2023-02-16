@@ -30,6 +30,7 @@ import logan.blockpartycompose.ui.screens.level.Direction
 import logan.blockpartycompose.ui.screens.level.GameState
 import logan.blockpartycompose.ui.screens.level.LevelFooter
 import logan.blockpartycompose.ui.screens.level.LevelGrid
+import logan.blockpartycompose.ui.theme.MainFont
 
 @Composable
 fun TutorialModeScreen(navController: NavController) {
@@ -153,6 +154,7 @@ fun TutorialHeader(movesUsed: Int) {
             Text(
                 text = stringResource(id = R.string.moves_used, movesUsed),
                 fontSize = 18.sp,
+                fontFamily = MainFont,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(10.dp)
             )

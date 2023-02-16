@@ -32,6 +32,7 @@ import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.BaseHeader
 import logan.blockpartycompose.ui.components.TutorialPlayMenuWindow
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.ui.theme.MainFont
 import logan.blockpartycompose.utils.GameUtils.Companion.HARD_MAX_STARS
 import logan.blockpartycompose.utils.GameUtils.Companion.HARD_STAR_REQUIREMENT
 import logan.blockpartycompose.utils.GameUtils.Companion.MEDIUM_MAX_STARS
@@ -77,6 +78,7 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
                 Text(
                     text = stringResource(id = R.string.total_star_progress, totalStars),
                     fontSize = 18.sp,
+                    fontFamily = MainFont,
                     textAlign = TextAlign.Center,
                 )
                 Icon(
@@ -109,7 +111,8 @@ private fun MenuFooter(navController: NavController) {
         ) {
             Text(
                 text = stringResource(R.string.level_builder),
-                fontSize = 12.sp
+                fontFamily = MainFont,
+                fontSize = 16.sp
             )
         }
         Spacer(Modifier.width(10.dp))
@@ -119,7 +122,8 @@ private fun MenuFooter(navController: NavController) {
         ) {
             Text(
                 text = stringResource(id = R.string.my_levels),
-                fontSize = 12.sp
+                fontFamily = MainFont,
+                fontSize = 16.sp
             )
         }
     }
@@ -210,6 +214,7 @@ private fun EnabledDifficulty(
     ) {
         Text(
             text = stringResource(id = R.string.difficulty_star_progress, progress, maxStarCount),
+            fontFamily = MainFont,
             modifier = Modifier.testTag(stringResource(id = R.string.difficulty_text, difficulty))
         )
         Spacer(modifier = Modifier.height(5.dp))
@@ -218,7 +223,7 @@ private fun EnabledDifficulty(
             onClick = onClick,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = difficulty)
+            Text(text = difficulty, fontFamily = MainFont, fontSize = 18.sp)
         }
     }
 }
@@ -233,7 +238,8 @@ private fun DisabledDifficulty(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = stringResource(id = R.string.collection_requirement, requirement)
+            text = stringResource(id = R.string.collection_requirement, requirement),
+            fontFamily = MainFont,
         )
         Spacer(modifier = Modifier.height(5.dp))
         Spacer(modifier = Modifier.height(5.dp))
@@ -242,7 +248,7 @@ private fun DisabledDifficulty(
             onClick = {},
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = text)
+            Text(text = text, fontFamily = MainFont, fontSize = 18.sp)
         }
     }
 }

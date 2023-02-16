@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.components.*
 import logan.blockpartycompose.ui.screens.levelsMenu.LevelSet
+import logan.blockpartycompose.ui.theme.MainFont
 import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
@@ -180,6 +181,7 @@ fun LevelHeader(
             Text(
                 text = stringResource(id = R.string.moves_used, movesUsed),
                 fontSize = 18.sp,
+                fontFamily = MainFont,
                 textAlign = TextAlign.Center,
             )
         })
@@ -330,9 +332,14 @@ fun SuccessScreen(
 ) {
     if (movesUsed == 0) return
     PostLevelScreen(backClicked = backClicked) {
-        Text(text = stringResource(id = R.string.you_did_it), fontSize = 36.sp)
+        Text(
+            text = stringResource(id = R.string.you_did_it),
+            fontFamily = MainFont,
+            fontSize = 36.sp
+        )
         Text(
             text = stringResource(id = R.string.level_completed_in, levelName, movesUsed),
+            fontFamily = MainFont,
             fontSize = 22.sp
         )
         if (stars < 3) Text(text = stringResource(id = R.string.complete_in, minMoves))
@@ -355,9 +362,9 @@ fun SuccessScreen(
 @Composable
 fun FailureScreen(tryAgainOnClick: () -> Unit, backClicked: () -> Unit) {
     PostLevelScreen(backClicked = backClicked) {
-        Text(text = stringResource(R.string.you_died), fontSize = 36.sp)
+        Text(text = stringResource(R.string.you_died), fontFamily = MainFont, fontSize = 36.sp)
         Button(onClick = { tryAgainOnClick() }) {
-            Text(text = stringResource(id = R.string.try_again))
+            Text(text = stringResource(id = R.string.try_again), fontFamily = MainFont)
         }
     }
 }

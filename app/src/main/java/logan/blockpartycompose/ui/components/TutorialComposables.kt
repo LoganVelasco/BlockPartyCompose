@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 import logan.blockpartycompose.R
 import logan.blockpartycompose.ui.screens.level.PostLevelScreen
 import logan.blockpartycompose.ui.screens.level.SuccessStars
+import logan.blockpartycompose.ui.theme.MainFont
 
 
 @Composable
@@ -110,6 +111,7 @@ fun BaseTutorial(
                 Text(
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
+                    fontFamily = MainFont,
                     text = description,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.fillMaxWidth()
@@ -452,9 +454,10 @@ fun TutorialSuccessScreen(
 ) {
     if (movesUsed == 0) return
     PostLevelScreen {
-        Text(text = stringResource(id = R.string.you_did_it), fontSize = 36.sp)
+        Text(text = stringResource(id = R.string.you_did_it), fontFamily = MainFont,
+            fontSize = 36.sp)
         Text(
-            text = stringResource(id = R.string.tutorial_level_completed_in, movesUsed),
+            text = stringResource(id = R.string.tutorial_level_completed_in, movesUsed), fontFamily = MainFont,
             fontSize = 26.sp
         )
         SuccessStars(3)
@@ -471,7 +474,7 @@ fun TutorialSuccessScreen(
             horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()
         ) {
             Button(onClick = { nextLevelOnClick() }) {
-                Text(text = stringResource(R.string.continue_tutorial))
+                Text(text = stringResource(R.string.continue_tutorial), fontFamily = MainFont,)
             }
         }
 
@@ -483,13 +486,15 @@ fun TutorialFailureScreen(
     tryAgainOnClick: () -> Unit,
 ) {
     PostLevelScreen {
-        Text(text = stringResource(id = R.string.you_died), fontSize = 36.sp)
+        Text(text = stringResource(id = R.string.you_died), fontFamily = MainFont,
+            fontSize = 36.sp)
         FirstLossTutorialWindow()
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()
         ) {
             Button(onClick = { tryAgainOnClick() }) {
-                Text(text = stringResource(R.string.try_again))
+                Text(text = stringResource(R.string.try_again), fontFamily = MainFont
+                )
             }
         }
     }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +44,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,6 +60,7 @@ import logan.blockpartycompose.ui.components.GoalBlock
 import logan.blockpartycompose.ui.components.MovableBlock
 import logan.blockpartycompose.ui.components.PlayerBlock
 import logan.blockpartycompose.ui.components.UnmovableBlock
+import logan.blockpartycompose.ui.theme.MainFont
 import logan.blockpartycompose.utils.GameUtils.Companion.EMPTY_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.ENEMY_BLOCK
 import logan.blockpartycompose.utils.GameUtils.Companion.GOAL_BLOCK
@@ -116,7 +120,7 @@ fun DeletionConfirmationPopup(name: String, delete: () -> Unit, cancel: () -> Un
     AlertDialog(
         onDismissRequest = { },
         title = {
-            Text(stringResource(R.string.delete_level, name))
+            Text(stringResource(R.string.delete_level, name), fontFamily = MainFont)
         },
         confirmButton =
         {
@@ -129,12 +133,12 @@ fun DeletionConfirmationPopup(name: String, delete: () -> Unit, cancel: () -> Un
                     Button(
                         onClick = cancel
                     ) {
-                        Text(stringResource(R.string.cancel))
+                        Text(stringResource(R.string.cancel), fontFamily = MainFont)
                     }
                     Button(
                         onClick = delete
                     ) {
-                        Text(stringResource(R.string.delete))
+                        Text(stringResource(R.string.delete), fontFamily = MainFont)
                     }
                 }
             }
@@ -159,10 +163,11 @@ fun CustomLevelEmpty(
             Text(
                 text = stringResource(R.string.no_custom_levels),
                 fontSize = 26.sp,
+                fontFamily = MainFont,
                 modifier = Modifier.padding(10.dp)
             )
             Button(onClick = createNewLevel) {
-                Text(text = stringResource(R.string.create_custom_level))
+                Text(text = stringResource(R.string.create_custom_level), fontFamily = MainFont)
             }
         }
     }
@@ -202,7 +207,7 @@ fun LevelTopBar(
                     if (levelSet == LevelSet.CUSTOM) stringResource(R.string.my_levels) else stringResource(
                         id = R.string.difficulty_star_count, levelSet.name, count
                     )
-                Text(text = text, fontSize = 18.sp)
+                Text(text = text, fontSize = 18.sp, fontFamily = MainFont)
                 if (levelSet != LevelSet.CUSTOM) Icon(
                     painter = painterResource(id = R.drawable.star),
                     contentDescription = stringResource(R.string.total_difficulty_star_count),
@@ -278,8 +283,8 @@ private fun LevelCard(
                     shape = RectangleShape,
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.secondaryContainer,
                             MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.secondaryContainer,
                         )
                     )
                 )
@@ -287,17 +292,8 @@ private fun LevelCard(
                 .fillMaxWidth()
         ) {
             if (level.levelSet == LevelSet.CUSTOM) {
-                BaseHeader(
-                    startIcon = Icons.Filled.Edit,
-                    endIcon = Icons.Filled.Delete,
-                    withBorder = false,
-                    middleContent = {
-                        Text(
-                            text = level.name.uppercase(Locale("us")),
-                            fontSize = 32.sp,
-                            fontStyle = FontStyle.Italic
-                        )
-                    },
+                CustomLevelHeader(
+                    name = level.name.uppercase(Locale("us")),
                     startIconOnclick = {
                         editLevel(level.id)
                     },
@@ -310,7 +306,8 @@ private fun LevelCard(
             } else
                 Text(
                     text = level.name.uppercase(Locale("us")),
-                    fontSize = 32.sp,
+                    fontSize = 42.sp,
+                    fontFamily = MainFont,
                     fontStyle = FontStyle.Italic,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
@@ -327,6 +324,54 @@ private fun LevelCard(
                         .testTag(stringResource(id = R.string.level_stars, level.name))
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CustomLevelHeader(name: String, startIconOnclick: () -> Unit, endIconOnclick: () -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxHeight(.07f)
+            .fillMaxWidth()
+
+    ) {
+        IconButton(
+            onClick = startIconOnclick,
+        ) {
+            Icon(
+                Icons.Filled.Edit,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                contentDescription = "",
+                modifier = Modifier
+                    .scale(1.5f)
+                    .padding(10.dp)
+            )
+        }
+
+        Text(
+            text = name,
+            fontSize = 36.sp,
+            fontFamily = MainFont,
+            fontStyle = FontStyle.Italic,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(1f)
+        )
+
+        IconButton(
+            onClick = endIconOnclick,
+        ) {
+
+            Icon(
+                Icons.Filled.Delete,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                contentDescription = "",
+                modifier = Modifier
+                    .scale(1.5f)
+                    .padding(10.dp)
+            )
         }
     }
 }
@@ -391,17 +436,16 @@ private fun LevelStars(result: Int, modifier: Modifier) {
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = modifier
             .fillMaxWidth()
-            .padding(10.dp)
     ) {
         if (result >= 1) {
-            FilledStar()
-        } else EmptyStar()
+            FilledStar(Modifier.weight(.3f))
+        } else EmptyStar(Modifier.weight(.3f))
         if (result >= 2) {
-            FilledStar()
-        } else EmptyStar()
+            FilledStar(Modifier.weight(.3f))
+        } else EmptyStar(Modifier.weight(.3f))
         if (result >= 3) {
-            FilledStar()
-        } else EmptyStar()
+            FilledStar(Modifier.weight(.3f))
+        } else EmptyStar(Modifier.weight(.3f))
     }
 }
 

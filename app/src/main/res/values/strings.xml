@@ -56,13 +56,13 @@
     <string name="hard">HARD</string>
     <string name="tap_anywhere_to_start">Tap anywhere to start</string>
     <string name="movable_tut_2">Push two Movable blocks together and they both disappear!</string>
-    <string name="movable_tut_1">This is the Movable block.\nIt can be pushed only by the player.</string>
+    <string name="movable_tut_1">This is the Movable block. It can be pushed only by the player.</string>
     <string name="unmovable_tut">This an Obstacle block. It cannot be moved and blocks both the player and enemy.</string>
     <string name="enemy_tut_3">Don\'t let it catch you or it\'s game over!</string>
     <string name="enemy_tut_2">It can only move closer to you and tries to move horizontally first if possible.</string>
     <string name="enemy_tut_1">This is the Enemy block. It moves twice after every player move.</string>
-    <string name="goal_tut">This is the Goal block.\nMove the Player Block here\n to complete the level.</string>
-    <string name="player_tut">Tap a surrounding square to move</string>
+    <string name="goal_tut">This is the Goal block. Move the Player Block here to complete the level.</string>
+    <string name="player_tut">Tap a surrounding square to move!</string>
     <string name="loss_tut">Don\'t let the Enemy block catch you!</string>
     <string name="win_tut_1">Earning stars will let you unlock harder levels</string>
     <string name="win_tut_2">Complete levels in as few moves as possible to earn all 3 stars</string>
@@ -89,7 +89,7 @@
     <string name="play">Play</string>
     <string name="delete">Delete</string>
     <string name="change_theme">Change theme</string>
-    <string name="welcome_to_block_party">Welcome to\nBlock Party</string>
+    <string name="block_party">Block Party</string>
     <string name="updated">UPDATED</string>
     <string name="user">USER</string>
     <string name="hints">HINTS</string>
