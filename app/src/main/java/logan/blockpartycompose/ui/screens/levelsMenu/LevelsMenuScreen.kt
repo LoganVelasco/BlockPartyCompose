@@ -162,9 +162,10 @@ fun CustomLevelEmpty(
         ) {
             Text(
                 text = stringResource(R.string.no_custom_levels),
+                textAlign = TextAlign.Center,
                 fontSize = 26.sp,
                 fontFamily = MainFont,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(25.dp)
             )
             Button(onClick = createNewLevel) {
                 Text(text = stringResource(R.string.create_custom_level), fontFamily = MainFont)

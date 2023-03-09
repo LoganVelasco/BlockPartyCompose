@@ -3,11 +3,19 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.10'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/loganv/Workspace/upload-keystore.jks')
+            storePassword 'TRIngFjTZmsrYetzCzXF'
+            keyPassword 'TRIngFjTZmsrYetzCzXF'
+            keyAlias 'upload'
+        }
+    }
     compileSdk 33
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
@@ -27,6 +35,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
@@ -42,13 +51,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '11'
-        useIR = true
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion '1.4.3'
     }
     packagingOptions {
         resources {
@@ -61,21 +69,22 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
 
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
-    implementation "androidx.compose.material3:material3:1.1.0-alpha04"
+    implementation "androidx.compose.material3:material3:1.1.0-alpha08"
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation 'androidx.compose.runtime:runtime:1.4.0-alpha04'
+    implementation 'androidx.compose.runtime:runtime:1.4.0-rc01'
     implementation"androidx.core:core-splashscreen:1.0.0"
 
     implementation "androidx.preference:preference-ktx:1.2.0"
 
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.0'
     implementation 'androidx.activity:activity-compose:1.6.1'
 
     implementation "com.google.accompanist:accompanist-pager:0.20.2"
@@ -94,7 +103,7 @@ dependencies {
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha04'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     implementation 'androidx.core:core-ktx:1.9.0'
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
@@ -107,7 +116,7 @@ dependencies {
     // Unit
     testImplementation 'junit:junit:4.13.2'
     testImplementation "androidx.test:core:1.5.0"
-    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
     testImplementation 'io.mockk:mockk:1.13.1'
 
     // Instrumented

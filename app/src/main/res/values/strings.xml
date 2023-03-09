@@ -7,7 +7,7 @@
     <string name="colors">COLORS</string>
     <string name="my_levels">My Levels</string>
     <string name="create_custom_level">Create Custom Level</string>
-    <string name="no_custom_levels">No custom levels saved yet</string>
+    <string name="no_custom_levels">No custom levels saved</string>
     <string name="level_failed">Level Failed</string>
     <string name="you_did_it">You Did It!</string>
     <string name="back_to_menu">back to menu</string>
