@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -90,7 +90,7 @@ fun MenuHeader(navController: NavController, totalStars: Int) {
                 )
             }
         },
-        startIcon = Icons.Filled.ArrowBack,
+        startIcon = Icons.AutoMirrored.Filled.ArrowBack,
         endIcon = Icons.Filled.Settings,
         startIconOnclick = { navController.popBackStack() },
         endIconOnclick = { navController.navigate("settings") }

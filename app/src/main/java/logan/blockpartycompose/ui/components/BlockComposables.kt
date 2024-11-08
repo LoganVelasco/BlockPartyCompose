@@ -93,7 +93,7 @@ fun Block(
     }
 
     if (isPulsing) {
-        val infiniteTransition = rememberInfiniteTransition()
+        val infiniteTransition = rememberInfiniteTransition(label = "InfinitePulseTransition")
         val targetColor = when (backgroundColor) {
             goal_color -> Color.Black
             else -> Color.White
@@ -104,7 +104,7 @@ fun Block(
             animationSpec = infiniteRepeatable(
                 animation = tween(delayMillis = 200, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Reverse
-            )
+            ), label = "InfinitePulseColor"
         )
         val borderSize by infiniteTransition.animateFloat(
             initialValue = 1f,
@@ -112,7 +112,7 @@ fun Block(
             animationSpec = infiniteRepeatable(
                 animation = tween(delayMillis = 200, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Reverse
-            )
+            ), label = "InfinitePulseFloat"
         )
         val pulseModifier = Modifier
             .border(borderSize.dp, color)

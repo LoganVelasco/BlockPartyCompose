@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -61,7 +61,7 @@ fun LevelController(
 
     Crossfade(
         targetState = state!!.gameState,
-        animationSpec = tween(750, delayMillis = 100)
+        animationSpec = tween(750, delayMillis = 100), label = "Crossfade"
     ) { gameState ->
         when (gameState) {
             GameState.SUCCESS -> {
@@ -148,7 +148,7 @@ fun LevelScreen(
             Crossfade(
                 targetState = isInfoClicked, modifier = Modifier
                     .weight(.8f)
-                    .fillMaxHeight()
+                    .fillMaxHeight(), label = "Crossfade"
             ) {
                 val arrangement = if (isInfoClicked) Arrangement.SpaceEvenly else Arrangement.Center
                 Column(
@@ -174,7 +174,7 @@ fun LevelHeader(
 ) {
     BaseHeader(
         modifier = modifier,
-        startIcon = Icons.Filled.ArrowBack,
+        startIcon = Icons.AutoMirrored.Filled.ArrowBack,
         startIconOnclick = backClicked,
         endIconOnclick = settingsClicked,
         middleContent = {
@@ -187,7 +187,6 @@ fun LevelHeader(
         })
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @ExperimentalFoundationApi
 @Composable
 fun LevelGrid(
@@ -221,7 +220,7 @@ fun LevelGrid(
                             this.targetState,
                             direction
                         )
-                    }
+                    }, label = "BlockAnimation"
                 ) { type ->
                     when (type) {
                         ENEMY_BLOCK -> {

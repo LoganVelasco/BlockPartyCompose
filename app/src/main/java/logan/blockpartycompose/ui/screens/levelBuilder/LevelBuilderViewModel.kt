@@ -76,7 +76,7 @@ class LevelBuilderViewModel @Inject constructor(
 
     fun undoClicked() {
         if (history.size < 2) return
-        history.removeLast()
+        history.removeAt(history.size-1)
         level.blocks = history.last().toMutableList()
         _state.postValue(
             LevelBuilderState(

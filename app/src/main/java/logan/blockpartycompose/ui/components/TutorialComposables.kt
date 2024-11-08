@@ -17,10 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
@@ -43,9 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import logan.blockpartycompose.R
@@ -88,7 +86,7 @@ fun BaseTutorial(
                         .weight(.1f)
                 ) {
                     Icon(
-                        Icons.Filled.ArrowBack,
+                        Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.show_previous_hint),
                         modifier = Modifier
                             .scale(1.5f)
@@ -121,14 +119,14 @@ fun BaseTutorial(
             if (forwardOnClick != null) {
                 var alpha = 1.5f
                 if (animateForward) {
-                    val infiniteTransition = rememberInfiniteTransition()
+                    val infiniteTransition = rememberInfiniteTransition(label = "")
                     val animatedAlpha by infiniteTransition.animateFloat(
                         initialValue = 1.5f,
                         targetValue = 2f,
                         animationSpec = infiniteRepeatable(
                             animation = tween(durationMillis = 500, easing = FastOutSlowInEasing),
                             repeatMode = RepeatMode.Reverse
-                        )
+                        ), label = "AnimateForward"
                     )
                     alpha = animatedAlpha
                 }
@@ -139,7 +137,7 @@ fun BaseTutorial(
                         .weight(.1f)
                 ) {
                     Icon(
-                        Icons.Filled.ArrowForward,
+                        Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = stringResource(R.string.show_next_hint),
                         modifier = Modifier
                             .scale(alpha)
@@ -176,18 +174,17 @@ fun TutorialWindow(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialStageFour(infoProgress: Int) {
     if (infoProgress == 3) return
     val scope = rememberCoroutineScope()
-    val state = rememberPagerState()
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { 3 })
     LaunchedEffect(key1 = infoProgress) {
         delay(175)
         state.animateScrollToPage(page = infoProgress)
     }
     HorizontalPager(
-        count = 3, state = state, modifier = Modifier
+        state = state, modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
@@ -231,17 +228,16 @@ fun TutorialStageFour(infoProgress: Int) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialPlayMenuWindow() {
-    val state = rememberPagerState()
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { 5 })
     val getShownHint = (0..4).random()
     LaunchedEffect(key1 = getShownHint) {
         state.scrollToPage(page = getShownHint)
     }
     HorizontalPager(
         state = state,
-        count = 5, modifier = Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
@@ -269,18 +265,17 @@ fun TutorialPlayMenuWindow() {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialStageOne(
     progress: Int = 0,
 ) {
-    val state = rememberPagerState()
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { progress + 1})
     LaunchedEffect(key1 = progress) {
         delay(200)
         state.animateScrollToPage(page = progress)
     }
     HorizontalPager(
-        count = progress + 1, state = state, modifier = Modifier
+         state = state, modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
@@ -300,10 +295,9 @@ fun TutorialStageOne(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
-    val state = rememberPagerState()
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { 3 })
     LaunchedEffect(state) {
         // Collect from the pager state a snapshotFlow reading the currentPage
         snapshotFlow { state.currentPage }.collect { page ->
@@ -314,7 +308,8 @@ fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
     }
     val scope = rememberCoroutineScope()
     HorizontalPager(
-        count = 3, state = state, modifier = Modifier
+        state = state,
+        modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
@@ -350,10 +345,9 @@ fun TutorialStageTwo(progress: Int, forwardOnClick: (() -> Unit)?) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
-    val state = rememberPagerState()
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { 2 })
     LaunchedEffect(state) {
         // Collect from the pager state a snapshotFlow reading the currentPage
         snapshotFlow { state.currentPage }.collect { page ->
@@ -365,7 +359,7 @@ fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
     val scope = rememberCoroutineScope()
     HorizontalPager(
         state = state,
-        count = 2, modifier = Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(175.dp)
     ) {
@@ -390,11 +384,13 @@ fun TutorialStageThree(progress: Int, forwardOnClick: (() -> Unit)?) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FirstWinTutorialWindow() {
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { 2 })
+
     HorizontalPager(
-        count = 2, modifier = Modifier
+        state = state,
+        modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
@@ -411,11 +407,13 @@ fun FirstWinTutorialWindow() {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SecondWinTutorialWindow() {
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { 2 })
+
     HorizontalPager(
-        count = 2, modifier = Modifier
+        state = state,
+        modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
@@ -432,11 +430,13 @@ fun SecondWinTutorialWindow() {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FirstLossTutorialWindow() {
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { 1 })
+
     HorizontalPager(
-        count = 1, modifier = Modifier
+        state = state,
+        modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
@@ -453,6 +453,7 @@ fun TutorialSuccessScreen(
     nextLevelOnClick: () -> Unit, movesUsed: Int, tutorialState: Int
 ) {
     if (movesUsed == 0) return
+
     PostLevelScreen {
         Text(text = stringResource(id = R.string.you_did_it), fontFamily = MainFont,
             fontSize = 36.sp)
@@ -474,10 +475,9 @@ fun TutorialSuccessScreen(
             horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()
         ) {
             Button(onClick = { nextLevelOnClick() }) {
-                Text(text = stringResource(R.string.continue_tutorial), fontFamily = MainFont,)
+                Text(text = stringResource(R.string.continue_tutorial), fontFamily = MainFont)
             }
         }
-
     }
 }
 
@@ -630,7 +630,6 @@ fun MovableInfo2(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HelpCard(
     count: Int,
@@ -638,14 +637,13 @@ fun HelpCard(
     currentCard: Int = 0
 ) {
     val scope = rememberCoroutineScope()
-    val state = rememberPagerState()
+    val state = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0, pageCount = { count })
 
     LaunchedEffect(key1 = currentCard) {
         if (currentCard > 0) state.scrollToPage(page = currentCard)
     }
 
     HorizontalPager(
-        count,
         state = state,
         modifier = modifier
             .animateContentSize()
@@ -664,7 +662,6 @@ fun HelpCard(
                 if (count <= 6) forwardOnClick = null
                 UnmovableInfo(forwardOnClick = forwardOnClick, backOnClick = backOnClick)
             }
-
             6 -> MovableInfo1(backOnClick = backOnClick, forwardOnClick = forwardOnClick)
             7 -> MovableInfo2(backOnClick = backOnClick)
         }

@@ -129,14 +129,14 @@ fun WelcomeScreen(navController: NavController, closeApp: () -> Unit) {
                 }
         ) {
 
-            val infiniteTransition = rememberInfiniteTransition()
+            val infiniteTransition = rememberInfiniteTransition(label = "InfiniteSplashTransition")
             val alpha by infiniteTransition.animateFloat(
                 initialValue = 18f,
                 targetValue = 24f,
                 animationSpec = infiniteRepeatable(
                     animation = tween(delayMillis = 200, easing = FastOutSlowInEasing),
                     repeatMode = RepeatMode.Reverse
-                )
+                ), label = "FloatAnimation"
             )
 
 

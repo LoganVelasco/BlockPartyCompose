@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -97,7 +97,7 @@ fun BackIcon(backClicked: () -> Unit, modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         Icon(
-            Icons.Filled.ArrowBack,
+            Icons.AutoMirrored.Filled.ArrowBack,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             contentDescription = stringResource(R.string.back_to_menu)
         )
