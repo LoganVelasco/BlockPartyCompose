@@ -37,6 +37,8 @@ proguard/
 # Android Studio captures folder
 captures/
 
+keystore.properties
+
 # IntelliJ
 *.iml
 .idea/workspace.xml
@@ -92,3 +94,4 @@ lint/tmp/
 # Android Profiling
 *.hprof
 
+/keystore.properties

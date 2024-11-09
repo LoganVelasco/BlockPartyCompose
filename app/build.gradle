@@ -10,13 +10,16 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("keystore.properties")))
+
 android {
     signingConfigs {
         release {
-            storeFile file('/Users/loganv/Workspace/upload-keystore.jks')
-            storePassword 'TRIngFjTZmsrYetzCzXF'
-            keyPassword 'TRIngFjTZmsrYetzCzXF'
-            keyAlias 'upload'
+            storeFile file(localProperties.getProperty("KEYSTORE_FILE"))
+            keyAlias localProperties.getProperty("KEY_ALIAS")
+            storePassword localProperties.getProperty("STORE_PASSWORD")
+            keyPassword localProperties.getProperty("KEY_PASSWORD")
         }
     }
     compileSdk 35
@@ -31,8 +34,8 @@ android {
         applicationId "logan.blockpartycompose"
         minSdk 26
         targetSdk 35
-        versionCode 5
-        versionName "1.2"
+        versionCode 6
+        versionName "1.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -128,6 +131,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-
 
 }
